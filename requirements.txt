@@ -1,0 +1,5 @@
+R-version 3.2.1
+
+Packages:
+ggmap 3.0.1
+ggplot2 3.0.0

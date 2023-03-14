@@ -84,7 +84,7 @@ get_dependencies <- function(package, version, cran.mirror = "https://cloud.r-pr
         newest.version = readLines(paste0(cran.mirror, "web/packages/", package))
         newest.version = newest.version[grep("<td>Version:</td>",newest.version)+1]
         newest.version = gsub("<td>|</td>", "", newest.version)
-        newest.version = paste0(package, newest.version)
+        newest.version = paste0(package, "_", newest.version)
 
         #Messages
         cat("(INFO) Available versions of '", package, "':","\n", sep="")
@@ -130,6 +130,7 @@ get_dependencies <- function(package, version, cran.mirror = "https://cloud.r-pr
     dep.version = gsub("\\)|\\=|>|<| |\n", "", dep.version)
 
     dependencies = data.frame(name = dep.name, version = dep.version)
+    dependencies = dependencies[!is.na(dependencies$name),] #drop rows with NA on "names"-column
   } else{
     dependencies = NA
   }

@@ -91,6 +91,15 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     #Recursion: Invoke itself until there are no more unfulfilled preconditions, continue script with this package -> after ending the script, continue with the next "higher" package below if condition
     if(nrow(get)>0){
       for(p in 1:nrow(get)) {
+        #if required package version is NA -> get newest version of this package
+        if(is.na(get$version.required[p])) {
+          #scrape newest version
+            newest.version = readLines(paste0(cran.mirror, "web/packages/", package))
+            newest.version = newest.version[grep("<td>Version:</td>",newest.version)+1]
+            newest.version = gsub("<td>|</td>", "", newest.version)
+            #newest.version = paste0(package, "_", newest.version)
+          get$version.required[p] = newest.version
+        }
         cat("------------------------------------------------- \n")
         cat("Installing Requirenment:", p, get$name[p], get$version.required[p], "\n")
         install_package_version(get$name[p], get$version.required[p], lib.install.path)

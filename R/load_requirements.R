@@ -1,4 +1,4 @@
-#' ...
+#' Load all packages specified in a requirements-file
 #' @section Dependencies:
 #' - update_packages_search_path()
 #'
@@ -35,6 +35,13 @@
 #' detach_none_base() # detach all none base packages
 #' load_requirements(list = "#statistics")
 #' as.vector(apply(sapply(sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")]), 2, \(x) paste(x, collapse = "_"))) # currently loaded packages incl. version
+#'
+#'
+#' # load packages specified as main packages AND packages specified within the lists '#statistics' & '#data_wrangling' in the 'requirements.txt.' within the current working directory
+#' detach_none_base() # detach all none base packages
+#' load_requirements(list = c("#statistics", "#data_wrangling"))
+#' as.vector(apply(sapply(sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")]), 2, \(x) paste(x, collapse = "_"))) # currently loaded packages incl. version
+
 #' }
 #'
 #' @author Simon Ress

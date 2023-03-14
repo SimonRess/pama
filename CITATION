@@ -1,0 +1,15 @@
+citHeader("To cite pamato in publications, please use:")
+
+
+citEntry(entry = "manual",
+    title = "{pama}: {P}ackage Management Tool for {R}",
+    author = "Simon Ress",
+    address = "Bochum, Germany",
+    note = "version 0.5.3",
+    year = "2023",
+    url = "https://github.com/SimonRess/PaMaTo",
+    textVersion  = paste("Ress, S. (2023).",
+        "pamato: Package Management Tool for R.",
+        "version 0.5.3. Bochum, Germany.",
+        "https://github.com/SimonRess/PaMaTo")
+)

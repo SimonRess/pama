@@ -116,24 +116,30 @@ get_dependencies <- function(package, version, cran.mirror = "https://cloud.r-pr
   description_file <- file.path(tmp_dir, package, "DESCRIPTION")
   description <- read.dcf(description_file)
 
-  #Extract required R-version
-  req.r.version = strsplit(as.data.frame(description)$Depends, "\\(")[[1]][2]
-  req.r.version = strsplit(req.r.version, ")")[[1]][1]
-  req.r.version = gsub("\\)|\\=|>|<| |\n", "", req.r.version)
+  #Check if there is an $Depends list
+  if(!is.null(as.data.frame(description)$Depends)){
+    #Extract required R-version
+    req.r.version = strsplit(as.data.frame(description)$Depends, "\\(")[[1]][2]
+    req.r.version = strsplit(req.r.version, ")")[[1]][1]
+    req.r.version = gsub("\\)|\\=|>|<| |\n", "", req.r.version)
+  } else req.r.version  = "0.0.0"
 
-  #Extract required packages + versions
+  #Check if there is an $Imports list
   if(!is.null(as.data.frame(description)$Imports)){
-    Imports = strsplit(as.data.frame(description)$Imports, ",")[[1]]
-    Imports = gsub(" |\n", "", Imports)
-    dep.name = unlist(lapply(strsplit(Imports, "\\("), \(x) x[1]))
-    dep.version = unlist(lapply(strsplit(Imports, "\\("), \(x) x[2]))
-    dep.version = gsub("\\)|\\=|>|<| |\n", "", dep.version)
+    #Extract required packages + versions
+      Imports = strsplit(as.data.frame(description)$Imports, ",")[[1]]
+      Imports = gsub(" |\n", "", Imports)
+      dep.name = unlist(lapply(strsplit(Imports, "\\("), \(x) x[1]))
+      dep.version = unlist(lapply(strsplit(Imports, "\\("), \(x) x[2]))
+      dep.version = gsub("\\)|\\=|>|<| |\n", "", dep.version)
 
-    dependencies = data.frame(name = dep.name, version = dep.version)
-    dependencies = dependencies[!is.na(dependencies$name),] #drop rows with NA on "names"-column
-  } else{
-    dependencies = NA
-  }
+      dependencies = data.frame(name = dep.name, version = dep.version)
+      dependencies = dependencies[!is.na(dependencies$name),] #drop rows with NA on "names"-column
+    } else{
+      dependencies = NA
+    }
+
+
 
   #Close all connections
   suppressWarnings(try(closeAllConnections(),silent=T))

@@ -1,4 +1,4 @@
-#' ...
+#' Loading/Attaching specific versions of packages
 #' @section Dependencies: - update_packages_search_path()
 #'
 #' @rdname library_version

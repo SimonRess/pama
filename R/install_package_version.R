@@ -1,4 +1,4 @@
-#' ....
+#' Installing a specific version of a package (keep other versions!)
 #' @section Dependencies:
 #' - get_installed_packages() [<- update_packages_search_path()]
 #'
@@ -61,11 +61,11 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     cat("-------------------------------------------------------------------")
     cat("The installed r-version does not match the required r-version (installed:",rversion.installed," < required:",rversion.required,")\n", sep="")
     install = ""
-    while(toupper(install)!="Y" & toupper(install)!="N") {
-      install <- readline(prompt=paste0("Do you want to install the required R-Version (",rversion.required,") now [Y/N]?: "))
-      if(toupper(install) == "Y") cat("Not implementet yet (dependency 'installr' & 'devtools' would be needed, what is not desired). \n -> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
-      if(toupper(install) == "N") cat("-> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
-    }
+    # while(toupper(install)!="Y" & toupper(install)!="N") {
+    #   install <- readline(prompt=paste0("Do you want to install the required R-Version (",rversion.required,") now [Y/N]?: "))
+    #   if(toupper(install) == "Y") cat("Not implementet yet (dependency 'installr' & 'devtools' would be needed, what is not desired). \n -> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
+    #   if(toupper(install) == "N") cat("-> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
+    # }
     cat("-------------------------------------------------------------------")
   }
 
@@ -84,6 +84,9 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     get2 = m[!is.na(m$version.required) & m$version.required > m$version.installed,] # required version > installed version
     #print(get2)
     get = rbind(get1,get2)
+    #delete empty lines
+    get = get[!is.na(get$name),]
+
     if(nrow(get)>0){
       cat("Unsatisfied requirements: \n")
       print(get)
@@ -95,14 +98,14 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
         #if required package version is NA -> get newest version of this package
         if(is.na(get$version.required[p])) {
           #scrape newest version
-            newest.version = readLines(paste0(cran.mirror, "web/packages/", package))
+            newest.version = readLines(paste0(cran.mirror, "web/packages/", get$name[p])) #package name from: get$name[p]
             newest.version = newest.version[grep("<td>Version:</td>",newest.version)+1]
             newest.version = gsub("<td>|</td>", "", newest.version)
             #newest.version = paste0(package, "_", newest.version)
           get$version.required[p] = newest.version
         }
         cat("------------------------------------------------- \n")
-        cat("Installing Requirenment:", p, get$name[p], get$version.required[p], "\n")
+        cat("Installing Requirement:", p, get$name[p], get$version.required[p], "\n")
         install_package_version(get$name[p], get$version.required[p], lib.install.path)
       }
     }

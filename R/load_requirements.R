@@ -1,4 +1,4 @@
-#' Load all packages specified in a requirements-file
+#' Loading/Attaching all packages by version specified in a requirements-file
 #' @section Dependencies:
 #' - update_packages_search_path()
 #'

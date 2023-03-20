@@ -7,7 +7,7 @@
 #'
 #' @description Detach all (none base) packages -> start with empty package-list
 #'
-#' @details ...
+#' @details Detaches all packages listed in utils::sessionInfo()$otherPkgs except of package:PaMa
 #'
 #' @section Side effects: Detaches all (none base) packages
 #' @section Return: vector of attached none base packages -> is empty ("") if it worked
@@ -26,7 +26,7 @@
 
 detach_none_base = function(None){
   utils::capture.output(suppressWarnings(lapply(paste('package:',names(utils::sessionInfo()$otherPkgs),sep=""),
-                                         \(x) try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))),
+                                         \(x) if(x!='package:PaMa') try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))),
                  file='NUL')
 
   attached = sapply(utils::sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")])

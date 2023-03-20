@@ -1,4 +1,4 @@
-#' ...
+#' Get data from requirements-file
 #' @section Dependencies: NONE
 #'
 #' @rdname get_requirements
@@ -12,7 +12,7 @@
 #' @section Return: List of lists. First list ('r.version') returns the required r-version. Other list (e.g. 'main') return vectors including required versions of packages in format: "<package_name> <version>"
 #' @export
 #'
-#' @keywords ...
+#' @keywords requirements-file
 #' @seealso \code{\link[base]{.libPaths}}
 #'
 #' @examples

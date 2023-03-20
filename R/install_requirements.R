@@ -1,4 +1,4 @@
-#' ...
+#' Install packages by versions specified in the requirements-file
 #' @section Dependencies:
 #' - get_requirements()
 #'

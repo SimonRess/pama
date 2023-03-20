@@ -2,7 +2,7 @@
 % Please edit documentation in R/install_package_version.R
 \name{install_package_version}
 \alias{install_package_version}
-\title{....}
+\title{Installing a specific version of a package (keep other versions!)}
 \usage{
 install_package_version(package, version, lib.install.path = .libPaths()[1])
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/load_requirements.R
 \name{load_requirements}
 \alias{load_requirements}
-\title{Load all packages specified in a requirements-file}
+\title{Loading/Attaching all packages by version specified in a requirements-file}
 \usage{
 load_requirements(
   req.file.path = getwd(),
@@ -24,7 +24,7 @@ load_requirements(
 \item{library.folder.name}{(chr vector): Name of the lib-folder}
 }
 \description{
-Load all packages specified in a requirements-file
+Loading/Attaching all packages by version specified in a requirements-file
 }
 \details{
 Wrapper around get_requirements() and library_version(). Loading/Attatching all packages from the requirements-file.

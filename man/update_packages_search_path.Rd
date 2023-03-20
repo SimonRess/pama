@@ -4,7 +4,7 @@
 \alias{update_packages_search_path}
 \title{Updating Search Paths for Packages}
 \usage{
-update_packages_search_path(path = NULL)
+update_packages_search_path(path = NULL, install = FALSE)
 }
 \arguments{
 \item{path}{- (chr vector): Location of R library tree which should be added to the seach path}

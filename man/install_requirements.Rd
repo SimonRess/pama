@@ -2,7 +2,7 @@
 % Please edit documentation in R/install_requirements.R
 \name{install_requirements}
 \alias{install_requirements}
-\title{...}
+\title{Install packages by versions specified in the requirements-file}
 \usage{
 install_requirements(
   req.file.path = getwd(),
@@ -24,7 +24,7 @@ install_requirements(
 \item{library.folder.name}{(chr vector): Name of the lib-folder}
 }
 \description{
-...
+Install packages by versions specified in the requirements-file
 }
 \details{
 Wrapper around get_requirements() and install_package_version(). Installs all packages from the requirements-file (+ dependencies) in a lib-folder.
@@ -36,6 +36,8 @@ Wrapper around get_requirements() and install_package_version(). Installs all pa
 - get_installed_packages()
 
 - install_package_version()
+
+- detach_none_base()
 }
 
 \section{Side effects}{

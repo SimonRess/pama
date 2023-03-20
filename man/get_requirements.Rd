@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_requirements.R
 \name{get_requirements}
 \alias{get_requirements}
-\title{...}
+\title{Get data from requirements-file}
 \usage{
 get_requirements(file.name = "requirements.txt", path = getwd())
 }
@@ -12,7 +12,7 @@ get_requirements(file.name = "requirements.txt", path = getwd())
 \item{path}{(chr vector): Folder of the requirement-file}
 }
 \description{
-...
+Get data from requirements-file
 }
 \details{
 Returns the information of the requirements-file
@@ -42,4 +42,4 @@ get_requirements()
 \author{
 Simon Ress
 }
-\keyword{...}
+\keyword{requirements-file}

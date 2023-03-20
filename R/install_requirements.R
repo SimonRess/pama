@@ -6,6 +6,8 @@
 #'
 #' - install_package_version()
 #'
+#' - detach_none_base()
+#'
 #' @rdname install_requirements
 #'
 #' @param req.file.path (chr vector): Name of the requirements-file
@@ -123,7 +125,7 @@ install_requirements = function(req.file.path=getwd(), req.file.name="requiremen
       cat("-----------------------------------------------------", "\n")
       cat("Install: ", p, "\n")
       #detach all (none base) packages -> required because detaches are necessary in the process, but dependencies may prevent some
-      utils::capture.output(suppressWarnings(lapply(paste('package:',names(utils::sessionInfo()$otherPkgs),sep=""), \(x) try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))), file='NUL')
+      detach_none_base()
       package = strsplit(p, " ")[[1]][1]
       version = strsplit(p, " ")[[1]][2]
       install_package_version(package, version, lib.install.path=lib)
@@ -148,7 +150,8 @@ install_requirements = function(req.file.path=getwd(), req.file.name="requiremen
         cat("-----------------------------------------------------", "\n")
         cat("Install: ", p, "\n")
         #detach all (none base) packages -> required because detaches are necessary in the process, but dependencies may prevent some
-        utils::capture.output(suppressWarnings(lapply(paste('package:',names(utils::sessionInfo()$otherPkgs),sep=""), \(x) try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))), file='NUL')
+        #utils::capture.output(suppressWarnings(lapply(paste('package:',names(utils::sessionInfo()$otherPkgs),sep=""), \(x) try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))), file='NUL')
+        detach_none_base()
         package = strsplit(p, " ")[[1]][1]
         version = strsplit(p, " ")[[1]][2]
         install_package_version(package, version, lib.install.path=lib)

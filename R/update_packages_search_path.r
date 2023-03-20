@@ -42,7 +42,7 @@ update_packages_search_path = function(path = NULL, install = FALSE) {
     if(is.null(path)) {
       for(p in .libPaths()) {
         package = dir(p)[which(grepl("_", dir(p)))]
-        if(install==TRUE) package = package[!duplicated(sapply(package, \(x) strsplit(x,"_")[[1]][1]), fromLast = TRUE)]
+        if(install==TRUE) package = package[!duplicated(sapply(package, \(x) strsplit(x,"_")[[1]][1]), fromLast = TRUE)] #keep only the "newest" package version
         if(length(package)>=1){
           paths.to.add = paste0(p, "/", package)
           for(i in paths.to.add) {
@@ -51,7 +51,10 @@ update_packages_search_path = function(path = NULL, install = FALSE) {
           if(install==FALSE){
             .libPaths(c(.libPaths(), paths.to.add)) # .libPaths(new) replaces always to first element, in order to keep it use the construct: .libPaths(c(.libPaths(), new))
           } else {
-            .libPaths(c(.libPaths()[1], paths.to.add)) # .libPaths(new) replaces always to first element, in order to keep it use the construct: .libPaths(c(.libPaths(), new))
+            #keep only the "newest" package version
+            add = sort(c(.libPaths(),paths.to.add))
+            add = add[!duplicated(sapply(sapply(add, \(x) tail(strsplit(x,"/")[[1]],1)), \(x) head(strsplit(x,"_")[[1]],1)), fromLast = TRUE)]
+            .libPaths(c(.libPaths()[1], add)) # .libPaths(new) replaces always to first element, in order to keep it use the construct: .libPaths(c(.libPaths(), new))
           }
         }
 

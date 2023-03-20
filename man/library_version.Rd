@@ -2,7 +2,7 @@
 % Please edit documentation in R/library_version.R
 \name{library_version}
 \alias{library_version}
-\title{...}
+\title{Loading/Attaching specific versions of packages}
 \usage{
 library_version(package, version, lib.search.path = .libPaths()[1])
 }
@@ -14,7 +14,7 @@ library_version(package, version, lib.search.path = .libPaths()[1])
 \item{lib.search.path}{(chr vector): Folder in which to install the packages}
 }
 \description{
-...
+Loading/Attaching specific versions of packages
 }
 \details{
 Loads a specific version of a package. The package folder must be with a folder called <package-name>_<version> which itself is within .libPaths()[1]

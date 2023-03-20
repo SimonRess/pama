@@ -2,32 +2,32 @@
 % Please edit documentation in R/load_requirements.R
 \name{load_requirements}
 \alias{load_requirements}
-\title{...}
+\title{Load all packages specified in a requirements-file}
 \usage{
 load_requirements(
   req.file.path = getwd(),
   req.file.name = "requirements.txt",
-  list = "all",
+  lists = "all",
   library.folder.path = getwd(),
   library.folder.name = "lib"
 )
 }
 \arguments{
-\item{req.file.path}{(chr vector):}
+\item{req.file.path}{(chr vector): Name of the requirements-file}
 
-\item{req.file.name}{(chr vector):}
+\item{req.file.name}{(chr vector): Folder of the requirements-file}
 
-\item{list}{(chr vector):}
+\item{lists}{(chr vector): Names of lists (without '#' !) specified in the requirements-file to use}
 
-\item{library.folder.path}{(chr vector):}
+\item{library.folder.path}{(chr vector): Folder in which the subfolder "lib" should be created}
 
-\item{library.folder.name}{(chr vector):}
+\item{library.folder.name}{(chr vector): Name of the lib-folder}
 }
 \description{
-...
+Load all packages specified in a requirements-file
 }
 \details{
-test
+Wrapper around get_requirements() and library_version(). Loading/Attatching all packages from the requirements-file.
 }
 \section{Dependencies}{
 
@@ -39,11 +39,11 @@ test
 }
 
 \section{Side effects}{
- ...
+ Loading/Attatching all packages from the requirements-file.
 }
 
 \section{Return}{
- ...
+ None
 }
 
 \examples{
@@ -56,7 +56,13 @@ as.vector(apply(sapply(sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")])
 
 # load packages specified as main packages AND packages specified within the list '#statistics' in the 'requirements.txt.' within the current working directory
 detach_none_base() # detach all none base packages
-load_requirements(list = "#statistics")
+load_requirements(lists = "#statistics")
+as.vector(apply(sapply(sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")]), 2, \(x) paste(x, collapse = "_"))) # currently loaded packages incl. version
+
+
+# load packages specified as main packages AND packages specified within the lists '#statistics' & '#data_wrangling' in the 'requirements.txt.' within the current working directory
+detach_none_base() # detach all none base packages
+load_requirements(lists = c("#statistics", "#data_wrangling"))
 as.vector(apply(sapply(sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")]), 2, \(x) paste(x, collapse = "_"))) # currently loaded packages incl. version
 }
 
@@ -67,4 +73,7 @@ as.vector(apply(sapply(sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")])
 \author{
 Simon Ress
 }
-\keyword{...}
+\keyword{library}
+\keyword{loading}
+\keyword{package-versions}
+\keyword{requirements-file}

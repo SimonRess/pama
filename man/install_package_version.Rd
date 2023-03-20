@@ -7,14 +7,14 @@
 install_package_version(package, version, lib.install.path = .libPaths()[1])
 }
 \arguments{
-\item{package}{sad}
+\item{package}{(chr vector): Name of the package to install (e.g. "ggplot2")}
 
-\item{version}{sd}
+\item{version}{(chr vector): Version of the package to install (e.g. "3.4.0")}
 
-\item{lib.install.path}{vv}
+\item{lib.install.path}{(chr vector): Folder in which to install the packages}
 }
 \description{
--> Recursive function <-
+!!! Recursive function !!!
 }
 \note{
 See all available CRAN Packages by Name here: https://cran.r-project.org/web/packages/available_packages_by_name.html
@@ -29,11 +29,11 @@ See all available CRAN Packages by Name here: https://cran.r-project.org/web/pac
 }
 
 \section{Side effects}{
-
+ Installation of the package & adding package location to the search paths
 }
 
 \section{Return}{
-
+ TRUE (successful installation) or FALSE (UNsuccessful installation)
 }
 
 \examples{
@@ -50,3 +50,5 @@ detach(paste0("package:","ggplot2"), character.only = TRUE) # character.only = T
 \author{
 Simon Ress
 }
+\keyword{installing}
+\keyword{package-versions}

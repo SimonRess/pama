@@ -3,17 +3,17 @@
 #'
 #' @rdname get_requirements
 #'
-#' @param file.name (chr vector): ...
-#' @param path (chr vector): ...
+#' @param file.name (chr vector): Name of the requirement-file
+#' @param path (chr vector): Folder of the requirement-file
 #'
-#' @details test
+#' @details Returns the information of the requirements-file
 #'
-#' @section Side effects: ...
-#' @section Return: ...
+#' @section Side effects: None
+#' @section Return: List of lists. First list ('r.version') returns the required r-version. Other list (e.g. 'main') return vectors including required versions of packages in format: "<package_name> <version>"
 #' @export
 #'
 #' @keywords ...
-#' @seealso \code{\link[utils]{.libPaths()}}
+#' @seealso \code{\link[base]{.libPaths}}
 #'
 #' @examples
 #' \dontrun{

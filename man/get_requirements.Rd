@@ -7,26 +7,26 @@
 get_requirements(file.name = "requirements.txt", path = getwd())
 }
 \arguments{
-\item{file.name}{(chr vector): ...}
+\item{file.name}{(chr vector): Name of the requirement-file}
 
-\item{path}{(chr vector): ...}
+\item{path}{(chr vector): Folder of the requirement-file}
 }
 \description{
 ...
 }
 \details{
-test
+Returns the information of the requirements-file
 }
 \section{Dependencies}{
  NONE
 }
 
 \section{Side effects}{
- ...
+ None
 }
 
 \section{Return}{
- ...
+ List of lists. First list ('r.version') returns the required r-version. Other list (e.g. 'main') return vectors including required versions of packages in format: "<package_name> <version>"
 }
 
 \examples{
@@ -37,7 +37,7 @@ get_requirements()
 
 }
 \seealso{
-\code{\link[utils]{.libPaths()}}
+\code{\link[base]{.libPaths}}
 }
 \author{
 Simon Ress

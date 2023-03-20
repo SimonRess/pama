@@ -7,27 +7,27 @@
 install_requirements(
   req.file.path = getwd(),
   req.file.name = "requirements.txt",
-  list = "all",
+  lists = "all",
   library.folder.path = getwd(),
   library.folder.name = "lib"
 )
 }
 \arguments{
-\item{req.file.path}{(chr vector):}
+\item{req.file.path}{(chr vector): Name of the requirements-file}
 
-\item{req.file.name}{(chr vector):}
+\item{req.file.name}{(chr vector): Folder of the requirements-file}
 
-\item{list}{(chr vector):}
+\item{lists}{(chr vector): Names of lists (without '#' !) specified in the requirements-file to use}
 
-\item{library.folder.path}{(chr vector):}
+\item{library.folder.path}{(chr vector): Folder in which the subfolder "lib" should be created}
 
-\item{library.folder.name}{(chr vector):}
+\item{library.folder.name}{(chr vector): Name of the lib-folder}
 }
 \description{
 ...
 }
 \details{
-test
+Wrapper around get_requirements() and install_package_version(). Installs all packages from the requirements-file (+ dependencies) in a lib-folder.
 }
 \section{Dependencies}{
 
@@ -39,11 +39,11 @@ test
 }
 
 \section{Side effects}{
- ...
+ Installation of the package & adding package location to the search paths
 }
 
 \section{Return}{
- ...
+ None
 }
 
 \examples{
@@ -54,16 +54,18 @@ install_requirements()
 # use 'req.txt' within the lib folder of the current working directory
 install_requirements(req.file.path=paste(getwd(),"lib",sep="/"),
                      req.file.name="requirements.txt",
-                     list="all",
+                     lists="all",
                      library.folder.path=getwd(),
                      library.folder.name="lib")
 }
 
 }
 \seealso{
-\code{\link[utils]{.libPaths()}}
+\code{\link[base]{.libPaths}}
 }
 \author{
 Simon Ress
 }
-\keyword{...}
+\keyword{installing}
+\keyword{package-versions}
+\keyword{requirements-file}

@@ -1,7 +1,7 @@
 #' Get the dependencies of an package on CRAN
 #' @section Dependencies: None
 #'
-#' @description ...
+#' @description Extracts all dependencies (package names and versions) of the giving version of the package
 #' @param package sad
 #' @param version  sd
 #' @param cran.mirror vv

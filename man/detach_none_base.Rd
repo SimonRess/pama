@@ -4,16 +4,16 @@
 \alias{detach_none_base}
 \title{Detach packages}
 \usage{
-detach_none_base()
+detach_none_base(None)
 }
 \arguments{
-\item{None}{}
+\item{None}{Always all non base packages will be detached}
 }
 \description{
 Detach all (none base) packages -> start with empty package-list
 }
 \details{
-test
+...
 }
 \section{Dependencies}{
  NONE
@@ -35,9 +35,12 @@ detach_none_base()
 
 }
 \seealso{
-\code{\link[utils]{.libPaths()}}
+\code{\link[base]{.libPaths}}
 }
 \author{
 Simon Ress (simon-ress.de)
 }
-\keyword{...}
+\keyword{detach}
+\keyword{namespace}
+\keyword{non-base}
+\keyword{packages}

@@ -24,7 +24,7 @@ get_dependencies(
 \item{main.path}{xc}
 }
 \description{
-...
+Extracts all dependencies (package names and versions) of the giving version of the package
 }
 \note{
 See all available CRAN Packages by Name here: https://cran.r-project.org/web/packages/available_packages_by_name.html

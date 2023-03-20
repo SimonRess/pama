@@ -12,7 +12,7 @@
 #' @export
 #'
 #' @keywords Updates Search Paths for Packages
-#' @seealso \code{\link[utils]{.libPaths()}}
+#' @seealso \code{\link[base]{.libPaths}}
 #'
 #' @examples
 #' \dontrun{

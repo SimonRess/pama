@@ -8,20 +8,20 @@
 #'
 #' @rdname install_requirements
 #'
-#' @param req.file.path (chr vector):
-#' @param req.file.name (chr vector):
-#' @param list (chr vector):
-#' @param library.folder.path (chr vector):
-#' @param library.folder.name (chr vector):
+#' @param req.file.path (chr vector): Name of the requirements-file
+#' @param req.file.name (chr vector): Folder of the requirements-file
+#' @param lists (chr vector): Names of lists (without '#' !) specified in the requirements-file to use
+#' @param library.folder.path (chr vector): Folder in which the subfolder "lib" should be created
+#' @param library.folder.name (chr vector): Name of the lib-folder
 #'
-#' @details test
+#' @details Wrapper around get_requirements() and install_package_version(). Installs all packages from the requirements-file (+ dependencies) in a lib-folder.
 #'
-#' @section Side effects: ...
-#' @section Return: ...
+#' @section Side effects: Installation of the package & adding package location to the search paths
+#' @section Return: None
 #' @export
 #'
-#' @keywords ...
-#' @seealso \code{\link[utils]{.libPaths()}}
+#' @keywords requirements-file installing package-versions
+#' @seealso \code{\link[base]{.libPaths}}
 #'
 #' @examples
 #' \dontrun{
@@ -31,7 +31,7 @@
 #' # use 'req.txt' within the lib folder of the current working directory
 #' install_requirements(req.file.path=paste(getwd(),"lib",sep="/"),
 #'                      req.file.name="requirements.txt",
-#'                      list="all",
+#'                      lists="all",
 #'                      library.folder.path=getwd(),
 #'                      library.folder.name="lib")
 #' }
@@ -39,7 +39,7 @@
 #' @author Simon Ress
 
 
-install_requirements = function(req.file.path=getwd(), req.file.name="requirements.txt", list="all",  library.folder.path=getwd(), library.folder.name="lib") {
+install_requirements = function(req.file.path=getwd(), req.file.name="requirements.txt", lists="all",  library.folder.path=getwd(), library.folder.name="lib") {
   # Reads the requirements-file and outputs a list of packages to install/load
   # :param req.file.name (chr vector): Name of the requirements-file (-> USE .txt-file !!!)
   # :param req.file.path (chr vector): Path to the requirements-file
@@ -108,7 +108,7 @@ install_requirements = function(req.file.path=getwd(), req.file.name="requiremen
 
   #install specific versions of packages
   #Install all packages
-  if(list == "all"){
+  if(lists == "all"){
 
     req.packages = as.vector(unique(unlist(req[-1]))) # keep only packages / remove duplicates
     req.packages = req.packages[!is.na(req.packages)] # delete NAs
@@ -134,9 +134,9 @@ install_requirements = function(req.file.path=getwd(), req.file.name="requiremen
     #list=c("#vizualisation","#statistics")
 
     #Check whether all lists are available, if so:
-    if(all(list %in% names(req[-1]))){
+    if(all(lists %in% names(req[-1]))){
       #select packages from entered lists + "main"-list
-      req.packages = as.vector(unique(unlist(req[c("main", list)])))
+      req.packages = as.vector(unique(unlist(req[c("main", lists)])))
 
       lib = paste0(library.folder.path, "/", library.folder.name)
 
@@ -157,7 +157,7 @@ install_requirements = function(req.file.path=getwd(), req.file.name="requiremen
     }else{
       cat("Error: Some entered lists are not available in '", paste(req.file.path,req.file.name,sep="/"), "'!", "\n", sep="")
       cat("- Lists in reqirement-file:", paste0("'", names(req[-1]),"'", collapse = ", "), "\n")
-      cat("- Entered but not available list(s):", paste0("'",list[!(list %in% names(req[-1]))],"'", collapse = ", "), "\n")
+      cat("- Entered but not available list(s):", paste0("'",lists[!(lists %in% names(req[-1]))],"'", collapse = ", "), "\n")
     }
 
   }

@@ -3,18 +3,18 @@
 #'
 #' @rdname detach_none_base
 #'
-#' @param None
+#' @param None Always all non base packages will be detached
 #'
 #' @description Detach all (none base) packages -> start with empty package-list
 #'
-#' @details test
+#' @details ...
 #'
 #' @section Side effects: Detaches all (none base) packages
 #' @section Return: vector of attached none base packages -> is empty ("") if it worked
 #' @export
 #'
-#' @keywords ...
-#' @seealso \code{\link[utils]{.libPaths()}}
+#' @keywords detach non-base packages namespace
+#' @seealso \code{\link[base]{.libPaths}}
 #'
 #' @examples
 #' \dontrun{
@@ -24,7 +24,7 @@
 #'
 #' @author Simon Ress (simon-ress.de)
 
-detach_none_base = function(){
+detach_none_base = function(None){
   utils::capture.output(suppressWarnings(lapply(paste('package:',names(utils::sessionInfo()$otherPkgs),sep=""),
                                          \(x) try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))),
                  file='NUL')

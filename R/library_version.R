@@ -1,20 +1,20 @@
 #' ...
 #' @section Dependencies: - update_packages_search_path()
 #'
-#' @rdname update_packages_search_path
+#' @rdname library_version
 #'
-#' @param package (chr vector): ...
-#' @param version (chr vector): ...
-#' @param lib.search.path (chr vector): ...
+#' @param package (chr vector): Name of the Package
+#' @param version (chr vector): Version of the Package
+#' @param lib.search.path (chr vector): Folder in which to install the packages
 #'
-#' @details test
+#' @details Loads a specific version of a package. The package folder must be with a folder called <package-name>_<version> which itself is within .libPaths()[1]
 #'
-#' @section Side effects: ...
-#' @section Return: ...
+#' @section Side effects: Loading/Attaching of the package version
+#' @section Return: None
 #' @export
 #'
 #' @keywords Updates Search Paths for Packages
-#' @seealso \code{\link[utils]{.libPaths()}}
+#' @seealso \code{\link[base]{.libPaths}}
 #'
 #' @examples
 #' \dontrun{

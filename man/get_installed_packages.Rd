@@ -31,7 +31,7 @@ get_installed_packages("C:/Program Files/R/R-4.2.2/library")
 
 }
 \seealso{
-\code{\link[utils]{.libPaths()}}
+\code{\link[base]{.libPaths}}
 }
 \author{
 Simon Ress

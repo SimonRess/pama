@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @keywords Returns installed packages and versions
-#' @seealso \code{\link[utils]{.libPaths()}}
+#' @seealso \code{\link[base]{.libPaths}}
 #'
 #' @examples
 #' get_installed_packages()

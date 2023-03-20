@@ -29,7 +29,7 @@
 #'
 #' @author Simon Ress
 
-update_packages_search_path = function(path = NULL) {
+update_packages_search_path = function(path = NULL, install = FALSE) {
   # Dependencies: NONE
   #
   # Updates by default the "Search Paths for Packages" (-> '.libPaths()') by searching for folders with name <package_name>_<version> and adding these as search paths
@@ -42,12 +42,17 @@ update_packages_search_path = function(path = NULL) {
     if(is.null(path)) {
       for(p in .libPaths()) {
         package = dir(p)[which(grepl("_", dir(p)))]
+        if(install==TRUE) package = package[!duplicated(sapply(package, \(x) strsplit(x,"_")[[1]][1]), fromLast = TRUE)]
         if(length(package)>=1){
           paths.to.add = paste0(p, "/", package)
           for(i in paths.to.add) {
             cat("Folder '", i, "' will be added to the search path. \n", sep = "")
           }
-          .libPaths(c(.libPaths(), paths.to.add)) # .libPaths(new) replaces always to first element, in order to keep it use the construct: .libPaths(c(.libPaths(), new))
+          if(install==FALSE){
+            .libPaths(c(.libPaths(), paths.to.add)) # .libPaths(new) replaces always to first element, in order to keep it use the construct: .libPaths(c(.libPaths(), new))
+          } else {
+            .libPaths(c(.libPaths()[1], paths.to.add)) # .libPaths(new) replaces always to first element, in order to keep it use the construct: .libPaths(c(.libPaths(), new))
+          }
         }
 
       }

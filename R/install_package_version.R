@@ -128,6 +128,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     #Install package if url (archive) is correct, use it
     if(!inherits(check, "try-error")) {
       cat("Installing package '", package, "' (version ", version, ") from '", package.url, "' (and dependencies!).", "\n", sep="")
+      update_packages_search_path(install=TRUE) #keep only newest package versions in Namespace -> else old version of dependencies can deter installation of packages
       utils::install.packages(package.url, repos=NULL, type="source", lib=package.install.path)
       #try main page
     } else{

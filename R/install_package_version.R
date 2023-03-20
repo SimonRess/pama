@@ -168,9 +168,9 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
       #detach_none_base()
 
     error = TRUE
-    while(error==TRUE) {
+    while(error==TRUE | exit==TRUE) {
       message = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE)
-      preventing.detaching = gsub(paste0(".*ist importiert von ","\\s*(.*?)\\s*"," und kann deshalb nicht entladen werden.*"), "\\1", message)
+      preventing.detaching = regmatches(message, gregexpr("ist importiert von (.*?) und kann deshalb nicht entladen werden", message, perl = TRUE))[[1]]
       preventing.detaching = regmatches(preventing.detaching, gregexpr("(?<=‘|')\\S+(?=’|')", preventing.detaching, perl = TRUE))[[1]]
       cat(preventing.detaching, "\n")
       for(p in preventing.detaching){
@@ -178,6 +178,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
         #.libPaths(.libPaths()[-grep(p,.libPaths())])
         #suppressWarnings(try(detach(paste0("package:",p), character.only = TRUE, force = T), silent = T))
       }
+      if(length(preventing.detaching)<=1) exit = TRUE
     }
 
     #Attaching again

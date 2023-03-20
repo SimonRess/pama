@@ -167,8 +167,8 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
       #update_packages_search_path(install = T, install.path = package.install.path)
       #detach_none_base()
 
-    error = TRUE
-    while(error==TRUE | exit==TRUE) {
+    exit = FALSE
+    while(exit==TRUE) {
       message = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE)
       preventing.detaching = regmatches(message, gregexpr("ist importiert von (.*?) und kann deshalb nicht entladen werden", message, perl = TRUE))[[1]]
       preventing.detaching = regmatches(preventing.detaching, gregexpr("(?<=‘|')\\S+(?=’|')", preventing.detaching, perl = TRUE))[[1]]

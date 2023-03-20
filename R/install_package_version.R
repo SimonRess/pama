@@ -139,6 +139,9 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
       #suppressWarnings(try(close.connection(url(new.package.url)),silent=T))
       if(!inherits(check, "try-error")) {
         cat("Installing package '", package, "' (version ", version, ") from '", new.package.url, "' (and dependencies!).", "\n", sep="")
+          update_packages_search_path(path=lib.install.path)
+          update_packages_search_path(install=TRUE) #keep only newest package versions in Namespace -> else old version of dependencies can deter installation of packages
+          update_packages_search_path(path=lib.install.path)
         utils::install.packages(new.package.url, repos=NULL, type="source", lib=package.install.path)
       } else {
         cat("Error!!! Package ", package, " (version: ",version, ") was not found in: \n", sep="")
@@ -159,6 +162,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     #   n = length(out)
     # }
 
+    detach_none_base()
     update_packages_search_path(install = T, install.path = package.install.path)
     detach_none_base()
     cat("Try to load packages from: ", package.install.path, "\n", sep ="")
@@ -169,17 +173,20 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
       return(TRUE)
     }
     if(inherits(error, "try-error")){
+      cat(error[1])
+      cat("---")
       cat("Installation of package ", package, " (version:", version,") was NOT successful!\n", sep ="")
       cat("Retry the installation one more time.\n")
-      unlink(package.install.path, recursive = TRUE) # delete empty folder
+      #unlink(package.install.path, recursive = TRUE) # delete empty folder
       return(FALSE)
     }
   }
 
   success = FALSE
   i = 1
-  while(all(success == FALSE, i < 4)){ # Three attempts to install an package
-    if(i>1) cat(i, ". attempt to install the package ", package, " (version:", version, ")\n", sep="")
+  while(all(success == FALSE, i < 3)){ # Three attempts to install an package
+    cat("----")
+    if(i>1) cat(i, ". Attempt to install the package ", package, " (version:", version, ")\n", sep="")
     #detach before installing
     suppressWarnings(try(detach(paste0("package:",package), character.only = TRUE, force = T), silent = T))
     #try to install the package

@@ -105,7 +105,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
           get$version.required[p] = newest.version
         }
         cat("------------------------------------------------- \n")
-        cat("Installing Requirement:", p, get$name[p], get$version.required[p], "\n")
+        cat("Installing Requirement: Number", p,", ", get$name[p], get$version.required[p], "\n")
         install_package_version(get$name[p], get$version.required[p], lib.install.path)
       }
     }
@@ -163,12 +163,25 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     # }
 
     #Detaching
-      detach_none_base()
-      update_packages_search_path(install = T, install.path = package.install.path)
-      detach_none_base()
+      #detach_none_base()
+      #update_packages_search_path(install = T, install.path = package.install.path)
+      #detach_none_base()
+
+    error = TRUE
+    while(error==TRUE) {
+      message = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE)
+      preventing.detaching = gsub(paste0(".*ist importiert von ","\\s*(.*?)\\s*"," und kann deshalb nicht entladen werden.*"), "\\1", message)
+      preventing.detaching = regmatches(preventing.detaching, gregexpr("(?<=‘|')\\S+(?=’|')", preventing.detaching, perl = TRUE))[[1]]
+      cat(preventing.detaching, "\n")
+      for(p in preventing.detaching){
+        unloadNamespace(p)
+        #.libPaths(.libPaths()[-grep(p,.libPaths())])
+        #suppressWarnings(try(detach(paste0("package:",p), character.only = TRUE, force = T), silent = T))
+      }
+    }
 
     #Attaching again
-      update_packages_search_path()
+      #update_packages_search_path()
 
     cat("Try to load packages from: ", package.install.path, "\n", sep ="")
     error = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE) # character.only = TRUE <- needed when paste0() or object used

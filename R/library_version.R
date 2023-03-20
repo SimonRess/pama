@@ -34,13 +34,28 @@ library_version = function(package, version, lib.search.path = .libPaths()[1]){
   if(!is.character(version)) {warning("Provide the version name as string (e.g. '3.1.0')"); stop()}
 
   #detach other already loaded versions of the package
-  #capture.output(suppressWarnings(detach(paste0("package:",package), character.only = TRUE,unload=TRUE,force = TRUE)), file='NUL') # character.only = TRUE <- needed when paste0() or object used
   suppressWarnings(try(detach(paste0("package:",package), character.only = TRUE, force = T), silent = T))
 
   #load specified version of the package
-  package.install.path = paste0(lib.search.path, "/", package, "_", version)
-  cat("Loading package '", package, "' (version ", version, ") from '", package.install.path, "'", "\n", sep="")
-  message = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE) # character.only = TRUE <- needed when paste0() or object used
+  # package.install.path = paste0(lib.search.path, "/", package, "_", version)
+  # cat("Loading package '", package, "' (version ", version, ") from '", package.install.path, "'", "\n", sep="")
+  # message = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE) # character.only = TRUE <- needed when paste0() or object used
+
+  error = TRUE
+  while(error==TRUE) {
+    message = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE)
+    preventing.detaching = gsub(paste0(".*ist importiert von ","\\s*(.*?)\\s*"," und kann deshalb nicht entladen werden.*"), "\\1", message)
+    preventing.detaching = regmatches(preventing.detaching, gregexpr("(?<=‘|')\\S+(?=’|')", preventing.detaching, perl = TRUE))[[1]]
+    cat(preventing.detaching, "\n")
+    for(p in preventing.detaching){
+      unloadNamespace(p)
+      #.libPaths(.libPaths()[-grep(p,.libPaths())])
+      #suppressWarnings(try(detach(paste0("package:",p), character.only = TRUE, force = T), silent = T))
+    }
+  }
+
+
+
 
   #test if loading worked
   #if not:

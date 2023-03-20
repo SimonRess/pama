@@ -150,7 +150,15 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
 
     #Load packages once in order to check if desired version can be used
     #capture.output(suppressWarnings(detach(paste0("package:",package), character.only = TRUE,unload=TRUE,force = TRUE)), file='NUL') # character.only = TRUE <- needed when paste0() or object used
-    suppressWarnings(try(detach(paste0("package:",package), character.only = TRUE, force = T), silent = T))
+
+    #suppressWarnings(try(detach(paste0("package:",package), character.only = TRUE, force = T), silent = T)) # not sufficient, because other packages could be depended on this package and stop detaching
+
+    # n = 2
+    # while(n>1) {
+    #   out = detach_none_base()
+    #   n = length(out)
+    # }
+    detach_none_base()
     cat("Try to load packages from: ", package.install.path, "\n", sep ="")
     error = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE) # character.only = TRUE <- needed when paste0() or object used
     if(!inherits(error, "try-error")){

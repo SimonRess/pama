@@ -68,21 +68,21 @@ install_requirements = function(req.file.path=getwd(), req.file.name="requiremen
   if(rversion.installed<rversion.required) {
     cat("Installed R-Version is NOT sufficient (installed:",rversion.installed," < required:",rversion.required,")\n", sep="")
     install = ""
-    while(toupper(install)!="Y" & toupper(install)!="N") {
-      install <- readline(prompt=paste0("Do you want to install the required R-Version (",rversion.required,") now [Y/N]?: "))
-      if(toupper(install) == "Y") cat("Not implementet yet (dependency 'installr' & 'devtools' would be needed, what is not desired). \n -> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
-      if(toupper(install) == "N") cat("-> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
-    }
+    # while(toupper(install)!="Y" & toupper(install)!="N") {
+    #   install <- readline(prompt=paste0("Do you want to install the required R-Version (",rversion.required,") now [Y/N]?: "))
+    #   if(toupper(install) == "Y") cat("Not implementet yet (dependency 'installr' & 'devtools' would be needed, what is not desired). \n -> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
+    #   if(toupper(install) == "N") cat("-> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
+    # }
   }
 
   if(rversion.installed!=rversion.required) {
     cat("The installed r-version does not match the required r-version (installed:",rversion.installed," < required:",rversion.required,")\n", sep="")
     install = ""
-    while(toupper(install)!="Y" & toupper(install)!="N") {
-      install <- readline(prompt=paste0("Do you want to install the required R-Version (",rversion.required,") now [Y/N]?: "))
-      if(toupper(install) == "Y") cat("Not implementet yet (dependency 'installr' & 'devtools' would be needed, what is not desired). \n -> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
-      if(toupper(install) == "N") cat("-> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
-    }
+    # while(toupper(install)!="Y" & toupper(install)!="N") {
+    #   install <- readline(prompt=paste0("Do you want to install the required R-Version (",rversion.required,") now [Y/N]?: "))
+    #   if(toupper(install) == "Y") cat("Not implementet yet (dependency 'installr' & 'devtools' would be needed, what is not desired). \n -> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
+    #   if(toupper(install) == "N") cat("-> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
+    # }
   }
 
 

@@ -45,6 +45,8 @@ library_version = function(package, version, lib.search.path = .libPaths()[1]){
   #test if loading worked
   #if not:
   if(inherits(message, "try-error")) {
+    cat("ERROR MESSAGE: ", message[1])
+    cat("----")
     stop(paste0("The requested version of the packages can't be loaded!
       -> 1. Check the entered package name and version number (e.g. package= 'ggplot2' & version = '3.0.0')
       -> 2. Check if there is a folder named '",package, "_", version, "' in '", lib.search.path, "' which contains the package-folder '", package, "'."))

@@ -59,7 +59,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
   #Check R-VERSION
   if(rversion.installed != rversion.required) {
     cat("-------------------------------------------------------------------")
-    cat("The installed r-version does not match the required r-version (installed:",rversion.installed," < required:",rversion.required,")\n", sep="")
+    cat("The installed r-version does not match the required r-version (installed:",rversion.installed," != required:",rversion.required,")\n", sep="")
     install = ""
     # while(toupper(install)!="Y" & toupper(install)!="N") {
     #   install <- readline(prompt=paste0("Do you want to install the required R-Version (",rversion.required,") now [Y/N]?: "))

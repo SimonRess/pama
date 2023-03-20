@@ -158,6 +158,8 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     #   out = detach_none_base()
     #   n = length(out)
     # }
+
+    update_packages_search_path(install = T, install.path = package.install.path)
     detach_none_base()
     cat("Try to load packages from: ", package.install.path, "\n", sep ="")
     error = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE) # character.only = TRUE <- needed when paste0() or object used

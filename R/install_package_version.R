@@ -137,21 +137,36 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
       update_packages_search_path(install=TRUE) #keep only newest package versions in Namespace -> else old version of dependencies can deter installation of packages
       update_packages_search_path(path=lib.install.path)
       utils::install.packages(package.url, repos=NULL, type="source", lib=package.install.path)
-      #try main page
     } else{
-      new.package.url = paste0(cran.mirror, "src/contrib/", package, "_", version, ".tar.gz") # don't look into "/Archive/" -> get newest version
-      check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
-      #suppressWarnings(try(close.connection(url(new.package.url)),silent=T))
-      if(!inherits(check, "try-error")) {
-        cat("Installing package '", package, "' (version ", version, ") from '", new.package.url, "' (and dependencies!).", "\n", sep="")
-          update_packages_search_path(path=lib.install.path)
-          update_packages_search_path(install=TRUE) #keep only newest package versions in Namespace -> else old version of dependencies can deter installation of packages
-          update_packages_search_path(path=lib.install.path)
-        utils::install.packages(new.package.url, repos=NULL, type="source", lib=package.install.path)
-      } else {
-        cat("Error!!! Package ", package, " (version: ",version, ") was not found in: \n", sep="")
-        cat("- ", package.url, "\n", sep="")
-        cat("- ", new.package.url, "\n", sep="")
+      #try main page
+        new.package.url = paste0(cran.mirror, "src/contrib/", package, "_", version, ".tar.gz") # don't look into "/Archive/" -> get newest version
+        check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
+        #suppressWarnings(try(close.connection(url(new.package.url)),silent=T))
+        if(!inherits(check, "try-error")) {
+          cat("Installing package '", package, "' (version ", version, ") from '", new.package.url, "' (and dependencies!).", "\n", sep="")
+            update_packages_search_path(path=lib.install.path)
+            update_packages_search_path(install=TRUE) #keep only newest package versions in Namespace -> else old version of dependencies can deter installation of packages
+            update_packages_search_path(path=lib.install.path)
+          utils::install.packages(new.package.url, repos=NULL, type="source", lib=package.install.path)
+        } else {
+          #try to change version structure e.g. from 0.1.10 to 0.1-1
+          #e.g. dplyr_0.8.0 (https://cloud.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz) depends on plogr 0.1-1
+          #but there is only an version plogr 0.1.10 (https://cloud.r-project.org/src/contrib/Archive/plogr/, https://cloud.r-project.org/src/contrib/)
+          version = sub("0([^0]*)$", "\\1",sub(".([^.]*)$", "-\\1", version)) #change 0.1.10 to 0.1-1
+          new.package.url = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", version, ".tar.gz")
+          check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
+          #suppressWarnings(try(close.connection(url(new.package.url)),silent=T))
+          if(!inherits(check, "try-error")) {
+            cat("Installing package '", package, "' (version ", version, ") from '", new.package.url, "' (and dependencies!).", "\n", sep="")
+              update_packages_search_path(path=lib.install.path)
+              update_packages_search_path(install=TRUE) #keep only newest package versions in Namespace -> else old version of dependencies can deter installation of packages
+              update_packages_search_path(path=lib.install.path)
+            utils::install.packages(new.package.url, repos=NULL, type="source", lib=package.install.path)
+          } else {
+              cat("Error!!! Package ", package, " (version: ",version, ") was not found in: \n", sep="")
+              cat("- ", package.url, "\n", sep="")
+              cat("- ", new.package.url, "\n", sep="")
+          }
       }
     }
 
@@ -217,13 +232,6 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     #try to install the package
     success = install_and_check()
     i =i+1
-
-    #try to change version structure e.g. from 0.1.10 to 0.1-1
-      #e.g. dplyr_0.8.0 (https://cloud.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz) depends on plogr 0.1-1
-      #but there is only an version plogr 0.1.10 (https://cloud.r-project.org/src/contrib/Archive/plogr/, https://cloud.r-project.org/src/contrib/)
-      version = sub("0([^0]*)$", "\\1",sub(".([^.]*)$", "-\\1", version))
-      package.url = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", version, ".tar.gz")
-
   }
   if(success== FALSE) {
     cat("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n")

@@ -6,6 +6,7 @@
 #' @param package (chr vector): Name of the Package
 #' @param version (chr vector): Version of the Package
 #' @param lib.search.path (chr vector): Folder in which to install the packages
+#' @param isolated.use (bool): If TRUE all
 #'
 #' @details Loads a specific version of a package. The package folder must be with a folder called <package-name>_<version> which itself is within .libPaths()[1]
 #'
@@ -24,7 +25,7 @@
 #'
 #' @author Simon Ress
 
-library_version = function(package, version, lib.search.path = .libPaths()[1]){
+library_version = function(package, version, lib.search.path = .libPaths(), isolated.use=TRUE){
   # Loads a specific version of a package. The package folder must be with a folder called <package-name>_<version> which itself is within .libPaths()[1]
   # :param package (string): Optional location for the downloaded files,
   # :param version (string): Year of the data
@@ -32,6 +33,12 @@ library_version = function(package, version, lib.search.path = .libPaths()[1]){
   # :side-effects: load the namespace of the package with name <package> & version <version> and attach it on the search list
   if(!is.character(package)) {warning("Provide the package name as string (e.g. 'ggplot2')"); stop()}
   if(!is.character(version)) {warning("Provide the version name as string (e.g. '3.1.0')"); stop()}
+
+
+  # find folder with package-version inside
+  lib.search.path = lib.search.path[grep(paste0(package, "_", version), lib.search.path)] # find folder with package-version inside
+    #when is package-folder not found
+    if(identical(lib,character(0))) stop(paste0("Package ", package, " (version: ", version, ") not found. Install it first!"))
 
   #detach other already loaded versions of the package
   suppressWarnings(try(detach(paste0("package:",package), character.only = TRUE, force = T), silent = T))
@@ -41,6 +48,7 @@ library_version = function(package, version, lib.search.path = .libPaths()[1]){
     #Unload all namespaces the packages of interest is imported in, in order to load it
       #e.g. ggmap_3.0.2 imports ggplot2, therefore loading a new ggplot2 version could cause an error, because the old one can't be unloaded
 
+  if(isolated.use) {
     cat("Try to load packages from: ", lib.search.path, "\n", sep ="")
     exit = FALSE
     while(exit==FALSE) {
@@ -56,8 +64,11 @@ library_version = function(package, version, lib.search.path = .libPaths()[1]){
         }
       } else exit = TRUE
     }
+  }
+
 
     #test if loading worked
+    message = try(library(package, lib.loc = lib.search.path, character.only = TRUE), silent = TRUE)
     #if not:
     if(inherits(message, "try-error")) {
       cat("ERROR MESSAGE: ", message[1])

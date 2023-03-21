@@ -80,6 +80,7 @@ load_requirements = function(req.file.path=getwd(), req.file.name="requirements.
       #capture.output(suppressWarnings(lapply(paste('package:',names(sessionInfo()$otherPkgs),sep=""), \(x) try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))), file='NUL')
       package = strsplit(p, " ")[[1]][1]
       version = strsplit(p, " ")[[1]][2]
+      # find folder with package-version inside
       lib = .libPaths()[grep(paste0(package, "_", version), .libPaths())]
         #when is package-folder not found
         if(identical(lib,character(0))) stop(paste0("Package ", package, " (version: ", version, ") not found. Install it first!"))
@@ -87,7 +88,7 @@ load_requirements = function(req.file.path=getwd(), req.file.name="requirements.
     }
     return(as.vector(apply(sapply(utils::sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")]), 2, \(x) paste(x, collapse = "_"))))
 
-    #load main + selected lists
+  #load main + selected lists
   }else{
     #lists=c("#vizualisation","#statistics")
 
@@ -103,7 +104,12 @@ load_requirements = function(req.file.path=getwd(), req.file.name="requirements.
         #capture.output(suppressWarnings(lapply(paste('package:',names(sessionInfo()$otherPkgs),sep=""), \(x) try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))), file='NUL')
         package = strsplit(p, " ")[[1]][1]
         version = strsplit(p, " ")[[1]][2]
+        # find folder with package-version inside
+        lib = .libPaths()[grep(paste0(package, "_", version), .libPaths())] # find folder with package-version inside
+          #when is package-folder not found
+          if(identical(lib,character(0))) stop(paste0("Package ", package, " (version: ", version, ") not found. Install it first!"))
         library_version(package, version, lib.search.path=lib)
+
       }
       return(as.vector(apply(sapply(utils::sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")]), 2, \(x) paste(x, collapse = "_"))))
       #if not:

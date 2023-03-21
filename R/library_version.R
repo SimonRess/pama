@@ -53,7 +53,6 @@ library_version = function(package, version, lib.search.path = NULL){
     #Unload all namespaces the packages of interest is imported in, in order to load it
       #e.g. ggmap_3.0.2 imports ggplot2, therefore loading a new ggplot2 version could cause an error, because the old one can't be unloaded
 
-  if(isolated.use) {
     cat("Try to load packages from: ", lib.search.path, "\n", sep ="")
     exit = FALSE
     while(exit==FALSE) {
@@ -69,7 +68,6 @@ library_version = function(package, version, lib.search.path = NULL){
         }
       } else exit = TRUE
     }
-  }
 
 
     #test if loading worked

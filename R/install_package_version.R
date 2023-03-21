@@ -91,9 +91,11 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
       cat("Unsatisfied requirements: \n")
       print(get)
       print("-----")
-    }else cat("All requirements satisfied! \n")
-      print(m)
-      print("-----")
+    } else {
+        cat("All requirements satisfied! \n")
+        print(m)
+        print("-----")
+    }
 
     #Recursion: Invoke itself until there are no more unfulfilled preconditions, continue script with this package -> after ending the script, continue with the next "higher" package below if condition
     if(nrow(get)>0){

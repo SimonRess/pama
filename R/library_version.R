@@ -67,8 +67,9 @@ library_version = function(package, version, lib.search.path = .libPaths()[1]){
         -> 2. Check if there is a folder named '",package, "_", version, "' in '", lib.search.path, "' which contains the package-folder '", package, "'."))
     } else {
       #if loading worked:
+      cat("Package ", package, " (version: ", version, ") successfuly loaded.", "\n", sep="")
       #update search path
-      update_packages_search_path(package.install.path)
+      #update_packages_search_path(package.install.path)
     }
 
     #test whether desired version is now loaded or not

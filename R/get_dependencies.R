@@ -74,8 +74,9 @@ get_dependencies <- function(package, version, cran.mirror = "https://cloud.r-pr
         cat("No package by name '", package,"' found!", "\n", sep="")
         cat("(INFO) Find a list of all packages on CRAN here: https://cran.r-project.org/web/packages/available_packages_by_name.html", "\n")
         cat("------------------------------------------", "\n")
+
+        warning(paste0("SOLUTION: Install the required package by hand: ", package, "_", version))
         return("package-name-error")
-        stop(paste0("Install the required package by hand: ", package, "_", version))
       } else {
         #scrape versions in archive
         archive.versions = readLines(paste0("https://cloud.r-project.org/src/contrib/Archive/", package))
@@ -93,8 +94,9 @@ get_dependencies <- function(package, version, cran.mirror = "https://cloud.r-pr
         cat("- Newest version:", newest.version, "\n")
         #suppressWarnings(try(closeAllConnections(),silent=T))
         cat("------------------------------------------", "\n")
+
+        warning(paste0("SOLUTION: Install the required package by hand: ", package, "_", version))
         return("version-error")
-        stop(paste0("Install the required package by hand: ", package, "_", version))
       }
 
 

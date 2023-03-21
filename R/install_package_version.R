@@ -217,6 +217,13 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     #try to install the package
     success = install_and_check()
     i =i+1
+
+    #try to change version structure e.g. from 0.1.10 to 0.1-1
+      #e.g. dplyr_0.8.0 (https://cloud.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz) depends on plogr 0.1-1
+      #but there is only an version plogr 0.1.10 (https://cloud.r-project.org/src/contrib/Archive/plogr/, https://cloud.r-project.org/src/contrib/)
+      version = sub("0([^0]*)$", "\\1",sub(".([^.]*)$", "-\\1", version))
+      package.url = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", version, ".tar.gz")
+
   }
   if(success== FALSE) {
     cat("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n")

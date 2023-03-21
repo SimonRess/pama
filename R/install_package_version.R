@@ -167,24 +167,26 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
       #update_packages_search_path(install = T, install.path = package.install.path)
       #detach_none_base()
 
+    #Unload all namespaces the packages of interest is imported in, in order to load it
+      #e.g. ggmap_3.0.2 imports ggplot2, therefore loading a new ggplot2 version could cause an error, because the old one can't be unloaded
+    cat("Try to load packages from: ", package.install.path, "\n", sep ="")
     exit = FALSE
     while(exit==FALSE) {
+      cat("test", "\n")
       message = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE)
       preventing.detaching = regmatches(message, gregexpr("ist importiert von (.*?) und kann deshalb nicht entladen werden", message, perl = TRUE))[[1]]
       preventing.detaching = try(regmatches(preventing.detaching, gregexpr("(?<=‘|')\\S+(?=’|')", preventing.detaching, perl = TRUE))[[1]], silent=T)
-      for(p in preventing.detaching){
-        cat("unloadNamespace: ", p, "\n")
-        unloadNamespace(p)
-        #.libPaths(.libPaths()[-grep(p,.libPaths())])
-        #suppressWarnings(try(detach(paste0("package:",p), character.only = TRUE, force = T), silent = T))
-      }
-      if(inherits(preventing.detaching, "try-error")) exit = TRUE
+      if(!inherits(preventing.detaching, "try-error")) {
+        for(p in preventing.detaching){
+          cat("unloadNamespace: ", p, "\n")
+          unloadNamespace(p)
+          #.libPaths(.libPaths()[-grep(p,.libPaths())])
+          #suppressWarnings(try(detach(paste0("package:",p), character.only = TRUE, force = T), silent = T))
+        }
+      } else exit = TRUE
     }
 
-    #Attaching again
-      #update_packages_search_path()
-
-    cat("Try to load packages from: ", package.install.path, "\n", sep ="")
+    #Check:
     error = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE) # character.only = TRUE <- needed when paste0() or object used
     if(!inherits(error, "try-error")){
       if(version == utils::packageVersion(package)) cat(paste0("Check: Desired version (-> ", version, ") of the package '", package, "' loaded"))

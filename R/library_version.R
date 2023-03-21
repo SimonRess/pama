@@ -44,7 +44,7 @@ library_version = function(package, version, lib.search.path = .libPaths()[1]){
     cat("Try to load packages from: ", lib.search.path, "\n", sep ="")
     exit = FALSE
     while(exit==FALSE) {
-      message = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE)
+      message = try(library(package, lib.loc = lib.search.path, character.only = TRUE), silent = TRUE)
       preventing.detaching = regmatches(message, gregexpr("ist importiert von (.*?) und kann deshalb nicht entladen werden", message, perl = TRUE))[[1]]
       preventing.detaching = try(regmatches(preventing.detaching, gregexpr("(?<=‘|')\\S+(?=’|')", preventing.detaching, perl = TRUE))[[1]], silent=T)
       if(!inherits(preventing.detaching, "try-error")) {

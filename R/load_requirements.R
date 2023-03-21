@@ -63,6 +63,7 @@ load_requirements = function(req.file.path=getwd(), req.file.name="requirements.
   #update package search paths
   lib = paste(library.folder.path, library.folder.name, sep="/")
   update_packages_search_path(lib)
+  update_packages_search_path()
 
   #load specific versions of packages
   #load all packages
@@ -79,6 +80,9 @@ load_requirements = function(req.file.path=getwd(), req.file.name="requirements.
       #capture.output(suppressWarnings(lapply(paste('package:',names(sessionInfo()$otherPkgs),sep=""), \(x) try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))), file='NUL')
       package = strsplit(p, " ")[[1]][1]
       version = strsplit(p, " ")[[1]][2]
+      lib = .libPaths()[grep(paste0(package, "_", version), .libPaths())]
+        #when is package-folder not found
+        if(identical(lib,character(0))) stop(paste0("Package ", package, " (version: ", version, ") not found. Install it first!"))
       library_version(package, version, lib.search.path=lib)
     }
     return(as.vector(apply(sapply(utils::sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")]), 2, \(x) paste(x, collapse = "_"))))

@@ -37,7 +37,7 @@ library_version = function(package, version, lib.search.path = .libPaths()){
   # find folder with package-version inside
   lib.search.path = lib.search.path[grep(paste0(package, "_", version), lib.search.path)] # find folder with package-version inside
     #when is package-folder not found
-    if(identical(lib,character(0))) stop(paste0("Package ", package, " (version: ", version, ") not found. Install it first!"))
+    if(identical(lib.search.path,character(0))) stop(paste0("Package ", package, " (version: ", version, ") not found. Install it first!"))
 
   #detach other already loaded versions of the package
   suppressWarnings(try(detach(paste0("package:",package), character.only = TRUE, force = T), silent = T))

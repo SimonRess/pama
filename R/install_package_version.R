@@ -202,7 +202,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
       cat("---")
       cat("Installation of package ", package, " (version:", version,") was NOT successful! :(", "\n", sep ="")
       cat("Retry the installation one more time...", "\n")
-      #unlink(package.install.path, recursive = TRUE) # delete empty folder
+      unlink(package.install.path, recursive = TRUE) # delete empty folder
       return(FALSE)
     }
   }

@@ -111,7 +111,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
         }
         cat("-------------------------------------------------", "\n")
         cat("Installing Requirement: Number", p,", ", get$name[p], get$version.required[p], "\n")
-        install_package_version(get$name[p], get$version.required[p], lib.install.path)
+        install_package_version(get$name[p], get$version.required[p], lib.install.path=lib.install.path)
       }
     }
 

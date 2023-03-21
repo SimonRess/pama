@@ -172,7 +172,6 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     cat("Try to load packages from: ", package.install.path, "\n", sep ="")
     exit = FALSE
     while(exit==FALSE) {
-      cat("test", "\n")
       message = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE)
       preventing.detaching = regmatches(message, gregexpr("ist importiert von (.*?) und kann deshalb nicht entladen werden", message, perl = TRUE))[[1]]
       preventing.detaching = try(regmatches(preventing.detaching, gregexpr("(?<=‘|')\\S+(?=’|')", preventing.detaching, perl = TRUE))[[1]], silent=T)
@@ -189,15 +188,15 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     #Check:
     error = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE) # character.only = TRUE <- needed when paste0() or object used
     if(!inherits(error, "try-error")){
-      if(version == utils::packageVersion(package)) cat(paste0("Check: Desired version (-> ", version, ") of the package '", package, "' loaded"))
-      if(version != utils::packageVersion(package)) cat(paste0("Check: Error!!! Version '", utils::packageVersion(package), "' instead of desired version ", version, " of packages '", package, "' loaded"))
+      if(version == utils::packageVersion(package)) cat(paste0("Check: Desired version (-> ", version, ") of the package '", package, "' loaded! :)", "\n"))
+      if(version != utils::packageVersion(package)) cat(paste0("Check: Error!!! Version '", utils::packageVersion(package), "' instead of desired version ", version, " of packages '", package, "' loaded! -.-"))
       return(TRUE)
     }
     if(inherits(error, "try-error")){
       cat(error[1])
       cat("---")
-      cat("Installation of package ", package, " (version:", version,") was NOT successful!\n", sep ="")
-      cat("Retry the installation one more time.\n")
+      cat("Installation of package ", package, " (version:", version,") was NOT successful! :(", "\n", sep ="")
+      cat("Retry the installation one more time...", "\n")
       #unlink(package.install.path, recursive = TRUE) # delete empty folder
       return(FALSE)
     }

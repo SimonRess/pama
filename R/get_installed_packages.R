@@ -37,7 +37,7 @@ get_installed_packages = function(lib.search.path=.libPaths()) {
     package.names = dir(pp)[which(!grepl("_", dir(pp)))] # don't use dir(pp), it also keeps folder names with structure <package_name>_<version>, but these folders are added seperatly by update_packages_search_path() to the search list  (-> '.libPaths()')
     for(pn in package.names){
       #cat("pn: ", pn, "\n")
-      verify = try(description <- as.data.frame(read.dcf(paste0(pp, "/", pn, "/DESCRIPTION"))), silent = TRUE)
+      verify = suppressWarnings(try(description <- as.data.frame(read.dcf(paste0(pp, "/", pn, "/DESCRIPTION"))), silent = TRUE))
       #cat("verify: ", verify[[1]], "\n")
       if(!("try-error" %in% class(verify))){
         name = description$Package

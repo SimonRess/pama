@@ -1,9 +1,9 @@
-#' Detach packages
+#' Detach all none base packages
 #' @section Dependencies: NONE
 #'
 #' @rdname detach_none_base
 #'
-#' @param None Always all non base packages will be detached
+#' @param None Always all non base packages (except of package:PaMa itself) will be detached
 #'
 #' @description Detach all (none base) packages -> start with empty package-list
 #'

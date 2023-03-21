@@ -3,7 +3,8 @@
 #'
 #' @rdname update_packages_search_path
 #'
-#' @param path - (chr vector): Location of R library tree which should be added to the seach path
+#' @param path - (chr vector): Location of R library tree which should be added to the search path
+#' @param print.infos (bool): Regulates output in the users console. TRUE: All internal information will be printed (useful for debugging). FALSE (by default): No or much less information will be printed.
 #'
 #' @details test
 #'
@@ -29,7 +30,7 @@
 #'
 #' @author Simon Ress
 
-update_packages_search_path = function(path = NULL, install = FALSE, install.path = NULL) {
+update_packages_search_path = function(path = NULL, install = FALSE, install.path = NULL, print.infos = FALSE) {
   # Dependencies: NONE
   #
   # Updates by default the "Search Paths for Packages" (-> '.libPaths()') by searching for folders with name <package_name>_<version> and adding these as search paths
@@ -49,7 +50,7 @@ update_packages_search_path = function(path = NULL, install = FALSE, install.pat
           if(install==FALSE){
             .libPaths(c(.libPaths(), paths.to.add)) # .libPaths(new) replaces always to first element, in order to keep it use the construct: .libPaths(c(.libPaths(), new))
             for(i in paths.to.add) {
-              cat("Folder '", i, "' will be added to the search path. \n", sep = "")
+              if(print.infos) cat("Folder '", i, "' will be added to the search path. \n", sep = "")
             }
           } else {
             if(is.null(install.path)) {
@@ -66,7 +67,7 @@ update_packages_search_path = function(path = NULL, install = FALSE, install.pat
 
   #User specified updating
     }else {
-      cat("Folder '", path, "' will be added to the search path. \n", sep = "")
+      if(print.infos) cat("Folder '", path, "' will be added to the search path. \n", sep = "")
       .libPaths(c(.libPaths(), path))
     }
 }

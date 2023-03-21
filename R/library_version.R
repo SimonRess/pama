@@ -24,7 +24,7 @@
 #'
 #' @author Simon Ress
 
-library_version = function(package, version, lib.search.path = .libPaths()){
+library_version = function(package, version, lib.search.path = NULL){
   # Loads a specific version of a package. The package folder must be with a folder called <package-name>_<version> which itself is within .libPaths()[1]
   # :param package (string): Optional location for the downloaded files,
   # :param version (string): Year of the data
@@ -32,6 +32,12 @@ library_version = function(package, version, lib.search.path = .libPaths()){
   # :side-effects: load the namespace of the package with name <package> & version <version> and attach it on the search list
   if(!is.character(package)) {warning("Provide the package name as string (e.g. 'ggplot2')"); stop()}
   if(!is.character(version)) {warning("Provide the version name as string (e.g. '3.1.0')"); stop()}
+
+  #If no path is specified: 1. update_packages_search_path 2.use all search paths
+  if(is.null(lib.search.path)) {
+    update_packages_search_path()
+    lib.search.path = .libPaths()
+  }
 
 
   # find folder with package-version inside

@@ -6,7 +6,6 @@
 #' @param package (chr vector): Name of the Package
 #' @param version (chr vector): Version of the Package
 #' @param lib.search.path (chr vector): Folder in which to install the packages
-#' @param isolated.use (bool): If TRUE all
 #'
 #' @details Loads a specific version of a package. The package folder must be with a folder called <package-name>_<version> which itself is within .libPaths()[1]
 #'
@@ -25,7 +24,7 @@
 #'
 #' @author Simon Ress
 
-library_version = function(package, version, lib.search.path = .libPaths(), isolated.use=TRUE){
+library_version = function(package, version, lib.search.path = .libPaths()){
   # Loads a specific version of a package. The package folder must be with a folder called <package-name>_<version> which itself is within .libPaths()[1]
   # :param package (string): Optional location for the downloaded files,
   # :param version (string): Year of the data

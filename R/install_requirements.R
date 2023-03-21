@@ -78,7 +78,7 @@ install_requirements = function(req.file.path=getwd(), req.file.name="requiremen
   }
 
   if(rversion.installed!=rversion.required) {
-    cat("The installed r-version does not match the required r-version (installed:",rversion.installed," < required:",rversion.required,")\n", sep="")
+    cat("The installed r-version does not match the required r-version (installed:",rversion.installed," != required:",rversion.required,")\n", sep="")
     install = ""
     # while(toupper(install)!="Y" & toupper(install)!="N") {
     #   install <- readline(prompt=paste0("Do you want to install the required R-Version (",rversion.required,") now [Y/N]?: "))
@@ -115,11 +115,26 @@ install_requirements = function(req.file.path=getwd(), req.file.name="requiremen
     req.packages = as.vector(unique(unlist(req[-1]))) # keep only packages / remove duplicates
     req.packages = req.packages[!is.na(req.packages)] # delete NAs
 
-    lib = paste0(library.folder.path, "/", library.folder.name)
+    update_packages_search_path()
 
+    #Remove already installed packages from vector
+    for(pv in req.packages) {
+      f = grep(sub(" ", "_", pv), .libPaths())
+      if(!identical(f, integer(0))) {
+        cat("Package '", pv, "' will not be installed!", "\n", sep="")
+        cat("(Already installed in: ", .libPaths()[f], ")", "\n", sep="")
+        req.packages = req.packages[req.packages!=pv]
+      }
+    }
+
+
+
+
+    #lib-folder to install the packages in
+    lib = paste0(library.folder.path, "/", library.folder.name)
     if(!dir.exists(lib)) dir.create(lib)
 
-    update_packages_search_path()
+
 
     for(p in req.packages) {
       cat("-----------------------------------------------------", "\n")

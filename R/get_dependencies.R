@@ -138,10 +138,13 @@ get_dependencies <- function(package, version, cran.mirror = "https://cloud.r-pr
 
   } else req.r.version  = "0.0.0"
 
-  #Check if there is an $Imports list
-  if(!is.null(as.data.frame(description)$Imports)){
+  #Check if there is an $Imports or $LinkingTo list
+  if(!is.null(as.data.frame(description)$Imports) | !is.null(as.data.frame(description)$LinkingTo)){
     #Extract required packages + versions
-      Imports = strsplit(as.data.frame(description)$Imports, ",")[[1]]
+    Imports = vector()
+    if(!is.null(as.data.frame(description)$Imports)) Imports = c(Imports, strsplit(as.data.frame(description)$Imports, ",")[[1]])
+    if(!is.null(as.data.frame(description)$LinkingTo)) Imports = c(Imports, strsplit(as.data.frame(description)$LinkingTo, ",")[[1]])
+      #Imports = strsplit(Imports, ",")[[1]]
       Imports = gsub(" |\n", "", Imports)
       dep.n = unlist(lapply(strsplit(Imports, "\\("), \(x) x[1]))
       dep.name = c(dep.name, dep.n)

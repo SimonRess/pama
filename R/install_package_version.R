@@ -39,7 +39,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
   cran.mirror = "https://cloud.r-project.org/"
   package.url = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", version, ".tar.gz")
   package.install.path = paste0(lib.install.path,"/", package, "_", version)
-  cat("------------------------------------------------- \n")
+  cat("-------------------------------------------------", "\n")
   cat("Package Url: ", package.url, "\n", sep="")
   cat("Local package installation folder: ", package.install.path, "\n", sep="")
 
@@ -58,7 +58,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
 
   #Check R-VERSION
   if(rversion.installed != rversion.required) {
-    cat("-------------------------------------------------------------------")
+    cat("-------------------------------------------------------------------", "\n")
     cat("The installed r-version does not match the required r-version (installed:",rversion.installed," != required:",rversion.required,")\n", sep="")
     install = ""
     # while(toupper(install)!="Y" & toupper(install)!="N") {
@@ -66,7 +66,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     #   if(toupper(install) == "Y") cat("Not implementet yet (dependency 'installr' & 'devtools' would be needed, what is not desired). \n -> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
     #   if(toupper(install) == "N") cat("-> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
     # }
-    cat("-------------------------------------------------------------------")
+    cat("-------------------------------------------------------------------", "\n")
   }
 
   #Some packages don't use dependencies -> do stuff below only when dependencies are present
@@ -90,7 +90,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     if(nrow(get)>0){
       cat("Unsatisfied requirements: \n")
       print(get)
-    }else cat("All requirements satisfied: \n")
+    }else cat("All requirements satisfied! \n")
 
     #Recursion: Invoke itself until there are no more unfulfilled preconditions, continue script with this package -> after ending the script, continue with the next "higher" package below if condition
     if(nrow(get)>0){
@@ -104,7 +104,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
             #newest.version = paste0(package, "_", newest.version)
           get$version.required[p] = newest.version
         }
-        cat("------------------------------------------------- \n")
+        cat("-------------------------------------------------", "\n")
         cat("Installing Requirement: Number", p,", ", get$name[p], get$version.required[p], "\n")
         install_package_version(get$name[p], get$version.required[p], lib.install.path)
       }
@@ -122,7 +122,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     #Create folder to install package in: <package.name>_<version>
     if(!dir.exists(package.install.path)) dir.create(package.install.path)
     #Check if constructed url is correct
-    cat("------------------------------------------------- \n")
+    cat("-------------------------------------------------", "\n")
     check = suppressWarnings(try(readLines(package.url), silent = T)) # open.connection(url(),open="rt",timeout=t)
     #suppressWarnings(try(close.connection(url(package.url)),silent=T))
     #Install package if url (archive) is correct, use it

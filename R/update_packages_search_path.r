@@ -40,8 +40,9 @@ update_packages_search_path = function(path = NULL, install = FALSE, install.pat
 
   #Default updating of search paths by adding "package-version"-folders
     if(is.null(path)) {
-      for(p in .libPaths()) {
-        package = dir(p)[which(grepl("_", dir(p)))]
+      if(dir.exists(file.path(getwd(), "lib"))) lib.paths = c(.libPaths(), file.path(getwd(), "lib")) else lib.paths = .libPaths() # always ALSO search in "lib" in project-folder
+      for(p in lib.paths) {
+        package = dir(p)[which(grepl("_", dir(p)))] # greps folders which contains a "_" -> e.g "...\ggplot2_3.1.0"
         if(install==TRUE) package = package[!duplicated(sapply(package, \(x) strsplit(x,"_")[[1]][1]), fromLast = TRUE)] #keep only the "newest" package version
         if(length(package)>=1){
           paths.to.add = paste0(p, "/", package)

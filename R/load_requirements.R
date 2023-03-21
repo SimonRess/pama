@@ -57,6 +57,10 @@ load_requirements = function(req.file.path=getwd(), req.file.name="requirements.
   # :return: ???
   # :side-effects: Loading all selected package-lists from the requirements-file
 
+  #detaching all other (non base) packages, before loading packages from requirements-file
+    detach_none_base()
+
+
   #get content of requirements-file
   req = get_requirements(file.name=req.file.name, path=req.file.path)
 
@@ -72,20 +76,33 @@ load_requirements = function(req.file.path=getwd(), req.file.name="requirements.
     req.packages = as.vector(unique(unlist(req[-1]))) # keep only packages / remove duplicates
     req.packages = req.packages[!is.na(req.packages)] # delete NAs
 
-    for(p in req.packages) {
-      cat("-----------------------------------------------------", "\n")
-      cat("Load: ", p, "\n")
-      #update_packages_search_path(lib)
-      #detach all (none base) packages -> required because detaches are necessary in the process, but dependencies may prevent some
-      #capture.output(suppressWarnings(lapply(paste('package:',names(sessionInfo()$otherPkgs),sep=""), \(x) try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))), file='NUL')
-      package = strsplit(p, " ")[[1]][1]
-      version = strsplit(p, " ")[[1]][2]
-      # find folder with package-version inside
-      lib = .libPaths()[grep(paste0(package, "_", version), .libPaths())]
-        #when is package-folder not found
-        if(identical(lib,character(0))) stop(paste0("Package ", package, " (version: ", version, ") not found. Install it first!"))
-      library_version(package, version, lib.search.path=lib)
+    rq = req.packages
+
+    #loop until all packages are loaded
+      # necessary because some packaged need to unload others when loaded, therefore order of the packages would be important without the while-loop
+      # e.g. ggplot2 is imported by ggmap. In order to load ggplot2 we need to detach ggmap. But when ggmap is named before ggplot2 in requirements-file
+      # ggmap will be loaded and then unloaded in order to load the specified ggplot2-version -> result without loop: only ggplot2 would be loaded
+    while(length(rq)>0) {
+
+      for(p in rq) {
+        cat("-----------------------------------------------------", "\n")
+        cat("Load: ", p, "\n")
+        #update_packages_search_path(lib)
+        #detach all (none base) packages -> required because detaches are necessary in the process, but dependencies may prevent some
+        #capture.output(suppressWarnings(lapply(paste('package:',names(sessionInfo()$otherPkgs),sep=""), \(x) try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))), file='NUL')
+        package = strsplit(p, " ")[[1]][1]
+        version = strsplit(p, " ")[[1]][2]
+        # find folder with package-version inside
+        lib = .libPaths()[grep(paste0(package, "_", version), .libPaths())]
+          #when is package-folder not found
+          if(identical(lib,character(0))) stop(paste0("Package ", package, " (version: ", version, ") not found. Install it first!"))
+        library_version(package, version, lib.search.path=lib)
+      }
+
+    rq = req.packages[!(sub(" ", "_", req.packages) %in% as.vector(apply(sapply(utils::sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")]), 2, \(x) paste(x, collapse = "_"))))]
     }
+
+
     return(as.vector(apply(sapply(utils::sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")]), 2, \(x) paste(x, collapse = "_"))))
 
   #load main + selected lists

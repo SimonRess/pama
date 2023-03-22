@@ -4,7 +4,14 @@
 \alias{install_package_version}
 \title{Installing a specific version of a package (keep other versions!)}
 \usage{
-install_package_version(package, version, lib.install.path = .libPaths()[1])
+install_package_version(
+  package,
+  version,
+  lib.install.path = .libPaths()[1],
+  cran.mirror = "https://cloud.r-project.org/",
+  archiv.path = "src/contrib/Archive/",
+  main.path = "src/contrib/"
+)
 }
 \arguments{
 \item{package}{(chr vector): Name of the package to install (e.g. "ggplot2")}

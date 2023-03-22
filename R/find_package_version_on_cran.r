@@ -31,7 +31,7 @@ find_package_version_on_cran = function(package, version, cran.mirror = "https:/
   #Construct URLs (1. archive / 2. main package page)
   archive.url = paste0(cran.mirror, archiv.path, package, "/", package, "_", version, ".tar.gz")
   main.page.url = paste0(cran.mirror, main.path, package, "_", version, ".tar.gz") # don't look into "/Archive/" -> get newest version
-  .package.url = ""
+  .package.url = "" # see hidden objects by ls(all.names = TRUE)
     #https://cloud.r-project.org/src/contrib/ggmap_3.0.1.tar.gz
 
   #Check if constructed URL is correct -> Find correct url

@@ -31,6 +31,7 @@ find_package_version_on_cran = function(package, version, cran.mirror = "https:/
   #Construct URLs (1. archive / 2. main package page)
   archive.url = paste0(cran.mirror, archiv.path, package, "/", package, "_", version, ".tar.gz")
   main.page.url = paste0(cran.mirror, main.path, package, "_", version, ".tar.gz") # don't look into "/Archive/" -> get newest version
+  .package.url = ""
     #https://cloud.r-project.org/src/contrib/ggmap_3.0.1.tar.gz
 
   #Check if constructed URL is correct -> Find correct url
@@ -38,16 +39,19 @@ find_package_version_on_cran = function(package, version, cran.mirror = "https:/
     # 1. check archive
     check = suppressWarnings(try(readLines(archive.url), silent=T)) # open.connection(url(...),open="rt",timeout=10)
     if(!inherits(check, "try-error")) {
-      package.url = package.url
+      .package.url = archive.url
       #Stop&Return
-        return(package.url)
+        return(.package.url)
+
     } else {
       # 2. check main page (NOT archive)
       check = suppressWarnings(try(readLines(main.page.url), silent=T)) # open.connection(url(...),open="rt",timeout=10)
+
       if(!inherits(check, "try-error")) {
-          package.url = main.page.url
+          .package.url = main.page.url
           #Stop&Return
-            return(package.url)
+            return(.package.url)
+
         } else {
           # 3. try to change version structure e.g. from 0.1.10 to 0.1-1
             #e.g. dplyr_0.8.0 (https://cloud.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz) depends on plogr 0.1-1
@@ -55,25 +59,27 @@ find_package_version_on_cran = function(package, version, cran.mirror = "https:/
             version.mod = sub("0([^0]*)$", "\\1",sub(".([^.]*)$", "-\\1", version)) #change 0.1.10 to 0.1-1
             new.package.url = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", version.mod, ".tar.gz")
             check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
-            #suppressWarnings(try(close.connection(url(new.package.url)),silent=T))
+
             if(!inherits(check, "try-error")) {
-              package.url = new.package.url
+              .package.url = new.package.url
               cat("---", "\n")
               cat("Version", version, "is named", version.mod, "in CRAN. This version will be used!")
               cat("---", "\n")
               version <<- version.mod # search in parent envS for an existing obj. and assign value to it (otherwise create obj. in the global environment)
               #Stop&Return
-                return(package.url)
+                return(.package.url)
+
             } else {
             #If package-version was nowhere found:
                 cat("Error!!! Package ", package, " (version: ",version, ") was not found in: \n", sep="")
-                cat("- (archive)", package.url, "\n", sep="")
-                cat("- (newest)", new.package.url, "\n", sep="")
-                cat("- (modified version)", new.package.url2, "\n", sep="")
+                cat("- (archive)", archive.url, "\n", sep="")
+                cat("- (newest)", main.page.url, "\n", sep="")
+                cat("- (modified version)", new.package.url, "\n", sep="")
                 cat("---", "\n")
 
                 #Check if package exists
                 check = suppressWarnings(try(readLines(paste0(cran.mirror, "web/packages/", package)), silent=T))
+
                 if(inherits(check, "try-error")) {
                   #Messages
                   cat("No package by name '", package,"' found!", "\n", sep="")
@@ -82,6 +88,7 @@ find_package_version_on_cran = function(package, version, cran.mirror = "https:/
 
                   stop(paste0("package-name-error, ", "SOLUTION: 1. Check the spelling of the package name. 2.Install the required package by hand: ", package, "_", version))
                   #return("package-name-error")
+
                 } else {
                 #Info-Message about existing versions
                   #scrape versions in archive

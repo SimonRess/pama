@@ -103,7 +103,8 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
 
   #Print info
     cat("----", "\n")
-    cat("Package Url: ", package.url, "\n", sep="")
+    #cat("Package Url: ", package.url, "\n", sep="")
+    cat("Package '", package, "' (version: ",version, ") was found on: ", package.url, "\n", sep="")
     cat("Local package installation folder: ", package.install.path, "\n", sep="")
     cat("----", "\n")
 

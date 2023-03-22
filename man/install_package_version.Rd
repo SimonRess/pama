@@ -28,6 +28,7 @@ See all available CRAN Packages by Name here: https://cran.r-project.org/web/pac
 }
 \section{Dependencies}{
 
+- find_package_version_on_cran()
 - get_installed_packages() [<- update_packages_search_path()]
 
 - get_dependencies()

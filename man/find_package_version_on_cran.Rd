@@ -29,8 +29,9 @@ find_package_version_on_cran(
 \description{
 Finding the URL to a specific package version on CRAN. Therefore searching the archive and the main page of the given cran instance.
 Then trying to changing the version name structure by replacing the last "." by "-" and deleting trailing zeros.
-(e.g. "0.1.10" to "0.1-1", because (dplyr_0.8.0)[https://cloud.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz] requires "plogr_0.1.10"
-but in (plogrs archive)[https://cloud.r-project.org/src/contrib/Archive/plogr/] this version is named "plogr_0.1-1")
+
+(e.g. "0.1.10" to "0.1-1", because \href{https://cloud.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz}{dplyr_0.8.0} requires "plogr_0.1.10"
+but in \link[https://cloud.r-project.org/src/contrib/Archive/plogr/]{plogrs archive} this version is named "plogr_0.1-1]
 }
 \note{
 See all available CRAN Packages by Name here: https://cran.r-project.org/web/packages/available_packages_by_name.html
@@ -46,7 +47,7 @@ See all available CRAN Packages by Name here: https://cran.r-project.org/web/pac
 \examples{
 \dontrun{
 package.url = find_package_version_on_cran(package = "plogr", version = "0.1.10")
-#' }
+}
 }
 \keyword{CRAN}
 \keyword{finding}

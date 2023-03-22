@@ -1,5 +1,6 @@
 #' Installing a specific version of a package (keep other versions!)
 #' @section Dependencies:
+#' - find_package_version_on_cran()
 #' - get_installed_packages() [<- update_packages_search_path()]
 #'
 #' - get_dependencies()

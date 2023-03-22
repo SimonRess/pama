@@ -4,8 +4,9 @@
 #' @description
 #' Finding the URL to a specific package version on CRAN. Therefore searching the archive and the main page of the given cran instance.
 #' Then trying to changing the version name structure by replacing the last "." by "-" and deleting trailing zeros.
-#' (e.g. "0.1.10" to "0.1-1", because (dplyr_0.8.0)[https://cloud.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz] requires "plogr_0.1.10"
-#' but in (plogrs archive)[https://cloud.r-project.org/src/contrib/Archive/plogr/] this version is named "plogr_0.1-1")
+#'
+#' (e.g. "0.1.10" to "0.1-1", because \href{https://cloud.r-project.org/src/contrib/Archive/dplyr/}{dplyr_0.8.0} requires "plogr_0.1.10"
+#' but in \href{https://cloud.r-project.org/src/contrib/Archive/plogr/}{plogrs archive} this version is named "plogr_0.1-1]
 #' @param package (chr vector): Name of the package to install (e.g. "ggplot2")
 #' @param version (chr vector): Version of the package to install (e.g. "3.4.0")
 #' @param cran.mirror (chr vector): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")
@@ -22,7 +23,7 @@
 #' @examples
 #' \dontrun{
 #' package.url = find_package_version_on_cran(package = "plogr", version = "0.1.10")
-#' #' }
+#' }
 
 find_package_version_on_cran = function(package, version, cran.mirror = "https://cloud.r-project.org/", archiv.path = "src/contrib/Archive/", main.path = "src/contrib/") {
 #Check whether version is in archive or on main package-page

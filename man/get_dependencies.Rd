@@ -30,7 +30,8 @@ Extracts all dependencies (package names and versions) of the giving version of 
 See all available CRAN Packages by Name here: https://cran.r-project.org/web/packages/available_packages_by_name.html
 }
 \section{Dependencies}{
- None
+
+- find_package_version_on_cran()
 }
 
 \section{Side effects}{

@@ -1,12 +1,13 @@
 #' Get the dependencies of an package on CRAN
-#' @section Dependencies: None
+#' @section Dependencies:
+#' - find_package_version_on_cran()
 #'
 #' @description Extracts all dependencies (package names and versions) of the giving version of the package
-#' @param package sad
-#' @param version  sd
-#' @param cran.mirror vv
-#' @param archiv.path fdf
-#' @param main.path xc
+#' @param package (chr vector): Name of the package to install (e.g. "ggplot2")
+#' @param version  (chr vector): Version of the package to install (e.g. "3.4.0")
+#' @param cran.mirror (chr vector): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")
+#' @param archiv.path (chr vector): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")
+#' @param main.path (chr vector): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")
 #'
 #' @section Side effects: None
 #' @section Return: List of lists with structure c(<package_name>, <version>)

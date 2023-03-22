@@ -12,6 +12,15 @@
 #' @param version  (chr vector): Version of the package to install (e.g. "3.4.0")
 #' @param lib.install.path (chr vector): Folder in which to install the packages
 #'
+#' @param cran.mirror (chr vector): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")
+#' @param archiv.path (chr vector): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")
+#' @param main.path (chr vector): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")
+#'
+#' @param auto.update.version.in.files (bool):
+#' If TRUE the version of a package in the installed files will be changed to the required version. This only happens if
+#' it's the same version but the structure of the version name differs e.g. 0.1.10 to 0.1.-1 see \code{\link[PaMa]{find_package_version_on_cran}}
+#' When FALSE nothing happens
+#'
 #' @section Side effects: Installation of the package & adding package location to the search paths
 #' @section Return: TRUE (successful installation) or FALSE (UNsuccessful installation)
 #' @export
@@ -32,7 +41,11 @@
 #' @author Simon Ress
 
 
-install_package_version = function(package, version, lib.install.path=.libPaths()[1], cran.mirror = "https://cloud.r-project.org/", archiv.path = "src/contrib/Archive/", main.path = "src/contrib/") {
+install_package_version = function(package, version, lib.install.path=.libPaths()[1],
+                                   cran.mirror = "https://cloud.r-project.org/",
+                                   archiv.path = "src/contrib/Archive/",
+                                   main.path = "src/contrib/",
+                                   auto.update.version.in.files = TRUE) {
   if(!is.character(package)) {warning("Provide the package name as string (e.g. 'ggplot2')"); stop()}
   if(!is.character(version)) {warning("Provide the version name as string (e.g. '3.1.0')"); stop()}
 
@@ -100,7 +113,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
   #Create package.url & package.install.path
     .out = find_package_version_on_cran(package = package, version = version)
     package.url = .out[1]
-    version = .out[2]
+    #.version = .out[2] # new version name e.g. 0.1.10 -> 0.1-1
     package.install.path = paste0(lib.install.path,"/", package, "_", version)
 
   #Print info
@@ -276,6 +289,14 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     if(!inherits(error, "try-error")){
       if(version == utils::packageVersion(package)) cat(paste0("Check: Desired version (-> ", version, ") of the package '", package, "' loaded! :)", "\n"))
       if(version != utils::packageVersion(package)) cat(paste0("Check: Error!!! Version '", utils::packageVersion(package), "' instead of desired version ", version, " of packages '", package, "' loaded! -.-"))
+
+      #update version of package in files if structure of version name on CRAN differs to required version
+      if(auto.update.version.in.files & version != .version) {
+        file = readRDS(file.path(package.install.path, package, "Meta/package.rds"))
+        file[["DESCRIPTION"]][["Version"]] <- version
+        saveRDS(file, file.path(package.install.path, package, "Meta/package.rds"))
+      }
+
       return(TRUE)
     }
     if(inherits(error, "try-error")){
@@ -286,7 +307,9 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
       unlink(package.install.path, recursive = TRUE) # delete empty folder
       return(FALSE)
     }
-  }
+  } # end of install_and_check()
+
+
 
   success = FALSE
   i = 1

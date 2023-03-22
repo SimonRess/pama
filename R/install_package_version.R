@@ -39,9 +39,65 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
   cran.mirror = "https://cloud.r-project.org/"
   package.url = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", version, ".tar.gz")
   package.install.path = paste0(lib.install.path,"/", package, "_", version)
-  cat("-------------------------------------------------", "\n")
-  cat("Package Url: ", package.url, "\n", sep="")
-  cat("Local package installation folder: ", package.install.path, "\n", sep="")
+
+  #Find correct url
+    # 1. check archive
+    check = suppressWarnings(try(readLines(package.url), silent = T)) # open.connection(url(),open="rt",timeout=t)
+    if(!inherits(check, "try-error")) {
+      package.url = package.url
+    } else {
+        # 2. check main page (NOT archive)
+        new.package.url = paste0(cran.mirror, "src/contrib/", package, "_", version, ".tar.gz") # don't look into "/Archive/" -> get newest version
+        check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
+        if(!inherits(check, "try-error")) {
+          package.url = new.package.url
+        } else {
+          # 3. try to change version structure e.g. from 0.1.10 to 0.1-1
+            #e.g. dplyr_0.8.0 (https://cloud.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz) depends on plogr 0.1-1
+            #but there is only an version plogr 0.1.10 (https://cloud.r-project.org/src/contrib/Archive/plogr/, https://cloud.r-project.org/src/contrib/)
+            version.mod = sub("0([^0]*)$", "\\1",sub(".([^.]*)$", "-\\1", version)) #change 0.1.10 to 0.1-1
+            new.package.url2 = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", version.mod, ".tar.gz")
+            check = suppressWarnings(try(readLines(new.package.url2),silent = T)) # open.connection(url(),open="rt",timeout=t
+            #suppressWarnings(try(close.connection(url(new.package.url)),silent=T))
+            if(!inherits(check, "try-error")) {
+              package.url = new.package.url2
+              cat("---")
+              cat("Version", version, "is named", version.mod, "in CRAN. This version will be installed!")
+              cat("---")
+              version = version.mod
+            } else {
+                cat("Error!!! Package ", package, " (version: ",version, ") was not found in: \n", sep="")
+                cat("- (archive)", package.url, "\n", sep="")
+                cat("- (newest)", new.package.url, "\n", sep="")
+                cat("- (modified version)", new.package.url2, "\n", sep="")
+                cat("----")
+                #Info-Message about existing versions
+                  #scrape versions in archive
+                  archive.versions = readLines(paste0("https://cloud.r-project.org/src/contrib/Archive/", package))
+                  archive.versions = archive.versions[(grep("Parent Directory", archive.versions)+1):(grep("<hr></pre>", archive.versions)-1)]
+                  archive.versions = sapply(strsplit(archive.versions, '<a href=\"'), \(x) strsplit(x[2], '.tar.gz\">')[[1]][1])
+                  #scrape newest version
+                  newest.version = readLines(paste0(cran.mirror, "web/packages/", package))
+                  newest.version = newest.version[grep("<td>Version:</td>",newest.version)+1]
+                  newest.version = gsub("<td>|</td>", "", newest.version)
+                  newest.version = paste0(package, "_", newest.version)
+
+                  #Messages
+                  cat("(INFO) Available versions of '", package, "':","\n", sep="")
+                  cat("- In archive:", paste(archive.versions, collapse = ", "), "\n")
+                  cat("- Newest version:", newest.version, "\n")
+                  cat("------", "\n")
+
+                  stop(paste0("version-error, ", "SOLUTION: Install the required package by hand: ", package, "_", version))
+                  #return("version-error")
+            }
+        }
+    }
+
+  #Print infos
+    cat("-------", "\n")
+    cat("Package Url: ", package.url, "\n", sep="")
+    cat("Local package installation folder: ", package.install.path, "\n", sep="")
 
 
   #Check installed R Version

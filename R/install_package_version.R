@@ -98,7 +98,9 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
 
 
   #Create package.url & package.install.path
-    package.url = find_package_version_on_cran(package = package, version = version)
+    .out = find_package_version_on_cran(package = package, version = version)
+    package.url = .out[1]
+    version = .out[2]
     package.install.path = paste0(lib.install.path,"/", package, "_", version)
 
   #Print info

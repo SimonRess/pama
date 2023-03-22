@@ -13,15 +13,15 @@ get_dependencies(
 )
 }
 \arguments{
-\item{package}{sad}
+\item{package}{(chr vector): Name of the package to install (e.g. "ggplot2")}
 
-\item{version}{sd}
+\item{version}{(chr vector): Version of the package to install (e.g. "3.4.0")}
 
-\item{cran.mirror}{vv}
+\item{cran.mirror}{(chr vector): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")}
 
-\item{archiv.path}{fdf}
+\item{archiv.path}{(chr vector): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")}
 
-\item{main.path}{xc}
+\item{main.path}{(chr vector): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")}
 }
 \description{
 Extracts all dependencies (package names and versions) of the giving version of the package

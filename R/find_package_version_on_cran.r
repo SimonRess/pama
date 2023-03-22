@@ -14,7 +14,11 @@
 #' @param main.path (chr vector): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")
 #'
 #' @section Side effects: None
-#' @return (chr vector): URL to the package version or an error message
+#' @return (chr vector):
+#' [1] (chr) URL of the package version or an error message
+#'
+#' [2] (chr) Version of the package (sometimes the version changes, therefore an output is needed)
+#'
 #' @export
 #'
 #' @note See all available CRAN Packages by Name here: https://cran.r-project.org/web/packages/available_packages_by_name.html
@@ -22,7 +26,9 @@
 #' @keywords finding package-versions on CRAN
 #' @examples
 #' \dontrun{
-#' package.url = find_package_version_on_cran(package = "plogr", version = "0.1.10")
+#' .out = find_package_version_on_cran(package = package, version = version)
+#' package.url = .out[1]
+#' version = .out[2]
 #' }
 
 find_package_version_on_cran = function(package, version, cran.mirror = "https://cloud.r-project.org/", archiv.path = "src/contrib/Archive/", main.path = "src/contrib/") {
@@ -32,6 +38,7 @@ find_package_version_on_cran = function(package, version, cran.mirror = "https:/
   archive.url = paste0(cran.mirror, archiv.path, package, "/", package, "_", version, ".tar.gz")
   main.page.url = paste0(cran.mirror, main.path, package, "_", version, ".tar.gz") # don't look into "/Archive/" -> get newest version
   .package.url = "" # see hidden objects by ls(all.names = TRUE)
+  .version = version
     #https://cloud.r-project.org/src/contrib/ggmap_3.0.1.tar.gz
 
   #Check if constructed URL is correct -> Find correct url
@@ -41,7 +48,7 @@ find_package_version_on_cran = function(package, version, cran.mirror = "https:/
     if(!inherits(check, "try-error")) {
       .package.url = archive.url
       #Stop&Return
-        return(.package.url)
+        return(c(.package.url, .version))
 
     } else {
       # 2. check main page (NOT archive)
@@ -50,7 +57,7 @@ find_package_version_on_cran = function(package, version, cran.mirror = "https:/
       if(!inherits(check, "try-error")) {
           .package.url = main.page.url
           #Stop&Return
-            return(.package.url)
+            return(c(.package.url, .version))
 
         } else {
           # 3. try to change version structure e.g. from 0.1.10 to 0.1-1
@@ -63,11 +70,12 @@ find_package_version_on_cran = function(package, version, cran.mirror = "https:/
             if(!inherits(check, "try-error")) {
               .package.url = new.package.url
               cat("---", "\n")
-              cat("Version", version, "is named", version.mod, "in CRAN. This version will be used!")
+              cat("Version", version, "is named", version.mod, "in CRAN. This version will be used!", "\n")
               cat("---", "\n")
-              version <<- version.mod # search in parent envS for an existing obj. and assign value to it (otherwise create obj. in the global environment)
+              #version <<- version.mod # NOT WORKING, BINDING IS LOCKED!  #search in parent envS for an existing obj. and assign value to it (otherwise create obj. in the global environment)
+              .version = version.mod
               #Stop&Return
-                return(.package.url)
+                return(c(.package.url, .version))
 
             } else {
             #If package-version was nowhere found:

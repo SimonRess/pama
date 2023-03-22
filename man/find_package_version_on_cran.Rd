@@ -24,14 +24,17 @@ find_package_version_on_cran(
 \item{main.path}{(chr vector): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")}
 }
 \value{
-(chr vector): URL to the package version or an error message
+(chr vector):
+[1] (chr) URL of the package version or an error message
+
+[2] (chr) Version of the package (sometimes the version changes, therefore an output is needed)
 }
 \description{
 Finding the URL to a specific package version on CRAN. Therefore searching the archive and the main page of the given cran instance.
 Then trying to changing the version name structure by replacing the last "." by "-" and deleting trailing zeros.
 
-(e.g. "0.1.10" to "0.1-1", because \href{https://cloud.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz}{dplyr_0.8.0} requires "plogr_0.1.10"
-but in \link[https://cloud.r-project.org/src/contrib/Archive/plogr/]{plogrs archive} this version is named "plogr_0.1-1]
+(e.g. "0.1.10" to "0.1-1", because \href{https://cloud.r-project.org/src/contrib/Archive/dplyr/}{dplyr_0.8.0} requires "plogr_0.1.10"
+but in \href{https://cloud.r-project.org/src/contrib/Archive/plogr/}{plogrs archive} this version is named "plogr_0.1-1]
 }
 \note{
 See all available CRAN Packages by Name here: https://cran.r-project.org/web/packages/available_packages_by_name.html
@@ -46,7 +49,8 @@ See all available CRAN Packages by Name here: https://cran.r-project.org/web/pac
 
 \examples{
 \dontrun{
-package.url = find_package_version_on_cran(package = "plogr", version = "0.1.10")
+package.url = find_package_version_on_cran(package = "plogr", version = "0.1.10")[1]
+version = find_package_version_on_cran(package = "plogr", version = "0.1.10")[2]
 }
 }
 \keyword{CRAN}

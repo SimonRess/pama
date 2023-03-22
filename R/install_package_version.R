@@ -113,7 +113,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
   #Create package.url & package.install.path
     .out = find_package_version_on_cran(package = package, version = version)
     package.url = .out[1]
-    #.version = .out[2] # new version name e.g. 0.1.10 -> 0.1-1
+    .version = .out[2] # new version name e.g. 0.1.10 -> 0.1-1
     package.install.path = paste0(lib.install.path,"/", package, "_", version)
 
   #Print info
@@ -297,7 +297,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
 
         #update package.rds <- from this, r extracts the version of a package
           file = readRDS(file.path(package.install.path, package, "Meta/package.rds"))
-          file[["DESCRIPTION"]][["Version"]] <- version
+          file[["DESCRIPTION"]][["Version"]] <- version # inserting the correct version name structure
           saveRDS(file, file.path(package.install.path, package, "Meta/package.rds"))
       }
 

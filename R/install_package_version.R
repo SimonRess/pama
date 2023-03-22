@@ -292,9 +292,13 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
 
       #update version of package in files if structure of version name on CRAN differs to required version
       if(auto.update.version.in.files & version != .version) {
-        file = readRDS(file.path(package.install.path, package, "Meta/package.rds"))
-        file[["DESCRIPTION"]][["Version"]] <- version
-        saveRDS(file, file.path(package.install.path, package, "Meta/package.rds"))
+        # #update folder name shell("rename <old> >new>) <- NOT NEEDED, already the correct name
+        #  shell(paste('rename',  paste0(lib.install.path,"/", package, "_", .version), paste0(lib.install.path,"/", package, "_", version)))
+
+        #update package.rds <- from this, r extracts the version of a package
+          file = readRDS(file.path(package.install.path, package, "Meta/package.rds"))
+          file[["DESCRIPTION"]][["Version"]] <- version
+          saveRDS(file, file.path(package.install.path, package, "Meta/package.rds"))
       }
 
       return(TRUE)

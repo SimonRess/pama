@@ -117,15 +117,15 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     package.install.path = paste0(lib.install.path,"/", package, "_", version)
 
     #update version of package if structure of version name on CRAN differs to required version
-      if(auto.update.version.in.files & version != .version) {
-        .install.version = .version
-      } else .install.version = version
+      # if(auto.update.version.in.files & version != .version) {
+      #   .install.version = .version
+      # } else .install.version = version
 
 
   #Print info
     cat("----", "\n")
     #cat("Package Url: ", package.url, "\n", sep="")
-    cat("Package '", package, "' (version: ", .install.version, ") was found on: ", package.url, "\n", sep="")
+    cat("Package '", package, "' (version: ", version, ") was found on: ", package.url, "\n", sep="")
     cat("Local package installation folder: ", package.install.path, "\n", sep="")
     cat("----", "\n")
 
@@ -137,7 +137,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
   # version = "3.4.0"
   # package = "vctrs"
   # version = "0.5.0"
-  depends.on = get_dependencies(package, .install.version)
+  depends.on = get_dependencies(package, version)
 
   rversion.required = depends.on$`R-version`$version
 
@@ -217,18 +217,18 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     #suppressWarnings(try(close.connection(url(package.url)),silent=T))
     #Install package if url (archive) is correct, use it
     if(!inherits(check, "try-error")) {
-      cat("Installing package '", package, "' (version ", .install.version, ") from '", package.url, "' (and dependencies!).", "\n", sep="")
+      cat("Installing package '", package, "' (version ", version, ") from '", package.url, "' (and dependencies!).", "\n", sep="")
       update_packages_search_path(path=lib.install.path)
       update_packages_search_path(install=TRUE) #keep only newest package versions in Namespace -> else old version of dependencies can deter installation of packages
       update_packages_search_path(path=lib.install.path)
       utils::install.packages(package.url, repos=NULL, type="source", lib=package.install.path)
     } else{
       #try main page
-        new.package.url = paste0(cran.mirror, "src/contrib/", package, "_", .install.version, ".tar.gz") # don't look into "/Archive/" -> get newest version
+        new.package.url = paste0(cran.mirror, "src/contrib/", package, "_", version, ".tar.gz") # don't look into "/Archive/" -> get newest version
         check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
         #suppressWarnings(try(close.connection(url(new.package.url)),silent=T))
         if(!inherits(check, "try-error")) {
-          cat("Installing package '", package, "' (version ", .install.version, ") from '", new.package.url, "' (and dependencies!).", "\n", sep="")
+          cat("Installing package '", package, "' (version ", version, ") from '", new.package.url, "' (and dependencies!).", "\n", sep="")
             update_packages_search_path(path=lib.install.path)
             update_packages_search_path(install=TRUE) #keep only newest package versions in Namespace -> else old version of dependencies can deter installation of packages
             update_packages_search_path(path=lib.install.path)
@@ -237,18 +237,18 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
           #try to change version structure e.g. from 0.1.10 to 0.1-1
           #e.g. dplyr_0.8.0 (https://cloud.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz) depends on plogr 0.1-1
           #but there is only an version plogr 0.1.10 (https://cloud.r-project.org/src/contrib/Archive/plogr/, https://cloud.r-project.org/src/contrib/)
-          .install.version = sub("0([^0]*)$", "\\1",sub(".([^.]*)$", "-\\1", .install.version)) #change 0.1.10 to 0.1-1
-          new.package.url = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", .install.version, ".tar.gz")
+          version = sub("0([^0]*)$", "\\1",sub(".([^.]*)$", "-\\1", version)) #change 0.1.10 to 0.1-1
+          new.package.url = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", version, ".tar.gz")
           check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
           #suppressWarnings(try(close.connection(url(new.package.url)),silent=T))
           if(!inherits(check, "try-error")) {
-            cat("Installing package '", package, "' (version ", .install.version, ") from '", new.package.url, "' (and dependencies!).", "\n", sep="")
+            cat("Installing package '", package, "' (version ", version, ") from '", new.package.url, "' (and dependencies!).", "\n", sep="")
               update_packages_search_path(path=lib.install.path)
               update_packages_search_path(install=TRUE) #keep only newest package versions in Namespace -> else old version of dependencies can deter installation of packages
               update_packages_search_path(path=lib.install.path)
             utils::install.packages(new.package.url, repos=NULL, type="source", lib=package.install.path)
           } else {
-              cat("Error!!! Package ", package, " (version: ",.install.version, ") was not found in: \n", sep="")
+              cat("Error!!! Package ", package, " (version: ",version, ") was not found in: \n", sep="")
               cat("- ", package.url, "\n", sep="")
               cat("- ", new.package.url, "\n", sep="")
           }

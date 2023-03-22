@@ -73,9 +73,9 @@ find_package_version_on_cran = function(package, version, cran.mirror = "https:/
               cat("Version", version, "is named", version.mod, "in CRAN. This version will be used!", "\n")
               cat("---", "\n")
               #version <<- version.mod # NOT WORKING, BINDING IS LOCKED!  #search in parent envS for an existing obj. and assign value to it (otherwise create obj. in the global environment)
-              .version = version.mod
+              #.version = version.mod
               #Stop&Return
-                return(c(.package.url, .version))
+                return(c(.package.url, version.mod))
 
             } else {
             #If package-version was nowhere found:

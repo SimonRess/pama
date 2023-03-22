@@ -16,6 +16,11 @@
 #' @param library.folder.path (chr vector): Folder in which the subfolder "lib" should be created
 #' @param library.folder.name (chr vector): Name of the lib-folder
 #'
+#' @param auto.update.version.in.files (bool):
+#' If TRUE the version of a package in the installed files will be changed to the required version. This only happens if
+#' it's the same version but the structure of the version name differs e.g. 0.1.10 to 0.1.-1 see \code{\link[PaMa]{find_package_version_on_cran}}
+#' When FALSE nothing happens
+#'
 #' @details Wrapper around get_requirements() and install_package_version(). Installs all packages from the requirements-file (+ dependencies) in a lib-folder.
 #'
 #' @section Side effects: Installation of the package & adding package location to the search paths
@@ -41,7 +46,12 @@
 #' @author Simon Ress
 
 
-install_requirements = function(req.file.path=getwd(), req.file.name="requirements.txt", lists="all",  library.folder.path=getwd(), library.folder.name="lib") {
+install_requirements = function(req.file.path=getwd(),
+                                req.file.name="requirements.txt",
+                                lists="all",
+                                library.folder.path=getwd(),
+                                library.folder.name="lib",
+                                auto.update.version.in.files = TRUE) {
   # Reads the requirements-file and outputs a list of packages to install/load
   # :param req.file.name (chr vector): Name of the requirements-file (-> USE .txt-file !!!)
   # :param req.file.path (chr vector): Path to the requirements-file

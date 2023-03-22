@@ -9,7 +9,8 @@ install_requirements(
   req.file.name = "requirements.txt",
   lists = "all",
   library.folder.path = getwd(),
-  library.folder.name = "lib"
+  library.folder.name = "lib",
+  auto.update.version.in.files = TRUE
 )
 }
 \arguments{
@@ -22,6 +23,11 @@ install_requirements(
 \item{library.folder.path}{(chr vector): Folder in which the subfolder "lib" should be created}
 
 \item{library.folder.name}{(chr vector): Name of the lib-folder}
+
+\item{auto.update.version.in.files}{(bool):
+If TRUE the version of a package in the installed files will be changed to the required version. This only happens if
+it's the same version but the structure of the version name differs e.g. 0.1.10 to 0.1.-1 see \code{\link[PaMa]{find_package_version_on_cran}}
+When FALSE nothing happens}
 }
 \description{
 Install packages by versions specified in the requirements-file

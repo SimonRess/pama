@@ -49,8 +49,9 @@ See all available CRAN Packages by Name here: https://cran.r-project.org/web/pac
 
 \examples{
 \dontrun{
-package.url = find_package_version_on_cran(package = "plogr", version = "0.1.10")[1]
-version = find_package_version_on_cran(package = "plogr", version = "0.1.10")[2]
+.out = find_package_version_on_cran(package = package, version = version)
+package.url = .out[1]
+version = .out[2]
 }
 }
 \keyword{CRAN}

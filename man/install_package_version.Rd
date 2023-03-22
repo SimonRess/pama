@@ -10,7 +10,8 @@ install_package_version(
   lib.install.path = .libPaths()[1],
   cran.mirror = "https://cloud.r-project.org/",
   archiv.path = "src/contrib/Archive/",
-  main.path = "src/contrib/"
+  main.path = "src/contrib/",
+  auto.update.version.in.files = TRUE
 )
 }
 \arguments{
@@ -19,6 +20,17 @@ install_package_version(
 \item{version}{(chr vector): Version of the package to install (e.g. "3.4.0")}
 
 \item{lib.install.path}{(chr vector): Folder in which to install the packages}
+
+\item{cran.mirror}{(chr vector): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")}
+
+\item{archiv.path}{(chr vector): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")}
+
+\item{main.path}{(chr vector): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")}
+
+\item{auto.update.version.in.files}{(bool):
+If TRUE the version of a package in the installed files will be changed to the required version. This only happens if
+it's the same version but the structure of the version name differs e.g. 0.1.10 to 0.1.-1 see \code{\link[PaMa]{find_package_version_on_cran}}
+When FALSE nothing happens}
 }
 \description{
 !!! Recursive function !!!

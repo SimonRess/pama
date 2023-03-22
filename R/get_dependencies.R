@@ -174,7 +174,6 @@ get_dependencies <- function(package, version, cran.mirror = "https://cloud.r-pr
 
   #Create package.url & package.install.path
     package.url = find_package_version_on_cran(package = package, version = version)
-    package.install.path = paste0(lib.install.path,"/", package, "_", version)
 
   #Print info
     cat("----", "\n")

@@ -153,7 +153,7 @@ install_requirements = function(req.file.path=getwd(),
       detach_none_base()
       package = strsplit(p, " ")[[1]][1]
       version = strsplit(p, " ")[[1]][2]
-      install_package_version(package, version, lib.install.path=lib)
+      install_package_version(package, version, lib.install.path=lib, auto.update.version.in.files=auto.update.version.in.files)
     }
 
     #Install main + selected lists
@@ -179,7 +179,7 @@ install_requirements = function(req.file.path=getwd(),
         detach_none_base()
         package = strsplit(p, " ")[[1]][1]
         version = strsplit(p, " ")[[1]][2]
-        install_package_version(package, version, lib.install.path=lib)
+        install_package_version(package, version, lib.install.path=lib, auto.update.version.in.files=auto.update.version.in.files)
       }
       #if not:
     }else{

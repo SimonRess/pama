@@ -2,12 +2,12 @@
 % Please edit documentation in R/detach_none_base.R
 \name{detach_none_base}
 \alias{detach_none_base}
-\title{Detach packages}
+\title{Detach all none base packages}
 \usage{
 detach_none_base(None)
 }
 \arguments{
-\item{None}{Always all non base packages will be detached}
+\item{None}{Always all non base packages (except of package:PaMa itself) will be detached}
 }
 \description{
 Detach all (none base) packages -> start with empty package-list

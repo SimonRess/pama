@@ -4,7 +4,7 @@
 \alias{library_version}
 \title{Loading/Attaching specific versions of packages}
 \usage{
-library_version(package, version, lib.search.path = .libPaths()[1])
+library_version(package, version, lib.search.path = NULL)
 }
 \arguments{
 \item{package}{(chr vector): Name of the Package}

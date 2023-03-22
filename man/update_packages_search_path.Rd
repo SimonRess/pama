@@ -4,10 +4,17 @@
 \alias{update_packages_search_path}
 \title{Updating Search Paths for Packages}
 \usage{
-update_packages_search_path(path = NULL, install = FALSE)
+update_packages_search_path(
+  path = NULL,
+  install = FALSE,
+  install.path = NULL,
+  print.infos = FALSE
+)
 }
 \arguments{
-\item{path}{- (chr vector): Location of R library tree which should be added to the seach path}
+\item{path}{- (chr vector): Location of R library tree which should be added to the search path}
+
+\item{print.infos}{(bool): Regulates output in the users console. TRUE: All internal information will be printed (useful for debugging). FALSE (by default): No or much less information will be printed.}
 }
 \description{
 Updating Search Paths for Packages

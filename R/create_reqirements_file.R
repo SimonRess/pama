@@ -10,7 +10,7 @@
 #'
 #' @section Side effects: Creating an draft requirements-file in the given folder
 #' @section Return: None
-
+#'
 #' @export
 #'
 #' @keywords create requirements-file

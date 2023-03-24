@@ -3,7 +3,8 @@ Title: Install/Load Specific Package Versions and Use Requirement.txt-files
 Version: 0.0.0.9000
 Author: Simon Ress [aut] (<https://orcid.org/0000-0001-7325-7462>)
 Authors@R: 
-	person("Simon", "Ress", , "simon.ress89@gmail.com", role = ("aut", "cre"), comment = c(ORCID = "0000-0001-7325-7462"))
+    person("Simon", "Ress", , "simon.ress89@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-7325-7462"))
 Maintainer: Simon Ress <simon.ress89@gmail.com>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.

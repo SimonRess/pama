@@ -25,9 +25,9 @@ find_package_version_on_cran(
 }
 \value{
 (chr vector):
-[1] (chr) URL of the package version or an error message
+return[1] (chr): URL of the package version or an error message
 
-[2] (chr) Version of the package (sometimes the version changes, therefore an output is needed)
+return[2] (chr): Version of the package (sometimes the version changes, therefore an output is needed)
 }
 \description{
 Finding the URL to a specific package version on CRAN. Therefore searching the archive and the main page of the given cran instance.

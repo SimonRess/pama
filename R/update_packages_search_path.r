@@ -3,7 +3,7 @@
 #'
 #' @rdname update_packages_search_path
 #'
-#' @param path - (chr vector): Location of R library tree which should be added to the search path
+#' @param path (chr vector): Location of R library tree which should be added to the search path
 #' @param print.infos (bool): Regulates output in the users console. TRUE: All internal information will be printed (useful for debugging). FALSE (by default): No or much less information will be printed.
 #'
 #' @details test

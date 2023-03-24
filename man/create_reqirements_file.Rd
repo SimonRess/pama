@@ -43,6 +43,10 @@ create_reqirements_file()
 #Creating a req-file in "C:/Project" called "requirements.txt", without list structure
 create_reqirements_file(req.file.path="C:/Project", req.file.name="requirements.txt", lists=FALSE)
 }
+
+}
+\author{
+Simon Ress
 }
 \keyword{create}
 \keyword{requirements-file}

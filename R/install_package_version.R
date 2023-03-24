@@ -18,7 +18,7 @@
 #'
 #' @param auto.update.version.in.files (bool):
 #' If TRUE the version of a package in the installed files will be changed to the required version. This only happens if
-#' it's the same version but the structure of the version name differs e.g. 0.1.10 to 0.1.-1 see \code{\link[PaMa]{find_package_version_on_cran}}
+#' it's the same version but the structure of the version name differs e.g. 0.1.10 to 0.1-1 see \code{\link[PaMa]{find_package_version_on_cran}}
 #' When FALSE nothing happens
 #'
 #' @section Side effects: Installation of the package & adding package location to the search paths
@@ -110,11 +110,20 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
   #   }
 
 
+  cat("-------------------------------------------------------------------", "\n")
+  cat("Start the Installation of package '", package, "' (version ", version, ")", "\n")
+
   #Create package.url & package.install.path
-    .out = find_package_version_on_cran(package = package, version = version)
+    .out = find_package_version_on_cran(package = package, version = version) # prints: "Version 0.1.10 is named 0.1-1 in CRAN. This version will be used!"
     package.url = .out[1]
-    .version = .out[2] # new version name e.g. 0.1.10 -> 0.1-1
-    package.install.path = paste0(lib.install.path,"/", package, "_", version)
+
+    # 3 version-vars: version.required = version to install // "version" = naming folders and edit version in package-file // version.installing = download this version & check if this version is installed
+    version.required = version
+    version.installing = .out[2] # new version name e.g. 0.1.10 -> 0.1-1
+    if(auto.update.version.in.files = TRUE) version.name = version
+    if(auto.update.version.in.files = FALSE) version.name = version.installing
+
+    package.install.path = paste0(lib.install.path,"/", package, "_", version.name)
 
     #update version of package if structure of version name on CRAN differs to required version
       # if(auto.update.version.in.files & version != .version) {
@@ -125,9 +134,8 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
   #Print info
     cat("----", "\n")
     #cat("Package Url: ", package.url, "\n", sep="")
-    cat("Package '", package, "' (version: ", version, ") was found on: ", package.url, "\n", sep="")
+    cat("Package '", package, "' (version: ", version.installing, ") was found on: ", package.url, "\n", sep="")
     cat("Local package installation folder: ", package.install.path, "\n", sep="")
-    cat("----", "\n")
 
   #Check installed R Version
   rversion.installed = paste0(R.version$major,".",R.version$minor)
@@ -137,21 +145,20 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
   # version = "3.4.0"
   # package = "vctrs"
   # version = "0.5.0"
-  depends.on = get_dependencies(package, version)
+  depends.on = get_dependencies(package, version.installing)
 
   rversion.required = depends.on$`R-version`$version
 
   #Check R-VERSION
   if(rversion.installed != rversion.required) {
-    cat("-------------------------------------------------------------------", "\n")
+    cat("----", "\n")
     cat("The installed r-version does not match the required r-version (installed:",rversion.installed," != required:",rversion.required,")\n", sep="")
-    install = ""
+    #install = ""
     # while(toupper(install)!="Y" & toupper(install)!="N") {
     #   install <- readline(prompt=paste0("Do you want to install the required R-Version (",rversion.required,") now [Y/N]?: "))
     #   if(toupper(install) == "Y") cat("Not implementet yet (dependency 'installr' & 'devtools' would be needed, what is not desired). \n -> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
     #   if(toupper(install) == "N") cat("-> Please install R-version ",rversion.required," by your own and try install_requirements() again. \n", sep="")
     # }
-    cat("-------------------------------------------------------------------", "\n")
   }
 
   #Some packages don't use dependencies -> do stuff below only when dependencies are present
@@ -173,10 +180,12 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     get = get[!is.na(get$name),]
 
     if(nrow(get)>0){
+      print("-----")
       cat("Unsatisfied requirements: \n")
       print(get)
       print("-----")
     } else {
+        print("-----")
         cat("All requirements satisfied! \n")
         print(m)
         print("-----")
@@ -194,8 +203,8 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
             #newest.version = paste0(package, "_", newest.version)
           get$version.required[p] = newest.version
         }
-        cat("-------------------------------------------------", "\n")
-        cat("Installing Requirement: Number", p,", ", get$name[p], get$version.required[p], "\n")
+        cat("-------------", "\n")
+        cat("Installing Requirement: Number ", p,"., ", get$name[p], "_", get$version.required[p], "\n", sep="")
         install_package_version(get$name[p], get$version.required[p], lib.install.path=lib.install.path)
       }
     }
@@ -212,23 +221,24 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     #Create folder to install package in: <package.name>_<version>
     if(!dir.exists(package.install.path)) dir.create(package.install.path)
     #Check if constructed url is correct
-    cat("-------------------------------------------------", "\n")
+    cat("---------------------", "\n")
     check = suppressWarnings(try(readLines(package.url), silent = T)) # open.connection(url(),open="rt",timeout=t)
     #suppressWarnings(try(close.connection(url(package.url)),silent=T))
     #Install package if url (archive) is correct, use it
     if(!inherits(check, "try-error")) {
-      cat("Installing package '", package, "' (version ", version, ") from '", package.url, "' (and dependencies!).", "\n", sep="")
+      cat("Installing package '", package, "' (version ", version.installing, ") from '", package.url, "' (and dependencies!).", "\n", sep="")
       update_packages_search_path(path=lib.install.path)
       update_packages_search_path(install=TRUE) #keep only newest package versions in Namespace -> else old version of dependencies can deter installation of packages
       update_packages_search_path(path=lib.install.path)
       utils::install.packages(package.url, repos=NULL, type="source", lib=package.install.path)
     } else{
       #try main page
-        new.package.url = paste0(cran.mirror, "src/contrib/", package, "_", version, ".tar.gz") # don't look into "/Archive/" -> get newest version
+        cat("(T0)")
+        new.package.url = paste0(cran.mirror, "src/contrib/", package, "_", version.installing, ".tar.gz") # don't look into "/Archive/" -> get newest version
         check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
         #suppressWarnings(try(close.connection(url(new.package.url)),silent=T))
         if(!inherits(check, "try-error")) {
-          cat("Installing package '", package, "' (version ", version, ") from '", new.package.url, "' (and dependencies!).", "\n", sep="")
+          cat("(T1) Installing package '", package, "' (version ", version.installing, ") from '", new.package.url, "' (and dependencies!).", "\n", sep="")
             update_packages_search_path(path=lib.install.path)
             update_packages_search_path(install=TRUE) #keep only newest package versions in Namespace -> else old version of dependencies can deter installation of packages
             update_packages_search_path(path=lib.install.path)
@@ -237,18 +247,18 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
           #try to change version structure e.g. from 0.1.10 to 0.1-1
           #e.g. dplyr_0.8.0 (https://cloud.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz) depends on plogr 0.1-1
           #but there is only an version plogr 0.1.10 (https://cloud.r-project.org/src/contrib/Archive/plogr/, https://cloud.r-project.org/src/contrib/)
-          version = sub("0([^0]*)$", "\\1",sub(".([^.]*)$", "-\\1", version)) #change 0.1.10 to 0.1-1
-          new.package.url = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", version, ".tar.gz")
+          version.installing = sub("0([^0]*)$", "\\1",sub(".([^.]*)$", "-\\1", version.installing)) #change 0.1.10 to 0.1-1
+          new.package.url = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", version.installing, ".tar.gz")
           check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
           #suppressWarnings(try(close.connection(url(new.package.url)),silent=T))
           if(!inherits(check, "try-error")) {
-            cat("Installing package '", package, "' (version ", version, ") from '", new.package.url, "' (and dependencies!).", "\n", sep="")
+            cat("(T2) Installing package '", package, "' (version ", version.installing, ") from '", new.package.url, "' (and dependencies!).", "\n", sep="")
               update_packages_search_path(path=lib.install.path)
               update_packages_search_path(install=TRUE) #keep only newest package versions in Namespace -> else old version of dependencies can deter installation of packages
               update_packages_search_path(path=lib.install.path)
             utils::install.packages(new.package.url, repos=NULL, type="source", lib=package.install.path)
           } else {
-              cat("Error!!! Package ", package, " (version: ",version, ") was not found in: \n", sep="")
+              cat("(T3) Error!!! Package ", package, " (version: ",version.required, ") was not found in: \n", sep="")
               cat("- ", package.url, "\n", sep="")
               cat("- ", new.package.url, "\n", sep="")
           }
@@ -256,75 +266,60 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     }
 
 
-    #Load packages once in order to check if desired version can be used
-    #capture.output(suppressWarnings(detach(paste0("package:",package), character.only = TRUE,unload=TRUE,force = TRUE)), file='NUL') # character.only = TRUE <- needed when paste0() or object used
-
-    #suppressWarnings(try(detach(paste0("package:",package), character.only = TRUE, force = T), silent = T)) # not sufficient, because other packages could be depended on this package and stop detaching
-
-    # n = 2
-    # while(n>1) {
-    #   out = detach_none_base()
-    #   n = length(out)
-    # }
-
-    #Detaching
-      #detach_none_base()
-      #update_packages_search_path(install = T, install.path = package.install.path)
-      #detach_none_base()
+  #Load packages once in order to check if desired version can be used
+  cat("Try to load packages from: ", package.install.path, "\n", sep ="")
 
     #Unload all namespaces the packages of interest is imported in, in order to load it
       #e.g. ggmap_3.0.2 imports ggplot2, therefore loading a new ggplot2 version could cause an error, because the old one can't be unloaded
-    cat("Try to load packages from: ", package.install.path, "\n", sep ="")
-    exit = FALSE
-    while(exit==FALSE) {
-      message = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE)
-      preventing.detaching = regmatches(message, gregexpr("ist importiert von (.*?) und kann deshalb nicht entladen werden", message, perl = TRUE))[[1]]
-      preventing.detaching = try(regmatches(preventing.detaching, gregexpr("(?<=‘|')\\S+(?=’|')", preventing.detaching, perl = TRUE))[[1]], silent=T)
-      if(!inherits(preventing.detaching, "try-error")) {
-        for(p in preventing.detaching){
-          cat("unloadNamespace: ", p, "\n")
-          unloadNamespace(p)
-          #.libPaths(.libPaths()[-grep(p,.libPaths())])
-          #suppressWarnings(try(detach(paste0("package:",p), character.only = TRUE, force = T), silent = T))
-        }
-      } else exit = TRUE
-    }
-
-    #Check:
-    error = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE) # character.only = TRUE <- needed when paste0() or object used
-    if(!inherits(error, "try-error")){
-      if(version == utils::packageVersion(package)) cat(paste0("Check: Desired version (-> ", version, ") of the package '", package, "' loaded! :)", "\n"))
-      if(version != utils::packageVersion(package)) cat(paste0("Check: Error!!! Version '", utils::packageVersion(package), "' instead of desired version ", version, " of packages '", package, "' loaded! -.-"))
-
-      #update version of package in files if structure of version name on CRAN differs to required version
-      if(auto.update.version.in.files & version != .version) {
-        # #update folder name shell("rename <old> >new>) <- NOT NEEDED, already the correct name
-        #  shell(paste('rename',  paste0(lib.install.path,"/", package, "_", .version), paste0(lib.install.path,"/", package, "_", version))
-        #update package.rds <- from this, r extracts the version of a package
-          file = readRDS(file.path(package.install.path, package, "Meta/package.rds"))
-          file[["DESCRIPTION"]][["Version"]] <- version # inserting the correct version name structure
-          saveRDS(file, file.path(package.install.path, package, "Meta/package.rds"))
+      exit = FALSE
+      while(exit==FALSE) {
+        message = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE)
+        preventing.detaching = regmatches(message, gregexpr("ist importiert von (.*?) und kann deshalb nicht entladen werden", message, perl = TRUE))[[1]]
+        preventing.detaching = try(regmatches(preventing.detaching, gregexpr("(?<=‘|')\\S+(?=’|')", preventing.detaching, perl = TRUE))[[1]], silent=T)
+        if(!inherits(preventing.detaching, "try-error")) {
+          for(p in preventing.detaching){
+            cat("unloadNamespace: ", p, "\n")
+            unloadNamespace(p)
+          }
+        } else exit = TRUE
       }
 
+    #Check:
+      error = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE) # character.only = TRUE <- needed when paste0() or object used
+      if(!inherits(error, "try-error")){
+
+        #update version of package in files if structure of version name on CRAN differs to required version
+        if(auto.update.version.in.files==TRUE) {
+          # #update folder name shell("rename <old> >new>) <- NOT NEEDED, already the correct name
+            # shell(paste('rename',  paste0(lib.install.path,"/", package, "_", .version), paste0(lib.install.path,"/", package, "_", version))
+
+          #update package.rds <- from this, r extracts the version of a package
+            version.installed = version.required
+            file = readRDS(file.path(package.install.path, package, "Meta/package.rds"))
+            file[["DESCRIPTION"]][["Version"]] <- version.required # inserting the correct version name structure
+            saveRDS(file, file.path(package.install.path, package, "Meta/package.rds"))
+        }
+
+        if(version.installed == utils::packageVersion(package)) cat(paste0("Check: Desired version (-> ", version.installed, ") of the package '", package, "' loaded! :)", "\n"))
+        if(version.installed != utils::packageVersion(package)) cat(paste0("Check: Error!!! Version '", utils::packageVersion(package), "' instead of desired version ", version.installed, " of packages '", package, "' loaded! -.-"))
       return(TRUE)
-    }
-    if(inherits(error, "try-error")){
-      cat(error[1])
-      cat("---")
-      cat("Installation of package ", package, " (version:", version,") was NOT successful! :(", "\n", sep ="")
-      cat("Retry the installation one more time...", "\n")
-      unlink(package.install.path, recursive = TRUE) # delete empty folder
-      return(FALSE)
-    }
-  } # end of install_and_check()
+      } else {
+        cat(error[1])
+        cat("---")
+        cat("Installation of package ", package, " (version:", version.required,") was NOT successful! :(", "\n", sep ="")
+        cat("Retry the installation one more time...", "\n")
+        unlink(package.install.path, recursive = TRUE) # delete empty folder
+        return(FALSE)
+        }
+    } # end of install_and_check()
 
 
 
   success = FALSE
   i = 1
   while(all(success == FALSE, i < 3)){ # Three attempts to install an package
-    cat("----")
-    if(i>1) cat(i, ". Attempt to install the package ", package, " (version:", version, ")\n", sep="")
+    cat("----", "\n")
+    if(i>1) cat(i, ". Attempt to install the package ", package, " (version:", version.required, ")\n", sep="")
     #detach before installing
     suppressWarnings(try(detach(paste0("package:",package), character.only = TRUE, force = T), silent = T))
     #try to install the package

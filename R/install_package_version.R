@@ -109,7 +109,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
   #       }
   #   }
 
-
+  cat("auto.update.version.in.files: ", auto.update.version.in.files)
   cat("-------------------------------------------------------------------", "\n")
   cat("Start the Installation of package '", package, "' (version ", version, ")", "\n")
 
@@ -120,8 +120,8 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
     # 3 version-vars: version.required = version to install // "version" = naming folders and edit version in package-file // version.installing = download this version & check if this version is installed
     version.required = version
     version.installing = .out[2] # new version name e.g. 0.1.10 -> 0.1-1
-    if(auto.update.version.in.files = TRUE) version.name = version
-    if(auto.update.version.in.files = FALSE) version.name = version.installing
+    if(auto.update.version.in.files == TRUE) version.name = version
+    if(auto.update.version.in.files == FALSE) version.name = version.installing
 
     package.install.path = paste0(lib.install.path,"/", package, "_", version.name)
 
@@ -145,7 +145,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
   # version = "3.4.0"
   # package = "vctrs"
   # version = "0.5.0"
-  depends.on = get_dependencies(package, version.installing)
+  depends.on = get_dependencies(package, version.installing, search.for.cran.name=FALSE)
 
   rversion.required = depends.on$`R-version`$version
 

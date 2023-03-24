@@ -8,6 +8,9 @@
 #' @param cran.mirror (chr vector): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")
 #' @param archiv.path (chr vector): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")
 #' @param main.path (chr vector): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")
+#' @param search.for.cran.name (bool): Should CRAN be searched for other name-structures of the required version?
+#' e.g. 0.1.10 to 0.1-1 see \code{\link[PaMa]{find_package_version_on_cran}}
+#' TRUE=yes, FALSE=no
 #'
 #' @section Side effects: None
 #' @section Return: List of lists with structure c(<package_name>, <version>)
@@ -45,7 +48,11 @@
 #'
 #' @author Simon Ress
 
-get_dependencies <- function(package, version, cran.mirror = "https://cloud.r-project.org/", archiv.path = "src/contrib/Archive/", main.path = "src/contrib/") {
+get_dependencies <- function(package, version,
+                             cran.mirror = "https://cloud.r-project.org/",
+                             archiv.path = "src/contrib/Archive/",
+                             main.path = "src/contrib/",
+                             search.for.cran.name = TRUE) {
   if(!is.character(package)) {warning("Provide the package name as string (e.g. 'ggplot2')"); stop()}
   if(!is.character(version)) {warning("Provide the version name as string (e.g. '3.1.0')"); stop()}
 

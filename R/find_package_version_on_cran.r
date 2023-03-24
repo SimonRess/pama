@@ -31,7 +31,10 @@
 #' version = .out[2]
 #' }
 
-find_package_version_on_cran = function(package, version, cran.mirror = "https://cloud.r-project.org/", archiv.path = "src/contrib/Archive/", main.path = "src/contrib/") {
+find_package_version_on_cran = function(package, version,
+                                        cran.mirror = "https://cloud.r-project.org/",
+                                        archiv.path = "src/contrib/Archive/",
+                                        main.path = "src/contrib/") {
 #Check whether version is in archive or on main package-page
 
   #Construct URLs (1. archive / 2. main package page)

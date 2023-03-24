@@ -109,7 +109,7 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
   #       }
   #   }
 
-  cat("auto.update.version.in.files: ", auto.update.version.in.files)
+  cat("auto.update.version.in.files: ", auto.update.version.in.files, "\n")
   cat("-------------------------------------------------------------------", "\n")
   cat("Start the Installation of package '", package, "' (version ", version, ")", "\n")
 
@@ -205,7 +205,9 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
         }
         cat("-------------", "\n")
         cat("Installing Requirement: Number ", p,"., ", get$name[p], "_", get$version.required[p], "\n", sep="")
-        install_package_version(get$name[p], get$version.required[p], lib.install.path=lib.install.path)
+        install_package_version(get$name[p], get$version.required[p],
+                                lib.install.path=lib.install.path,
+                                auto.update.version.in.files= auto.update.version.in.files)
       }
     }
 
@@ -294,14 +296,14 @@ install_package_version = function(package, version, lib.install.path=.libPaths(
             # shell(paste('rename',  paste0(lib.install.path,"/", package, "_", .version), paste0(lib.install.path,"/", package, "_", version))
 
           #update package.rds <- from this, r extracts the version of a package
-            version.installed = version.required
+            version.installing = version.required
             file = readRDS(file.path(package.install.path, package, "Meta/package.rds"))
             file[["DESCRIPTION"]][["Version"]] <- version.required # inserting the correct version name structure
             saveRDS(file, file.path(package.install.path, package, "Meta/package.rds"))
         }
 
-        if(version.installed == utils::packageVersion(package)) cat(paste0("Check: Desired version (-> ", version.installed, ") of the package '", package, "' loaded! :)", "\n"))
-        if(version.installed != utils::packageVersion(package)) cat(paste0("Check: Error!!! Version '", utils::packageVersion(package), "' instead of desired version ", version.installed, " of packages '", package, "' loaded! -.-"))
+        if(version.installing == utils::packageVersion(package)) cat(paste0("Check: Desired version (-> ", version.installing, ") of the package '", package, "' loaded! :)", "\n"))
+        if(version.installing != utils::packageVersion(package)) cat(paste0("Check: Error!!! Version '", utils::packageVersion(package), "' instead of desired version ", version.installing, " of packages '", package, "' loaded! -.-"))
       return(TRUE)
       } else {
         cat(error[1])

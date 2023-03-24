@@ -51,7 +51,8 @@ get_installed_packages = function(lib.search.path=.libPaths()) {
       } else cat("There's an error with package '", pn, "'. No 'DESCRIPTION'-file could be detected within its folder. \n", sep="")
     }
   }
-
+  #Sort by "name" and "version"
+  names = names[order(names$name, names$version),]
   return(names)
 }
 

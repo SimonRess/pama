@@ -71,7 +71,7 @@ load_requirements = function(req.file.path=getwd(), req.file.name="requirements.
 
   #load specific versions of packages
   #load all packages
-  if(lists == "all"){
+  if(all(lists == "all")){
 
     req.packages = as.vector(unique(unlist(req[-1]))) # keep only packages / remove duplicates
     req.packages = req.packages[!is.na(req.packages)] # delete NAs

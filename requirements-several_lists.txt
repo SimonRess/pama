@@ -1,0 +1,16 @@
+R-version 3.2.1
+
+Packages:
+bench 1.1.1
+
+#vizualisation
+ggplot2 2.1.0
+dplyr 0.8.0
+
+#data_wrangling
+ggplot2 3.0.0
+dplyr 1.0.0
+data.table 1.14.0
+
+#statistics
+ggplot2 2.1.0

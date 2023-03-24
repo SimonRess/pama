@@ -9,7 +9,8 @@ get_dependencies(
   version,
   cran.mirror = "https://cloud.r-project.org/",
   archiv.path = "src/contrib/Archive/",
-  main.path = "src/contrib/"
+  main.path = "src/contrib/",
+  search.for.cran.name = TRUE
 )
 }
 \arguments{
@@ -22,6 +23,10 @@ get_dependencies(
 \item{archiv.path}{(chr vector): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")}
 
 \item{main.path}{(chr vector): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")}
+
+\item{search.for.cran.name}{(bool): Should CRAN be searched for other name-structures of the required version?
+e.g. 0.1.10 to 0.1-1 see \code{\link[PaMa]{find_package_version_on_cran}}
+TRUE=yes, FALSE=no}
 }
 \description{
 Extracts all dependencies (package names and versions) of the giving version of the package

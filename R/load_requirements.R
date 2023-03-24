@@ -78,6 +78,24 @@ load_requirements = function(req.file.path=getwd(), req.file.name="requirements.
 
     rq = req.packages
 
+    #check if several packages of the same name should be loaded
+    .packages =unlist(lapply(rq, \(x) strsplit(x," ")[[1]][1]))
+    .duplicates = .packages[duplicated(.packages)]
+    if(length(.duplicates)>0){
+      cat("Same packages with different versions in the loading pipeline: ", "\n")
+      for(.dup in .duplicates) {
+        cat("-", .dup, "\n")
+      }
+      cat("\n")
+      cat("Only one version of a package can be loaded at the same time!", "\n")
+      cat("Solutions:", "\n")
+      cat("1. Delete duplicates of packages in the loading pipeline (req-file or selected list within the req-file", "\n")
+      cat("2. Use lists within the reqirements-file and specify them in load_requirements(). IMPORTANT: Delete duplicates in lists you want to load together!", "\n")
+      stop("Error: Only one version of a package can be loaded at the same time!")
+    }
+
+
+
     #loop until all packages are loaded
       # necessary because some packaged need to unload others when loaded, therefore order of the packages would be important without the while-loop
       # e.g. ggplot2 is imported by ggmap. In order to load ggplot2 we need to detach ggmap. But when ggmap is named before ggplot2 in requirements-file
@@ -113,6 +131,24 @@ load_requirements = function(req.file.path=getwd(), req.file.name="requirements.
     if(all(lists %in% names(req[-1]))){
       #select packages from entered lists + "main"-list
       req.packages = as.vector(unique(unlist(req[c("main", lists)])))
+
+
+      #check if several packages of the same name should be loaded
+      .packages =unlist(lapply(req.packages, \(x) strsplit(x," ")[[1]][1]))
+      .duplicates = .packages[duplicated(.packages)]
+      if(length(.duplicates)>0){
+        cat("Same packages with different versions in the loading pipeline: ", "\n")
+        for(.dup in .duplicates) {
+          cat("-", .dup, "\n")
+        }
+        cat("\n")
+        cat("Only one version of a package can be loaded at the same time!", "\n")
+        cat("Solutions:", "\n")
+        cat("1. Delete duplicates of packages in the loading pipeline (req-file or selected list within the req-file", "\n")
+        cat("2. Use lists within the reqirements-file and specify them in load_requirements(). IMPORTANT: Delete duplicates in lists you want to load together!", "\n")
+        stop("Error: Only one version of a package can be loaded at the same time!")
+      }
+
 
       for(p in req.packages) {
         cat("-----------------------------------------------------", "\n")

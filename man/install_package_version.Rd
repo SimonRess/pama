@@ -29,7 +29,7 @@ install_package_version(
 
 \item{auto.update.version.in.files}{(bool):
 If TRUE the version of a package in the installed files will be changed to the required version. This only happens if
-it's the same version but the structure of the version name differs e.g. 0.1.10 to 0.1.-1 see \code{\link[PaMa]{find_package_version_on_cran}}
+it's the same version but the structure of the version name differs e.g. 0.1.10 to 0.1-1 see \code{\link[PaMa]{find_package_version_on_cran}}
 When FALSE nothing happens}
 }
 \description{

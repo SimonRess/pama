@@ -26,7 +26,7 @@
 
 detach_none_base = function(None){
   utils::capture.output(suppressWarnings(lapply(paste('package:',names(utils::sessionInfo()$otherPkgs),sep=""),
-                                         \(x) if(x!='package:PaMa') try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))),
+                                         \(x) if(x!='package:pama') try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))),
                  file='NUL')
 
   attached = sapply(utils::sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")])

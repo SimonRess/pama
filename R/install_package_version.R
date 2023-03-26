@@ -18,7 +18,7 @@
 #'
 #' @param auto.update.version.in.files (bool):
 #' If TRUE the version of a package in the installed files will be changed to the required version. This only happens if
-#' it's the same version but the structure of the version name differs e.g. 0.1.10 to 0.1-1 see \code{\link[PaMa]{find_package_version_on_cran}}
+#' it's the same version but the structure of the version name differs e.g. 0.1.10 to 0.1-1 see \code{\link[pama]{find_package_version_on_cran}}
 #' When FALSE nothing happens
 #'
 #' @section Side effects: Installation of the package & adding package location to the search paths

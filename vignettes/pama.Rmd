@@ -1,0 +1,139 @@
+---
+title: "Introduction to pama"
+output: rmarkdown::html_vignette
+description: >
+  Start here if this is your first time using dplyr. You'll learn the basic   
+  philosophy, the most important data manipulation verbs, and the pipe, `%>%`, 
+  which allows you to combine multiple verbs together to solve real problems.
+vignette: >
+  %\VignetteIndexEntry{pama}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(pama)
+```
+
+When working on **long-life projects**, you must **ensure reproducibility** on new machines. For this, the following steps are fundamental:
+
+-   Understand the basis for reproducibility (e.g. external connections, technologies such as R and its packages).
+-   New R and/or package versions can change functions' inputs, outputs and functionality.
+-   Therefore, be able to save and restore the versions of the package and of R with which it was built.
+-   Allow easy access to different versions of the packages to facilitate updates
+
+The "pama" package makes these requirements quick and easy to implement:
+
+-   **Working on the project**
+    -   Using `create_requirements()` a "requirements" file can be created that contains all necessary information (R version, package name & package version) to replicate the used packages in your R scripts.
+    -   Loading package version lists from the "requirements" file is enabled using `load_requirements()`.
+    -   Individual packages with specific versions can be loaded with `library_version()`.
+-   **Replicating the project**
+-   In the new project directory a library folder with the standard packages of the desired R version can be created with `setupLibrary()`.
+-   After that, all packages with the used versions from the "requirements" files can be installed into the new library folder using `install_requirements()`.
+
+This document introduces you to pama's basic set of tools, and shows you how to apply them to your project.
+
+## Project: titanic
+
+To explore the functionality of `pama`, we will use the project ["titanic-r"](https://github.com/ColinLeverger/titanic-r/) by Colin Leverger. In this project, a predictive model was built that answers the question: "What sorts of people were more likely to survive the Titanic disaster?" using passenger data (i.e. name, age, gender, socio-economic class, etc).
+
+```{r}
+# set working directory to where the .zip file will be located
+setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop"))
+
+# download a .zip file of the repository from the "Clone or download - Download ZIP" button on the GitHub repository of interest
+download.file(url = "https://github.com/ColinLeverger/titanic-r/archive/refs/heads/master.zip", 
+              destfile = "titanic-r.zip")
+
+# unzip the .zip file
+unzip(zipfile = "titanic-r.zip")
+
+# set the working directory to be inside the newly unzipped GitHub repository of interest
+setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
+
+# examine the contents
+list.files()
+```
+
+## 1. Working on the project
+
+```{r, eval=F}
+
+# Install "pama" if not already installed and load it
+if(!require("pama")) install.packages("pama")
+library(pama)
+```
+
+`pama` aims to facilitate the way of working both (1.) in projects with packages, and (2.) reproducing projects. We start here with the work on an existing project.
+
+### A. Creating a "requirements" file
+
+In order to make your project reproducible a central location where all the information of the packages and their versions utilized in the project is very helpful. Using `create_requirements()` a "requirements"-file will be created that contains all necessary information (incl. R version, package name & version structured according to your scripts) to A.) replicate your library-folder with the exact same package versions (-> `install_requirements()`) and/or B.) switch the utilized versions of your packages (-> `apply_library_version()`).
+
+```{r}
+setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
+
+#Creating a req-file in "C:/Project" called "requirements.txt", without list structure
+create_reqirements_file(draft = FALSE, script.paths = "./", req.file.name = "requirements.txt")
+#User inputs (randomly chosen):
+  # dataQualityR: 1.0
+  # dplyr: 1.1.2
+  # ggplot2: 3.4.2
+  # reshape2: 1.4.4
+  # vcd: 1.4-11
+  # randomForest: 4.7-1.1
+```
+
+...
+
+## 2. Replicating the project
+
+In the new project directory a library folder with the standard packages of the desired R version can be created with `setupLibrary()`.
+
+```{r}
+setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
+
+#Creating a "lib"-folder with all standard packages of the specified R Version (-> specified by R.home())
+setupLibrary(new.lib = "lib", main.lib.path = paste0(R.home(), "/library"))
+```
+
+After that, all packages with the used versions from the "requirements" files can be installed into the new library folder using `install_requirements()`.
+
+
+```{r, results='hold'}
+setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
+
+#Install all package versions specified in "requirements.txt"-file in the WD
+install_requirements()
+```
+
+
+If your R-scripts still contain the "old" `library()`- / `requires()`-syntax you can automatically replace it using `apply_library_version()`.
+```{r}
+setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
+
+#Adjust package-loading in R scripts to pama-style
+  #library(<package>,) & require(<package>,) -> library_version(<package>, <version>)
+apply_library_version(script.paths = "./Scripts")
+```
+
+
+
+...
+
+
+When publishing your project, you can cite all utilized packages using `citations2()`:
+
+```{r}
+setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
+
+#Creating a lib_citations_<date>.csv from the "requirements.txt" within the working directory
+citations2()
+```
+Introduction is still being expanded...

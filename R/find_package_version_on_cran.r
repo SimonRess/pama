@@ -35,14 +35,34 @@ find_package_version_on_cran = function(package, version,
                                         cran.mirror = "https://cloud.r-project.org/",
                                         archiv.path = "src/contrib/Archive/",
                                         main.path = "src/contrib/") {
-#Check whether version is in archive or on main package-page
 
+#If no version is transmitted -> Use the newest version
+  if(is.na(version) | version=="NA"){
+    cat("No version was stated (version = NA)!", "\n")
+    #scrape newest version
+      newest.version = readLines(paste0(cran.mirror, "web/packages/", package))
+      newest.version = newest.version[grep("<td>Version:</td>",newest.version)+1]
+      newest.version = gsub("<td>|</td>", "", newest.version)
+      #newest.version = paste0(package, "_", newest.version)
+    #replace version==NA by the newest version
+      version = newest.version
+      .version = newest.version
+      cat("Therefore, the newest version (", version, ") of the package will be used.", "\n", sep="")
+
+  }
+
+
+
+#Check whether version is in archive or on main package-page
   #Construct URLs (1. archive / 2. main package page)
   archive.url = paste0(cran.mirror, archiv.path, package, "/", package, "_", version, ".tar.gz")
   main.page.url = paste0(cran.mirror, main.path, package, "_", version, ".tar.gz") # don't look into "/Archive/" -> get newest version
   .package.url = "" # see hidden objects by ls(all.names = TRUE)
   .version = version
     #https://cloud.r-project.org/src/contrib/ggmap_3.0.1.tar.gz
+
+
+
 
   #Check if constructed URL is correct -> Find correct url
   cat("--------------------", "\n")
@@ -62,7 +82,7 @@ find_package_version_on_cran = function(package, version,
           #Stop&Return
             return(c(.package.url, .version))
 
-        } else {
+        } else { #Check version.mod in Archive
           # 3. try to change version structure e.g. from 0.1.10 to 0.1-1
             #e.g. dplyr_0.8.0 (https://cloud.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz) depends on plogr 0.1-1
             #but there is only an version plogr 0.1.10 (https://cloud.r-project.org/src/contrib/Archive/plogr/, https://cloud.r-project.org/src/contrib/)
@@ -70,7 +90,12 @@ find_package_version_on_cran = function(package, version,
             new.package.url = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", version.mod, ".tar.gz")
             check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
 
-            if(!inherits(check, "try-error")) {
+            if(inherits(check, "try-error")) { #Check version.mod in main
+                new.package.url = paste0(cran.mirror, main.path, package, "_", version.mod, ".tar.gz")
+                check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
+            }
+
+            if(!inherits(check, "try-error")) { #if version found, return it
               .package.url = new.package.url
               cat("---", "\n")
               cat("Version", version, "is named", version.mod, "in CRAN. This version will be used!", "\n")
@@ -79,47 +104,85 @@ find_package_version_on_cran = function(package, version,
               #Stop&Return
                 return(c(.package.url, version.mod))
 
-            } else {
-            #If package-version was nowhere found:
-                cat("Error!!! Package ", package, " (version: ",version, ") was not found in: \n", sep="")
-                cat("- (archive)", archive.url, "\n", sep="")
-                cat("- (newest)", main.page.url, "\n", sep="")
-                cat("- (modified version)", new.package.url, "\n", sep="")
+            } else{ #Check version.mod2 in Archive
+              version.mod2 = paste0(version,".0") #change 0.1.10 to 0.1-1
+
+              new.package.url = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", version.mod2, ".tar.gz")
+              check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
+
+              if(inherits(check, "try-error")) { #Check version.mod2 in main
+                new.package.url = paste0(cran.mirror, main.path, package, "_", version.mod2, ".tar.gz")
+                check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
+              }
+
+              if(!inherits(check, "try-error")) { #if version found, return it
+                .package.url = new.package.url
                 cat("---", "\n")
+                cat("Version", version, "is named", version.mod2, "in CRAN. This version will be used!", "\n")
+                #version <<- version.mod # NOT WORKING, BINDING IS LOCKED!  #search in parent envS for an existing obj. and assign value to it (otherwise create obj. in the global environment)
+                #.version = version.mod
+                #Stop&Return
+                  return(c(.package.url, version.mod2))
 
-                #Check if package exists
-                check = suppressWarnings(try(readLines(paste0(cran.mirror, "web/packages/", package)), silent=T))
+              } else { #If package-version was nowhere found:
+                  cat("Error!!! Package ", package, " (version: ",version, ") was not found in: \n", sep="")
+                  cat("- (archive) ", archive.url, "\n", sep="")
+                  cat("- (newest) ", main.page.url, "\n", sep="")
+                  cat("- (modified version) ", new.package.url, "\n", sep="")
+                  cat("---", "\n")
 
-                if(inherits(check, "try-error")) {
-                  #Messages
-                  cat("No package by name '", package,"' found!", "\n", sep="")
-                  cat("(INFO) Find a list of all packages on CRAN here: https://cran.r-project.org/web/packages/available_packages_by_name.html", "\n")
-                  cat("---------------", "\n")
+                  #Check if package exists on CRAN
+                  check = suppressWarnings(try(readLines(paste0(cran.mirror, "web/packages/", package)), silent=T))
 
-                  stop(paste0("package-name-error, ", "SOLUTION: 1. Check the spelling of the package name. 2.Install the required package by hand: ", package, "_", version))
-                  #return("package-name-error")
+                  #If Package doesn't exists...
+                  if(inherits(check, "try-error")) {
+                    #Messages
+                    cat("No package by name '", package,"' found!", "\n", sep="")
+                    cat("(INFO) Find a list of all packages on CRAN here: https://cran.r-project.org/web/packages/available_packages_by_name.html", "\n")
+                    cat("---------------", "\n")
 
-                } else {
-                #Info-Message about existing versions
-                  #scrape versions in archive
-                  archive.versions = readLines(paste0("https://cloud.r-project.org/src/contrib/Archive/", package))
-                  archive.versions = archive.versions[(grep("Parent Directory", archive.versions)+1):(grep("<hr></pre>", archive.versions)-1)]
-                  archive.versions = sapply(strsplit(archive.versions, '<a href=\"'), \(x) strsplit(x[2], '.tar.gz\">')[[1]][1])
-                  #scrape newest version
-                  newest.version = readLines(paste0(cran.mirror, "web/packages/", package))
-                  newest.version = newest.version[grep("<td>Version:</td>",newest.version)+1]
-                  newest.version = gsub("<td>|</td>", "", newest.version)
-                  newest.version = paste0(package, "_", newest.version)
+                    stop(paste0("package-name-error, ", "SOLUTION: 1. Check the spelling of the package name. 2.Install the required package by hand: ", package, "_", version))
+                    #return("package-name-error")
 
-                  #Messages
-                  cat("(INFO) Available versions of '", package, "':","\n", sep="")
-                  cat("- In archive:", paste(archive.versions, collapse = ", "), "\n")
-                  cat("- Newest version:", newest.version, "\n")
-                  cat("------", "\n")
+                  #If Package do exists...
+                  } else {
+                  #Info-Message about existing versions
+                    #scrape versions in archive
+                    archive.versions = readLines(paste0("https://cloud.r-project.org/src/contrib/Archive/", package))
+                    archive.versions = archive.versions[(grep("Parent Directory", archive.versions)+1):(grep("<hr></pre>", archive.versions)-1)]
+                    archive.versions = sapply(strsplit(archive.versions, '<a href=\"'), \(x) strsplit(x[2], '.tar.gz\">')[[1]][1])
+                    #scrape newest version
+                    newest.version = readLines(paste0(cran.mirror, "web/packages/", package))
+                    newest.version = newest.version[grep("<td>Version:</td>",newest.version)+1]
+                    newest.version = gsub("<td>|</td>", "", newest.version)
+                    newest.version = paste0(package, "_", newest.version)
 
-                  stop(paste0("version-error, ", "SOLUTION: 1. Check the spelling of the package name. 2.Install the required package by hand: ", package, "_", version))
-                  #return("version-error")
-                }
+                    #Messages
+                    cat("(INFO) Available versions of '", package, "':","\n", sep="")
+                    cat("- In archive:", paste(archive.versions, collapse = ", "), "\n")
+                    cat("- Newest version:", newest.version, "\n")
+                    cat("------", "\n")
+
+                    user.version = readline(prompt = "Name the ONE version to be installed (tip: choose the one closest to the one you need; e.g 1.2.0-1 or 1.4.7): ")
+                    user.package.url =  paste0(cran.mirror, archiv.path, package, "/", package,"_",user.version, ".tar.gz")
+                    check = suppressWarnings(try(readLines(user.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
+
+                    if(!inherits(check, "try-error")) {
+                      .package.url = user.package.url
+                      cat("---", "\n")
+                      cat("Version", version, "is required but is not found. Instead version", user.version, "will be used!", "\n")
+                      #Stop&Return
+                      return(c(.package.url, user.version))
+                    }
+
+                    else{
+                      stop(paste0("version-error, ", "SOLUTION: 1. Check the spelling of the package name. 2.Install the required package by hand: ", package, "_", version))
+                      #return("version-error")
+                    }
+
+
+                  }
+              }
             }
         }
   }

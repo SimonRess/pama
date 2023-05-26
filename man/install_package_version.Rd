@@ -8,6 +8,7 @@ install_package_version(
   package,
   version,
   lib.install.path = .libPaths()[1],
+  use.only.lib.install.path = T,
   cran.mirror = "https://cloud.r-project.org/",
   archiv.path = "src/contrib/Archive/",
   main.path = "src/contrib/",
@@ -20,6 +21,8 @@ install_package_version(
 \item{version}{(chr vector): Version of the package to install (e.g. "3.4.0")}
 
 \item{lib.install.path}{(chr vector): Folder in which to install the packages}
+
+\item{use.only.lib.install.path}{(bool): Only check in <lib.install.path> for installed packages and dependencies}
 
 \item{cran.mirror}{(chr vector): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")}
 
@@ -34,6 +37,16 @@ When FALSE nothing happens}
 }
 \description{
 !!! Recursive function !!!
+Steps:
+1. Trying to find the requested package version on CRAN
+  1.1 ... if found: download .tar.gz-file
+  1.2 ... else: check which versions are available and ask user to choose one
+2. Extracting dependencies of the package version & compare with installed package versions
+3. Checking whether all requirements are fulfilled (no check for exact match, just for min. version)
+  3.1 ... if true: install package version
+  3.2 ... else: (recursive!) use install_package_version() for every unsatisfied requirement.
+    If version of the required package is 'NA', install newest version
+4. After installation load packages once to ensure functionality
 }
 \note{
 See all available CRAN Packages by Name here: https://cran.r-project.org/web/packages/available_packages_by_name.html
@@ -56,6 +69,13 @@ See all available CRAN Packages by Name here: https://cran.r-project.org/web/pac
  TRUE (successful installation) or FALSE (UNsuccessful installation)
 }
 
+\section{test}{
+
+```{r lorem}
+1+1
+```
+}
+
 \examples{
 \dontrun{
 sessionInfo()
@@ -66,6 +86,9 @@ sessionInfo()
 detach(paste0("package:","ggplot2"), character.only = TRUE) # character.only = TRUE <- needed when paste0() or object used
 }
 
+}
+\seealso{
+[pama::setupLib()], `browseVignettes("pama")`, `help(package = "pama")`
 }
 \author{
 Simon Ress

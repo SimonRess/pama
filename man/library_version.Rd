@@ -20,7 +20,9 @@ Loading/Attaching specific versions of packages
 Loads a specific version of a package. The package folder must be with a folder called <package-name>_<version> which itself is within .libPaths()[1]
 }
 \section{Dependencies}{
- - update_packages_search_path()
+
+- update_packages_search_path()
+- unloadRecursive()
 }
 
 \section{Side effects}{

@@ -240,13 +240,14 @@ get_dependencies <- function(package, version,
       dep.v = gsub("\\)|\\=|>|<| |\n", "", dep.v)
       dep.version = c(dep.version, dep.v)
         rm(dep.n, dep.v)
+    } #else{
+      #dependencies = NA
+    #}
 
-      dependencies = data.frame(name = dep.name, version = dep.version)
-      dependencies = dependencies[!is.na(dependencies$name),] #drop rows with NA on "names"-column
-    } else{
-      dependencies = NA
-    }
-
+  #Build return
+    dependencies = data.frame(name = dep.name, version = dep.version)
+    dependencies = dependencies[!is.na(dependencies$name),] #drop rows with NA on "names"-column
+    dependencies = dependencies[dependencies$name!="R",] #drop rows with R-version (seems to be an old format)
 
 
   #Close all connections

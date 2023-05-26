@@ -15,6 +15,7 @@
 #' @param lists (chr vector): Names of lists (without '#' !) specified in the requirements-file to use
 #' @param library.folder.path (chr vector): Folder in which the subfolder "lib" should be created
 #' @param library.folder.name (chr vector): Name of the lib-folder
+#' @param use.only.lib.install.path (bool): Only check in <lib.install.path> for installed packages and dependencies
 #'
 #' @param auto.update.version.in.files (bool):
 #' If TRUE the version of a package in the installed files will be changed to the required version. This only happens if
@@ -51,6 +52,7 @@ install_requirements = function(req.file.path=getwd(),
                                 lists="all",
                                 library.folder.path=getwd(),
                                 library.folder.name="lib",
+                                use.only.lib.install.path=T,
                                 auto.update.version.in.files = TRUE) {
   # Reads the requirements-file and outputs a list of packages to install/load
   # :param req.file.name (chr vector): Name of the requirements-file (-> USE .txt-file !!!)
@@ -151,13 +153,13 @@ install_requirements = function(req.file.path=getwd(),
       cat("Install: ", p, "\n")
       #detach all (none base) packages -> required because detaches are necessary in the process, but dependencies may prevent some
       detach_none_base()
-      package = strsplit(p, " ")[[1]][1]
-      version = strsplit(p, " ")[[1]][2]
-      install_package_version(package, version, lib.install.path=lib, auto.update.version.in.files=auto.update.version.in.files)
+      package = strsplit(p, "_")[[1]][1]
+      version = strsplit(p, "_")[[1]][2]
+      install_package_version(package, version, lib.install.path=lib, use.only.lib.install.path=use.only.lib.install.path, auto.update.version.in.files=auto.update.version.in.files)
     }
 
     #Install main + selected lists
-  }else{
+  } else{
     #list=c("#vizualisation","#statistics")
 
     #Check whether all lists are available, if so:
@@ -177,9 +179,9 @@ install_requirements = function(req.file.path=getwd(),
         #detach all (none base) packages -> required because detaches are necessary in the process, but dependencies may prevent some
         #utils::capture.output(suppressWarnings(lapply(paste('package:',names(utils::sessionInfo()$otherPkgs),sep=""), \(x) try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))), file='NUL')
         detach_none_base()
-        package = strsplit(p, " ")[[1]][1]
-        version = strsplit(p, " ")[[1]][2]
-        install_package_version(package, version, lib.install.path=lib, auto.update.version.in.files=auto.update.version.in.files)
+        package = strsplit(p, "_")[[1]][1]
+        version = strsplit(p, "_")[[1]][2]
+        install_package_version(package, version, lib.install.path=lib, use.only.lib.install.path=use.only.lib.install.path, auto.update.version.in.files=auto.update.version.in.files)
       }
       #if not:
     }else{

@@ -5,6 +5,8 @@
 #'
 #' @param path (chr vector): Location of R library tree which should be added to the search path
 #' @param print.infos (bool): Regulates output in the users console. TRUE: All internal information will be printed (useful for debugging). FALSE (by default): No or much less information will be printed.
+#' @param install Set to TRUE if update_packages_search_path() is used within the installation of a package. Then it keep only the paths to the "newest" package version
+#' @param install.path If update_packages_search_path() is used within the installation of a package, add here the path where the package was installed. It will be added to the search paths
 #'
 #' @details test
 #'
@@ -41,14 +43,17 @@ update_packages_search_path = function(path = NULL, install = FALSE, install.pat
 
   #Default updating of search paths by adding "package-version"-folders
     if(is.null(path)) {
-      if(dir.exists(file.path(getwd(), "lib"))) lib.paths = c(.libPaths(), file.path(getwd(), "lib")) else lib.paths = .libPaths() # always ALSO search in "lib" in project-folder
+      if(dir.exists(file.path(getwd(), "lib"))) {
+        lib.paths = unique(c(normalizePath(.libPaths()), normalizePath(file.path(getwd(), "lib"))))
+        } else lib.paths = .libPaths() # always ALSO search in "lib" in project-folder
       for(p in lib.paths) {
         package = dir(p)[which(grepl("_", dir(p)))] # greps folders which contains a "_" -> e.g "...\ggplot2_3.1.0"
         if(install==TRUE) package = package[!duplicated(sapply(package, \(x) strsplit(x,"_")[[1]][1]), fromLast = TRUE)] #keep only the "newest" package version
         if(length(package)>=1){
-          paths.to.add = paste0(p, "/", package)
+          paths.to.add = paste0(p, "\\", package)
           if(install==FALSE){
-            .libPaths(c(.libPaths(), paths.to.add)) # .libPaths(new) replaces always to first element, in order to keep it use the construct: .libPaths(c(.libPaths(), new))
+            #.libPaths(c(.libPaths(), paths.to.add)) # .libPaths(new) replaces always to first element, in order to keep it use the construct: .libPaths(c(.libPaths(), new))
+            modify_libPaths(add=paths.to.add)
             for(i in paths.to.add) {
               if(print.infos) cat("Folder '", i, "' will be added to the search path. \n", sep = "")
             }
@@ -57,17 +62,23 @@ update_packages_search_path = function(path = NULL, install = FALSE, install.pat
               #keep only the "newest" package version
               add = sort(c(.libPaths(),paths.to.add))
               add = add[!duplicated(sapply(sapply(add, \(x) tail(strsplit(x,"/")[[1]],1)), \(x) head(strsplit(x,"_")[[1]],1)), fromLast = TRUE)]
-              .libPaths(c(.libPaths()[1], add)) # .libPaths(new) replaces always to first element, in order to keep it use the construct: .libPaths(c(.libPaths(), new))
-            } else .libPaths(c(.libPaths()[1], install.path))
+              #.libPaths(c(.libPaths()[1], add)) # .libPaths(new) replaces always to first element, in order to keep it use the construct: .libPaths(c(.libPaths(), new))
+              modify_libPaths(add=add)
+            } else modify_libPaths(add=install.path) #.libPaths(c(.libPaths()[1], install.path))
 
           }
         }
 
       }
+      if(install==TRUE) {
+        unique.highest.versions = normalizePath(.libPaths())[!duplicated(sapply(normalizePath(.libPaths()), \(x) strsplit(x,"_")[[1]][1]), fromLast = TRUE)]
+        modify_libPaths(reset=unique.highest.versions)
+      }
 
   #User specified updating
     }else {
       if(print.infos) cat("Folder '", path, "' will be added to the search path. \n", sep = "")
-      .libPaths(c(.libPaths(), path))
+      #.libPaths(c(.libPaths(), path))
+      modify_libPaths(add=path)
     }
 }

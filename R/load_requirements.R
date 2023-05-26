@@ -21,7 +21,7 @@
 #' @export
 #'
 #' @keywords requirements-file loading package-versions library
-#' @seealso \code{\link[utils]{.libPaths()}}
+#' @seealso \code{\link[base]{.libPaths()}}
 #'
 #' @examples
 #' \dontrun{

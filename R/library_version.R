@@ -1,5 +1,7 @@
 #' Loading/Attaching specific versions of packages
-#' @section Dependencies: - update_packages_search_path()
+#' @section Dependencies:
+#' - update_packages_search_path()
+#' - unloadRecursive()
 #'
 #' @rdname library_version
 #'
@@ -54,24 +56,66 @@ library_version = function(package, version, lib.search.path = NULL){
       #e.g. ggmap_3.0.2 imports ggplot2, therefore loading a new ggplot2 version could cause an error, because the old one can't be unloaded
 
     cat("Try to load packages from: ", lib.search.path, "\n", sep ="")
-    exit = FALSE
-    while(exit==FALSE) {
+    # exit = FALSE
+    # while(exit==FALSE) {
+    #   message = try(library(package, lib.loc = lib.search.path, character.only = TRUE), silent = TRUE)
+    #
+    #   #If there's an loading-error connected to depending packages preventing unloading the package -> unload these other packages first
+    #   if(inherits(message, "try-error") & any(grepl("ist importiert von (.*?) und kann deshalb nicht entladen werden", message))) {
+    #     #Get packages that prevent unloaded
+    #     preventing.detaching = regmatches(message, gregexpr("ist importiert von (.*?) und kann deshalb nicht entladen werden", message, perl = TRUE))[[1]]
+    #     preventing.detaching = try(regmatches(preventing.detaching, gregexpr("(?<=‘|')\\S+(?=’|')", preventing.detaching, perl = TRUE))[[1]], silent=T)
+    #
+    #     for(p in preventing.detaching){
+    #       cat("unloadNamespace: ", p, "\n")
+    #       unloadNamespace(p)
+    #       #.libPaths(.libPaths()[-grep(p,.libPaths())])
+    #       #suppressWarnings(try(detach(paste0("package:",p), character.only = TRUE, force = T), silent = T))
+    #     }
+    #   } else exit = TRUE
+    # }
+
+
+    # test if loading worked
+
+        #   #Loop until all version of packages unloaded who prevent to load the required version
+        #   conflicting_versions = TRUE
+        #   while(conflicting_versions){
+        #     message = try(library(package, lib.loc = lib.search.path, character.only = TRUE), silent = TRUE)
+        #     conf = regmatches(message, gregexpr("Namensraum (.*?) ist bereits geladen, aber", message, perl = TRUE))[[1]]
+        #     if(!identical(character(0), conf)){
+        #       conf = try(regmatches(conf, gregexpr("(?<=‘)\\s*(.*?)\\s+(?=ist)", conf, perl = TRUE))[[1]], silent=T)
+        #       conf_p = trimws(strsplit(conf, "’ ")[[1]][1])
+        #       conf_namespaces = try(unloadNamespace(conf_p), silent = TRUE)
+        #       if(!is.null(conf_namespaces)){
+        #         conf_namespaces = regmatches(conf_namespaces, gregexpr("(?<=importiert von)\\s*(.*?)\\s+(?=und kann)", conf_namespaces, perl = TRUE))[[1]]
+        #         for(conf_namespace in strsplit(gsub("‘|’","", conf_namespaces), ",")[[1]]){
+        #           conf_namespaces = try(unloadNamespace(trimws(conf_namespace)), silent = TRUE)
+        #         }
+        #
+        #       }
+        #
+        #     }
+        #
+        #   }
+
+
+    #Loop until all version of packages unloaded who prevent to load the required version
+      conflicting_versions = TRUE
       message = try(library(package, lib.loc = lib.search.path, character.only = TRUE), silent = TRUE)
-      preventing.detaching = regmatches(message, gregexpr("ist importiert von (.*?) und kann deshalb nicht entladen werden", message, perl = TRUE))[[1]]
-      preventing.detaching = try(regmatches(preventing.detaching, gregexpr("(?<=‘|')\\S+(?=’|')", preventing.detaching, perl = TRUE))[[1]], silent=T)
-      if(!inherits(preventing.detaching, "try-error")) {
-        for(p in preventing.detaching){
-          cat("unloadNamespace: ", p, "\n")
-          unloadNamespace(p)
-          #.libPaths(.libPaths()[-grep(p,.libPaths())])
-          #suppressWarnings(try(detach(paste0("package:",p), character.only = TRUE, force = T), silent = T))
+      #if loading is not possible unload recursive all conflicting namespaces
+        # -> if its a namespace-conflict -> "ist bereits geladen, aber" | "ist importiert von"
+      if(!is.null(message) & (any(grepl("ist bereits geladen, aber",message)) | any(grepl("ist importiert von",message)))){
+        while(conflicting_versions){
+          conflicting_versions = unloadRecursive(lib_error_message = message)
+          message = try(library(package, lib.loc = lib.search.path, character.only = TRUE), silent = TRUE)
+          try(attachNamespace(loadNamespace(package, lib.loc = lib.search.path)), silent = TRUE) #ensure that the namespace is attached
+          # message = library(rlang, lib.loc = "C:/Users/sress/Desktop/titanic-r-master/lib/rlang_1.0.6")
         }
-      } else exit = TRUE
-    }
+      }
 
 
-    #test if loading worked
-    message = try(library(package, lib.loc = lib.search.path, character.only = TRUE), silent = TRUE)
+
     #if not:
     if(inherits(message, "try-error")) {
       cat("ERROR MESSAGE: ", message[1])

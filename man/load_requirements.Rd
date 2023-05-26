@@ -68,7 +68,7 @@ as.vector(apply(sapply(sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")])
 
 }
 \seealso{
-\code{\link[utils]{.libPaths()}}
+\code{\link[base]{.libPaths()}}
 }
 \author{
 Simon Ress

@@ -191,7 +191,11 @@ install_package_version = function(package,
   # version = "3.4.0"
   # package = "vctrs"
   # version = "0.5.0"
-  depends.on = get_dependencies(package, version.installing, search.for.cran.name=FALSE)
+  depends.on = get_dependencies(package=package, version=version.installing,
+                                cran.mirror=cran.mirror,
+                                archiv.path=archiv.path,
+                                main.path=main.path,
+                                search.for.cran.name=FALSE)
   #cat("---", "\n")
   #cat("depends.on", "\n")
   #cat(unlist(depends.on[["Packages"]]), "\n")
@@ -307,6 +311,8 @@ install_package_version = function(package,
     cat("---------------------", "\n")
     check = suppressWarnings(try(readLines(package.url), silent = T)) # open.connection(url(),open="rt",timeout=t)
     #suppressWarnings(try(close.connection(url(package.url)),silent=T))
+
+
     #Install package if url (archive) is correct, use it
     if(!inherits(check, "try-error")) {
       cat("Installing package '", package, "' (version ", version.installing, ") from '", package.url, "' (and dependencies!).", "\n", sep="")

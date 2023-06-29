@@ -180,7 +180,10 @@ get_dependencies <- function(package, version,
 
 
   #Create package.url & package.install.path
-    .out = find_package_version_on_cran(package = package, version = version)
+    .out = find_package_version_on_cran(package = package, version = version,
+                                        cran.mirror=cran.mirror,
+                                        archiv.path=archiv.path,
+                                        main.path=main.path)
     package.url = .out[1]
     version = .out[2]
 

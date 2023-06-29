@@ -130,35 +130,33 @@ install_requirements = function(req.file.path=getwd(),
     update_packages_search_path()
 
     #Remove already installed packages from vector
-    for(pv in req.packages) {
-      f = grep(sub(" ", "_", pv), .libPaths())
-      if(!identical(f, integer(0))) {
-        cat("Package '", pv, "' will not be installed!", "\n", sep="")
-        cat("(Already installed in: ", .libPaths()[f], ")", "\n", sep="")
-        req.packages = req.packages[req.packages!=pv]
+      for(pv in req.packages) {
+        f = grep(sub(" ", "_", pv), .libPaths())
+        if(!identical(f, integer(0))) {
+          cat("Package '", pv, "' will not be installed!", "\n", sep="")
+          cat("(Already installed in: ", .libPaths()[f], ")", "\n", sep="")
+          req.packages = req.packages[req.packages!=pv]
+        }
       }
-    }
 
 
+    #create lib-folder to install the packages in
+      lib = paste0(library.folder.path, "/", library.folder.name)
+      if(!dir.exists(lib)) dir.create(lib)
 
 
-    #lib-folder to install the packages in
-    lib = paste0(library.folder.path, "/", library.folder.name)
-    if(!dir.exists(lib)) dir.create(lib)
+    #install packages
+      for(p in req.packages) {
+        cat("-----------------------------------------------------", "\n")
+        cat("Install: ", p, "\n")
+        #detach all (none base) packages -> required because detaches are necessary in the process, but dependencies may prevent some
+        detach_none_base()
+        package = strsplit(p, "_")[[1]][1]
+        version = strsplit(p, "_")[[1]][2]
+        install_package_version(package, version, lib.install.path=lib, use.only.lib.install.path=use.only.lib.install.path, auto.update.version.in.files=auto.update.version.in.files)
+      }
 
-
-
-    for(p in req.packages) {
-      cat("-----------------------------------------------------", "\n")
-      cat("Install: ", p, "\n")
-      #detach all (none base) packages -> required because detaches are necessary in the process, but dependencies may prevent some
-      detach_none_base()
-      package = strsplit(p, "_")[[1]][1]
-      version = strsplit(p, "_")[[1]][2]
-      install_package_version(package, version, lib.install.path=lib, use.only.lib.install.path=use.only.lib.install.path, auto.update.version.in.files=auto.update.version.in.files)
-    }
-
-    #Install main + selected lists
+  #Install main + selected lists
   } else{
     #list=c("#vizualisation","#statistics")
 

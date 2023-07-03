@@ -12,11 +12,11 @@ update_packages_search_path(
 )
 }
 \arguments{
-\item{path}{(chr vector): Location of R library tree which should be added to the search path}
+\item{path}{(chr value | NULL): Location of R library tree which should be added to the search path. NULL: Just updating the search paths}
 
-\item{install}{Set to TRUE if update_packages_search_path() is used within the installation of a package. Then it keep only the paths to the "newest" package version}
+\item{install}{(bool): Set to TRUE if update_packages_search_path() is used within the installation of a package. Then it keep only the paths to the "newest" package version}
 
-\item{install.path}{If update_packages_search_path() is used within the installation of a package, add here the path where the package was installed. It will be added to the search paths}
+\item{install.path}{(chr value | NULL): If update_packages_search_path() is used within the installation of a package, add here the path where the package was installed. It will be added to the search paths. <NULL>: keep only the "newest" package version}
 
 \item{print.infos}{(bool): Regulates output in the users console. TRUE: All internal information will be printed (useful for debugging). FALSE (by default): No or much less information will be printed.}
 }

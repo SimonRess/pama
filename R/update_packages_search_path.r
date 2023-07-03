@@ -3,10 +3,10 @@
 #'
 #' @rdname update_packages_search_path
 #'
-#' @param path (chr vector): Location of R library tree which should be added to the search path
+#' @param path (chr value | NULL): Location of R library tree which should be added to the search path. NULL: Just updating the search paths
 #' @param print.infos (bool): Regulates output in the users console. TRUE: All internal information will be printed (useful for debugging). FALSE (by default): No or much less information will be printed.
-#' @param install Set to TRUE if update_packages_search_path() is used within the installation of a package. Then it keep only the paths to the "newest" package version
-#' @param install.path If update_packages_search_path() is used within the installation of a package, add here the path where the package was installed. It will be added to the search paths
+#' @param install (bool): Set to TRUE if update_packages_search_path() is used within the installation of a package. Then it keep only the paths to the "newest" package version
+#' @param install.path (chr value | NULL): If update_packages_search_path() is used within the installation of a package, add here the path where the package was installed. It will be added to the search paths. <NULL>: keep only the "newest" package version
 #'
 #' @details test
 #'
@@ -32,7 +32,10 @@
 #'
 #' @author Simon Ress
 
-update_packages_search_path = function(path = NULL, install = FALSE, install.path = NULL, print.infos = FALSE) {
+update_packages_search_path = function(path = NULL,
+                                       install = FALSE,
+                                       install.path = NULL,
+                                       print.infos = FALSE) {
   # Dependencies: NONE
   #
   # Updates by default the "Search Paths for Packages" (-> '.libPaths()') by searching for folders with name <package_name>_<version> and adding these as search paths
@@ -40,6 +43,24 @@ update_packages_search_path = function(path = NULL, install = FALSE, install.pat
   # :path (chr vector): Paths be added to the search list, e.g "C:/Users/simon/AppData/Local/R/win-library/4.2/ggplot2_3.1.1" or c(<path1>, <path2>)
   # :return: None
   # :side-effects: Updating Search Paths for Packages, see .libPaths()
+
+
+  #Check format of args
+    if(!is.null(path)){
+      if(!is.character(path)) {stop(paste0("'path = ", path, "' is not of type <character> or <NULL>. Please provide a character value or <NULL>!"))}
+      if(!length(path)==1) {stop(paste0("'path = ", path, "' is not a single character value. Please provide a single character value or <NULL>!"))}
+    }
+
+    if(!is.logical(install)) {stop(paste0("'install = ", install, "' is not of type <bool>. Please provide a boolean!"))}
+
+    if(!is.null(install.path)){
+      if(!is.character(install.path)) {stop(paste0("'install.path = ", install.path, "' is not of type <character>. Please provide a character value!"))}
+      if(!length(install.path)==1) {stop(paste0("'install.path = ", install.path, "' is not a single character value. Please provide a single character value!"))}
+    }
+
+    if(!is.logical(print.infos)) {stop(paste0("'print.infos = ", print.infos, "' is not of type <bool>. Please provide a boolean!"))}
+
+
 
   #Default updating of search paths by adding "package-version"-folders
     if(is.null(path)) {

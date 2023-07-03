@@ -3,12 +3,12 @@
 #' @section Dependencies: None
 #'
 #' @param draft (bool): [TRUE] Creating a draft with the required structure of a requirements-file. [FALSE] Building requirements file base on r-scripts within 'script.path' and packages in 'lib.path'.
-#' @param req.file.path (chr vector): Path in which to create the requirements file
-#' @param req.file.name (chr vector): Name of the requirements-file
+#' @param req.file.path (chr value): Path in which to create the requirements file
+#' @param req.file.name (chr value | NULL): Name of the requirements-file or NULL: name the file "requirements_<date>.txt"
 #' @param lists (bool): Insert a list structure into the file? TRUE=yes, FALSE=no
 #' @param script.path (chr vector): If draft==FALSE, provide a path to the r-scripts including the packages which  should be extracted from
 #' @param patterns (chr vector): \href{https://cran.r-project.org/web/packages/stringr/vignettes/regular-expressions.html}{RegEx} to detect packages used in the r-scripts
-#' @param lib.path (chr vector): If draft==FALSE, a path to the libraries the package-versions should be extracted from
+#' @param lib.path (chr vector): If draft==FALSE, path(s) to the libraries the package-versions should be extracted from. NULL: Don't include package versions
 #' @param ask.for.missing.versions (bool): [draft=F] Whether to ask user to enter every missing package version or not (a package version can be missing if the package is not installed within the provided 'lib.path').
 #'
 #' @details Create an draft requirements-file which can be filled with needed packages+versions & package-lists
@@ -33,15 +33,38 @@
 
 create_reqirements_file = function(draft=TRUE,
                                    req.file.path=getwd(),
-                                   req.file.name="requirements.txt",
+                                   req.file.name=NULL, #"requirements.txt",
                                    lists=TRUE,
                                    script.paths=NULL,
-                                   patterns = c("library\\(([^,)]+)", "require\\(([^,)]+)"), #old: c(".*library\\(\\s*(.*?)\\s*\\).*", ".*require\\(\\s*(.*?)\\s*\\).*"),
+                                   patterns = c("library\\(([^,)]+)", "require\\(([^,)]+)", "library_version\\(([^,)]+)"), #old: c(".*library\\(\\s*(.*?)\\s*\\).*", ".*require\\(\\s*(.*?)\\s*\\).*"),
                                    lib.path=NULL,
                                    ask.for.missing.versions=TRUE) {
 
-# script.paths = c(r"(C:\Users\sress\OneDrive - MT AG\Projects\22.07-_ - AOK\HOCHZAEHLUNG_WEB_20221107 - inkl. pama\DO_JOBS)",
-#                  r"(C:\Users\sress\OneDrive - MT AG\Projects\22.07-_ - AOK\HOCHZAEHLUNG_WEB_20221107 - inkl. pama\SKRIPTE)")
+
+  #Check format of args
+    if(!is.logical(draft)) {stop(paste0("'draft = ", draft, "' is not of type <bool>. Please provide a boolean!"))}
+
+    if(!is.character(req.file.path)) {stop(paste0("'req.file.path = ", req.file.path, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(req.file.path)==1) {stop(paste0("'req.file.path = ", req.file.path, "' is not a single character value. Please provide a single character value!"))}
+
+    if(!is.null(req.file.name)){
+      if(!is.character(req.file.name)) {stop(paste0("'req.file.name = ", req.file.name, "' is not of type <character>. Please provide a character value!"))}
+      if(!length(req.file.name)==1) {stop(paste0("'req.file.name = ", req.file.name, "' is not a single character value. Please provide a single character value!"))}
+    }
+
+    if(!is.logical(lists)) {stop(paste0("'lists = ", lists, "' is not of type <bool>. Please provide a boolean!"))}
+
+    if(!is.character(script.paths)) {stop(paste0("'script.paths = ", script.paths, "' is not of type <character>. Please provide a character vector!"))}
+
+    if(!is.character(patterns)) {stop(paste0("'patterns = ", patterns, "' is not of type <character>. Please provide a character vector!"))}
+
+    if(!is.null(lib.path)){
+      if(!is.character(lib.path)) {stop(paste0("'lib.path = ", lib.path, "' is not of type <character>. Please provide a character vector!"))}
+    }
+
+    if(!is.logical(ask.for.missing.versions)) {stop(paste0("'ask.for.missing.versions = ", ask.for.missing.versions, "' is not of type <bool>. Please provide a boolean!"))}
+
+
 
 
 if(draft){
@@ -79,7 +102,7 @@ dplyr 1.0.0
 
   #Creating a requirements-file based on the packages used in the r-scripts within the 'script.path' and version of these packages within the 'lib.path'
   if(!draft){
-    req.file.name=paste0("requirements_",Sys.Date(), ".txt")
+    if(is.null(req.file.name)) req.file.name=paste0("requirements_",Sys.Date(), ".txt") # use this name pattern if no other name is provided
     #extract packages loaded within each script
       req = list()
       for(script.path in script.paths) {
@@ -157,7 +180,6 @@ dplyr 1.0.0
         }
       }
 
-      #grepl("_$",  "dplyr_1")
     }
 
 

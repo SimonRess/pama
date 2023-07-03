@@ -7,10 +7,11 @@
 create_reqirements_file(
   draft = TRUE,
   req.file.path = getwd(),
-  req.file.name = "requirements.txt",
+  req.file.name = NULL,
   lists = TRUE,
   script.paths = NULL,
-  patterns = c("library\\\\(([^,)]+)", "require\\\\(([^,)]+)"),
+  patterns = c("library\\\\(([^,)]+)", "require\\\\(([^,)]+)",
+    "library_version\\\\(([^,)]+)"),
   lib.path = NULL,
   ask.for.missing.versions = TRUE
 )
@@ -18,15 +19,15 @@ create_reqirements_file(
 \arguments{
 \item{draft}{(bool): [TRUE] Creating a draft with the required structure of a requirements-file. [FALSE] Building requirements file base on r-scripts within 'script.path' and packages in 'lib.path'.}
 
-\item{req.file.path}{(chr vector): Path in which to create the requirements file}
+\item{req.file.path}{(chr value): Path in which to create the requirements file}
 
-\item{req.file.name}{(chr vector): Name of the requirements-file}
+\item{req.file.name}{(chr value | NULL): Name of the requirements-file or NULL: name the file "requirements_<date>.txt"}
 
 \item{lists}{(bool): Insert a list structure into the file? TRUE=yes, FALSE=no}
 
 \item{patterns}{(chr vector): \href{https://cran.r-project.org/web/packages/stringr/vignettes/regular-expressions.html}{RegEx} to detect packages used in the r-scripts}
 
-\item{lib.path}{(chr vector): If draft==FALSE, a path to the libraries the package-versions should be extracted from}
+\item{lib.path}{(chr vector): If draft==FALSE, path(s) to the libraries the package-versions should be extracted from. NULL: Don't include package versions}
 
 \item{ask.for.missing.versions}{(bool): [draft=F] Whether to ask user to enter every missing package version or not (a package version can be missing if the package is not installed within the provided 'lib.path').}
 

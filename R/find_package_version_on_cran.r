@@ -7,11 +7,11 @@
 #'
 #' (e.g. "0.1.10" to "0.1-1", because \href{https://cloud.r-project.org/src/contrib/Archive/dplyr/}{dplyr_0.8.0} requires "plogr_0.1.10"
 #' but in \href{https://cloud.r-project.org/src/contrib/Archive/plogr/}{plogrs archive} this version is named "plogr_0.1-1]
-#' @param package (chr vector): Name of the package to install (e.g. "ggplot2")
-#' @param version (chr vector): Version of the package to install (e.g. "3.4.0")
-#' @param cran.mirror (chr vector): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")
-#' @param archiv.path (chr vector): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")
-#' @param main.path (chr vector): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")
+#' @param package (chr value): Name of the package to install (e.g. "ggplot2")
+#' @param version (chr value): Version of the package to install (e.g. "3.4.0")
+#' @param cran.mirror (chr value): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")
+#' @param archiv.path (chr value): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")
+#' @param main.path (chr value): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")
 #'
 #' @section Side effects: None
 #' @return (chr vector):
@@ -35,6 +35,25 @@ find_package_version_on_cran = function(package, version,
                                         cran.mirror = "https://cloud.r-project.org/",
                                         archiv.path = "src/contrib/Archive/",
                                         main.path = "src/contrib/") {
+
+
+  #Check format of args
+    if(!is.character(package)) {stop(paste0("'package = ", package, "' is not of type <character>. Please provide a character value (e.g. 'ggplot2')!"))}
+    if(!length(package)==1) {stop(paste0("'package = ", package, "' is not a single character value. Please provide a single character value (e.g. 'ggplot2')!"))}
+
+    if(!is.character(version)) {stop(paste0("'version = ", version, "' is not of type <character>. Please provide a character value (e.g. '3.1.0')!"))}
+    if(!length(version)==1) {stop(paste0("'version = ", version, "' is not a single character value. Please provide a single character value (e.g. '3.1.0')!"))}
+
+    if(!is.character(cran.mirror)) {stop(paste0("'cran.mirror = ", cran.mirror, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(cran.mirror)==1) {stop(paste0("'cran.mirror = ", cran.mirror, "' is not a single character value. Please provide a single character value!"))}
+
+    if(!is.character(archiv.path)) {stop(paste0("'archiv.path = ", archiv.path, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(archiv.path)==1) {stop(paste0("'archiv.path = ", archiv.path, "' is not a single character value. Please provide a single character value!"))}
+
+    if(!is.character(main.path)) {stop(paste0("'main.path = ", main.path, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(main.path)==1) {stop(paste0("'main.path = ", main.path, "' is not a single character value. Please provide a single character value!"))}
+
+
 
 #If no version is transmitted -> Use the newest version
   if(is.na(version) | version=="NA"){
@@ -163,14 +182,24 @@ find_package_version_on_cran = function(package, version,
                     cat("- Newest version:", newest.version, "\n")
                     cat("------", "\n")
 
-                    user.version = readline(prompt = "Name the ONE version to be installed (tip: choose the one closest to the one you need; e.g 1.2.0-1 or 1.4.7): ")
-                    user.package.url =  paste0(cran.mirror, archiv.path, package, "/", package,"_",user.version, ".tar.gz")
+                    exit = FALSE
+                    while(exit==FALSE) {
+                      user.version = readline(prompt = "Name the ONE version NUMBER to be installed (e.g 1.2.0-1 or 1.4.7; tip: choose the one closest to the one you need): ")
+                      #Create url base of choice: archive or main (newest version)
+                        if(paste0(package,"_",user.version) %in% archive.versions) user.package.url =  paste0(cran.mirror, archiv.path, package, "/", package,"_",user.version, ".tar.gz")
+                        if(paste0(package,"_",user.version) %in% newest.version) user.package.url =  paste0(cran.mirror, main.path, package,"_",user.version, ".tar.gz")
+
+                      #Correct input -> exit while loop?
+                      if(paste0(package,"_",user.version) %in% archive.versions | paste0(package,"_",user.version) %in% newest.version) exit=TRUE
+                      else cat("'", user.version, "' is not a version number (e.g. 3.1-162) from the archive nor the newest version. Choose one of the available versions!", "\n", sep="")
+                    }
+
                     check = suppressWarnings(try(readLines(user.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
 
                     if(!inherits(check, "try-error")) {
                       .package.url = user.package.url
                       cat("---", "\n")
-                      cat("Version", version, "is required but is not found. Instead version", user.version, "will be used!", "\n")
+                      cat("Version", version, "is required but is not found / could not be installed. Instead version", user.version, "will be used!", "\n")
                       #Stop&Return
                       return(c(.package.url, user.version))
                     }

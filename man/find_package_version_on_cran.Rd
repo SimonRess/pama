@@ -13,15 +13,15 @@ find_package_version_on_cran(
 )
 }
 \arguments{
-\item{package}{(chr vector): Name of the package to install (e.g. "ggplot2")}
+\item{package}{(chr value): Name of the package to install (e.g. "ggplot2")}
 
-\item{version}{(chr vector): Version of the package to install (e.g. "3.4.0")}
+\item{version}{(chr value): Version of the package to install (e.g. "3.4.0")}
 
-\item{cran.mirror}{(chr vector): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")}
+\item{cran.mirror}{(chr value): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")}
 
-\item{archiv.path}{(chr vector): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")}
+\item{archiv.path}{(chr value): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")}
 
-\item{main.path}{(chr vector): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")}
+\item{main.path}{(chr value): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")}
 }
 \value{
 (chr vector):

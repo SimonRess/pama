@@ -10,11 +10,11 @@
 #'
 #' @rdname install_requirements
 #'
-#' @param req.file.path (chr vector): Name of the requirements-file
-#' @param req.file.name (chr vector): Folder of the requirements-file
+#' @param req.file.path (chr value): Name of the requirements-file
+#' @param req.file.name (chr value): Folder of the requirements-file
 #' @param lists (chr vector): Names of lists (without '#' !) specified in the requirements-file to use
-#' @param library.folder.path (chr vector): Folder in which the subfolder "lib" should be created
-#' @param library.folder.name (chr vector): Name of the lib-folder
+#' @param library.folder.path (chr value): Folder in which the subfolder "lib" should be created
+#' @param library.folder.name (chr value): Name of the lib-folder
 #' @param use.only.lib.install.path (bool): Only check in <lib.install.path> for installed packages and dependencies
 #'
 #' @param auto.update.version.in.files (bool):
@@ -52,26 +52,33 @@ install_requirements = function(req.file.path=getwd(),
                                 lists="all",
                                 library.folder.path=getwd(),
                                 library.folder.name="lib",
-                                use.only.lib.install.path=T,
+                                use.only.lib.install.path=TRUE,
                                 auto.update.version.in.files = TRUE) {
-  # Reads the requirements-file and outputs a list of packages to install/load
-  # :param req.file.name (chr vector): Name of the requirements-file (-> USE .txt-file !!!)
-  # :param req.file.path (chr vector): Path to the requirements-file
-  # :param list (chr vector): Name(s) of the lists to install from the requirements-file
-  # :param library.folder.name (chr vector): name of the folder packages will be installed in (create folder if not existing)
-  # :param library.folder.path (chr vector): path the folder packages will be installed in (create folder if not existing)
-  # :return:            ???             List of list including vectors with packages to install/load: <package_name> <version>
-  # :side-effects: none
 
 
-  #library.folder.path = getwd()
-  #library.folder.name = "lib"
+  #Check format of args
+    if(!is.character(req.file.path)) {stop(paste0("'req.file.path = ", req.file.path, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(req.file.path)==1) {stop(paste0("'req.file.path = ", req.file.path, "' is not a single character value. Please provide a single character value!"))}
 
-  #C:\Users\simon\AppData\Local\R\win-library\4.2
-  #D:\OneDrive - MT AG\Projects\22.07-_ - AOK\CRAN_package.version\Project
+    if(!is.character(req.file.name)) {stop(paste0("'req.file.name = ", req.file.name, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(req.file.name)==1) {stop(paste0("'req.file.name = ", req.file.name, "' is not a single character value. Please provide a single character value!"))}
+
+    if(!is.character(lists)) {stop(paste0("'lists = ", lists, "' is not of type <character>. Please provide a character vector!"))}
+
+    if(!is.character(library.folder.path)) {stop(paste0("'library.folder.path = ", library.folder.path, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(library.folder.path)==1) {stop(paste0("'library.folder.path = ", library.folder.path, "' is not a single character value. Please provide a single character value!"))}
+
+    if(!is.character(library.folder.name)) {stop(paste0("'library.folder.name = ", library.folder.name, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(library.folder.name)==1) {stop(paste0("'library.folder.name = ", library.folder.name, "' is not a single character value. Please provide a single character value!"))}
+
+    if(!is.logical(use.only.lib.install.path)) {stop(paste0("'use.only.lib.install.path = ", use.only.lib.install.path, "' is not of type <bool>. Please provide a boolean!"))}
+
+    if(!is.logical(auto.update.version.in.files)) {stop(paste0("'auto.update.version.in.files = ", auto.update.version.in.files, "' is not of type <bool>. Please provide a boolean!"))}
 
 
-  req = get_requirements(file.name=req.file.name, path=req.file.path)
+
+
+  req = get_requirements(req.file.name=req.file.name, req.file.path=req.file.path)
 
 
   #check R version

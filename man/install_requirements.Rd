@@ -10,20 +10,20 @@ install_requirements(
   lists = "all",
   library.folder.path = getwd(),
   library.folder.name = "lib",
-  use.only.lib.install.path = T,
+  use.only.lib.install.path = TRUE,
   auto.update.version.in.files = TRUE
 )
 }
 \arguments{
-\item{req.file.path}{(chr vector): Name of the requirements-file}
+\item{req.file.path}{(chr value): Name of the requirements-file}
 
-\item{req.file.name}{(chr vector): Folder of the requirements-file}
+\item{req.file.name}{(chr value): Folder of the requirements-file}
 
 \item{lists}{(chr vector): Names of lists (without '#' !) specified in the requirements-file to use}
 
-\item{library.folder.path}{(chr vector): Folder in which the subfolder "lib" should be created}
+\item{library.folder.path}{(chr value): Folder in which the subfolder "lib" should be created}
 
-\item{library.folder.name}{(chr vector): Name of the lib-folder}
+\item{library.folder.name}{(chr value): Name of the lib-folder}
 
 \item{use.only.lib.install.path}{(bool): Only check in <lib.install.path> for installed packages and dependencies}
 

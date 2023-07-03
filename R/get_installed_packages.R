@@ -18,12 +18,10 @@
 #' @author Simon Ress
 
 get_installed_packages = function(lib.search.path=.libPaths()) {
-  # Dependencies: - update_packages_search_path()
-  #
-  # Returns all installed packages and their versions, based on the specified "Search Paths for Packages" (-> '.libPaths()')
-  # :lib.search.path (chr vector): Paths to search for packages, by default .libPaths() <- Internal search paths of R
-  # :return: List of lists with structure c(<package_name>, <version>)
-  # :side-effects: none
+
+  #Check format of args
+    if(!is.character(lib.search.path)) {stop(paste0("'lib.search.path = ", lib.search.path, "' is not of type <character>. Please provide a character vector!"))}
+
 
   #update search path by adding "package-version"-folders
   update_packages_search_path()
@@ -55,7 +53,3 @@ get_installed_packages = function(lib.search.path=.libPaths()) {
   names = names[order(names$name, names$version),]
   return(names)
 }
-
-#test
-# get_installed_packages()
-# b = get_installed_packages()

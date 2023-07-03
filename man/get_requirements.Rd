@@ -4,12 +4,12 @@
 \alias{get_requirements}
 \title{Get data from requirements-file}
 \usage{
-get_requirements(file.name = "requirements.txt", path = getwd())
+get_requirements(req.file.name = "requirements.txt", req.file.path = getwd())
 }
 \arguments{
-\item{file.name}{(chr vector): Name of the requirement-file}
+\item{req.file.name}{(chr vector): Name of the requirement-file}
 
-\item{path}{(chr vector): Folder of the requirement-file}
+\item{req.file.path}{(chr vector): Folder of the requirement-file}
 }
 \description{
 Get data from requirements-file

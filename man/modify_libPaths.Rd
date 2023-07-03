@@ -7,9 +7,9 @@
 modify_libPaths(add = NULL, reset = NULL)
 }
 \arguments{
-\item{add}{(chr vector): Directories to be added to the search paths.}
+\item{add}{(chr vector | NULL): Directories to be added to the search paths. NULL: add nothing}
 
-\item{reset}{(chr vector): Directories to which the search paths are reset.}
+\item{reset}{(chr vector | NULL): Directories to which the search paths are reset. NULL: don't reset}
 }
 \description{
 Modify the "Search Paths for Packages" (.lib.loc in .libPaths-env.),
@@ -31,10 +31,10 @@ to a vector of directories (and deleting all previous directories).
 \examples{
 \dontrun{
 #Adding the folder of dplyr version 1.1.2 to the search paths
-modify_libPaths(add="C:/Users/Simon/Documents/NewProject/lib/dplyr_1.1.2")
+modify_libPaths(add="C:/Users/<User>/Documents/NewProject/lib/dplyr_1.1.2")
 
 #Resetting the search paths to a vector of directories
-modify_libPaths(reset=c("C:/Users/Simon/Documents/NewProject/lib1/", "C:/Users/Simon/Documents/NewProject/lib2"))
+modify_libPaths(reset=c("C:/Users/<User>/Documents/NewProject/lib1/", "C:/Users/<User>/Documents/NewProject/lib2"))
 }
 }
 \seealso{

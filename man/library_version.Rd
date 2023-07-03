@@ -7,11 +7,11 @@
 library_version(package, version, lib.search.path = NULL)
 }
 \arguments{
-\item{package}{(chr vector): Name of the Package}
+\item{package}{(chr value): Name of the Package}
 
-\item{version}{(chr vector): Version of the Package}
+\item{version}{(chr value): Version of the Package}
 
-\item{lib.search.path}{(chr vector): Folder in which to install the packages}
+\item{lib.search.path}{(chr vector): Folder which to searcj for the packages}
 }
 \description{
 Loading/Attaching specific versions of packages

@@ -13,15 +13,15 @@ load_requirements(
 )
 }
 \arguments{
-\item{req.file.path}{(chr vector): Name of the requirements-file}
+\item{req.file.path}{(chr value): Name of the requirements-file}
 
-\item{req.file.name}{(chr vector): Folder of the requirements-file}
+\item{req.file.name}{(chr value): Folder of the requirements-file}
 
 \item{lists}{(chr vector): Names of lists (without '#' !) specified in the requirements-file to use}
 
-\item{library.folder.path}{(chr vector): Folder in which the subfolder "lib" should be created}
+\item{library.folder.path}{(chr value): Path in which the folder is located from which the packages are to be loaded}
 
-\item{library.folder.name}{(chr vector): Name of the lib-folder}
+\item{library.folder.name}{(chr value): Name of the lib-folder}
 }
 \description{
 Loading/Attaching all packages by version specified in a requirements-file

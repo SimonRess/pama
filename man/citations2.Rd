@@ -6,22 +6,25 @@
 \usage{
 citations2(
   use.requirements.file = TRUE,
-  requirements.file.name = "requirements.txt",
-  requirements.file.path = getwd(),
+  req.file.name = "requirements.txt",
+  req.file.path = getwd(),
   packages = c("ggplot2", "dplyr"),
+  lib.loc = NULL,
   output.path = getwd()
 )
 }
 \arguments{
-\item{use.requirements.file}{Whether (TRUE) to use a requirements-file as source of packages to be cited or (FALSE) to provide package name in 'packages'-attribute}
+\item{use.requirements.file}{(bool): Whether (TRUE) to use a requirements-file as source of packages to be cited or (FALSE) to provide package name in 'packages'-attribute}
 
-\item{requirements.file.name}{Name of the requirements-file}
+\item{req.file.name}{(chr value): Name of the requirements-file}
 
-\item{requirements.file.path}{Path of the requirements-file}
+\item{req.file.path}{(chr value): Path of the requirements-file}
 
-\item{packages}{If requirements-file is not used: Vector with the names of the packages to be cited}
+\item{packages}{(chr vector): If requirements-file is not used, a vector with the names of the packages to be cited}
 
-\item{output.path}{Where to save the csv-file containing the citation table}
+\item{lib.loc}{(bool | chr vector): path names of R libraries, or the directory containing the source for package, or NULL. The default value of NULL corresponds to all libraries currently known. If the default is used, the loaded packages are searched before the libraries.}
+
+\item{output.path}{(chr value): Where to save the csv-file containing the citation table}
 }
 \description{
 Creation of a 'citation table' for packages
@@ -47,8 +50,8 @@ Creating a citation table the given packages including the columns 'Package', 'V
 citations2()
 
 # Citing the packages from the "req.txt" within "C:/GIT/Packages/PaMaTo" and saving ourput within the current working directory
-citations2(requirements.file.path = "C:/GIT/Packages/PaMaTo",
-           requirements.file.name = "req.txt")
+citations2(req.file.path = "C:/GIT/Packages/PaMaTo",
+           req.file.name = "req.txt")
 }
 
 }

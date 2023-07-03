@@ -5,8 +5,8 @@
 #' @description Creates a new library folder in a specified directory to which
 #' all "standard R packages" are copied. This library folder can be used as a
 #' stand-alone project library for package version control with the \link{pama}-package.
-#' @param new.lib (chr): Path of the new library-folder to be created (e.g. "C:/Users/Simon/Documents/NewProject/lib")
-#' @param main.lib.path (chr): Path of the library-folder within R Home Directory (Attention: Specify path to correct R version, if more than one exists)
+#' @param new.lib (chr value): Path of the new library-folder to be created (e.g. "C:/Users/<User>/Documents/NewProject/lib")
+#' @param main.lib.path (chr value): Path of the library-folder within R Home Directory (Attention: Specify path to correct R version, if more than one exists)
 #' @param standard_packages (chr vector): The standard R packages which should be taken over from the existing R installation (hint: stay with the \href{https://cran.r-project.org/doc/manuals/r-release/R-FAQ.html#Which-add_002don-packages-exist-for-R_003f}{"Add-on packages in R"}.)
 #'
 #' @section Side effects: (1.) Creating a new library folder in the specified directory and (2.) copying all "standard R packages" into it.
@@ -21,7 +21,7 @@
 #' @examples
 #' \dontrun{
 #' # Creating a new "lib"-folder and using the library of the running R version as the source of the standard packages to be copied
-#' setupLibrary(new.lib="C:/Users/Simon/Documents/NewProject/lib")
+#' setupLibrary(new.lib="C:/Users/<User>/Documents/NewProject/lib")
 #' }
 #'
 #' @author Simon Ress
@@ -32,10 +32,21 @@ setupLibrary = function(new.lib=NULL,
                         standard_packages = c("base", "compiler", "datasets", "grDevices", "graphics",
                                               "grid", "methods", "parallel", "splines", "stats",
                                               "stats4", "tcltk", "tools", "utils")) {
-#https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Standard-packages
-#https://cran.r-project.org/doc/manuals/r-release/R-FAQ.html#Which-add_002don-packages-exist-for-R_003f
-  # - R distribution comes with the following packages (Not on CRAN): base, compiler, datasets, grDevices, graphics, grid, methods, parallel, splines, stats, stats4, tcltk, tools, utils
-  # - CRAN packages included in all binary distributions of R: KernSmooth, MASS, Matrix, boot, class, cluster, codetools, foreign, lattice, mgcv, nlme, nnet, rpart, spatial, survival
+  #https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Standard-packages
+  #https://cran.r-project.org/doc/manuals/r-release/R-FAQ.html#Which-add_002don-packages-exist-for-R_003f
+    # - R distribution comes with the following packages (Not on CRAN): base, compiler, datasets, grDevices, graphics, grid, methods, parallel, splines, stats, stats4, tcltk, tools, utils
+    # - CRAN packages included in all binary distributions of R: KernSmooth, MASS, Matrix, boot, class, cluster, codetools, foreign, lattice, mgcv, nlme, nnet, rpart, spatial, survival
+
+
+  #Check format of args
+      if(!is.character(new.lib)) {stop(paste0("'new.lib = ", new.lib, "' is not of type <character>. Please provide a character value!"))}
+      if(!length(new.lib)==1) {stop(paste0("'new.lib = ", new.lib, "' is not a single character value. Please provide a single character value!"))}
+
+    if(!is.character(main.lib.path)) {stop(paste0("'main.lib.path = ", main.lib.path, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(main.lib.path)==1) {stop(paste0("'main.lib.path = ", main.lib.path, "' is not a single character value. Please provide a single character value!"))}
+
+    if(!is.character(standard_packages)) {stop(paste0("'standard_packages = ", standard_packages, "' is not of type <character>. Please provide a character vector!"))}
+
 
   #Create lib-folder
     cat("Creating new library-folder (",new.lib,")...", "\n", sep="")

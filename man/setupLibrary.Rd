@@ -12,9 +12,9 @@ setupLibrary(
 )
 }
 \arguments{
-\item{new.lib}{(chr): Path of the new library-folder to be created (e.g. "C:/Users/Simon/Documents/NewProject/lib")}
+\item{new.lib}{(chr value): Path of the new library-folder to be created (e.g. "C:/Users/<User>/Documents/NewProject/lib")}
 
-\item{main.lib.path}{(chr): Path of the library-folder within R Home Directory (Attention: Specify path to correct R version, if more than one exists)}
+\item{main.lib.path}{(chr value): Path of the library-folder within R Home Directory (Attention: Specify path to correct R version, if more than one exists)}
 
 \item{standard_packages}{(chr vector): The standard R packages which should be taken over from the existing R installation (hint: stay with the \href{https://cran.r-project.org/doc/manuals/r-release/R-FAQ.html#Which-add_002don-packages-exist-for-R_003f}{"Add-on packages in R"}.)}
 }
@@ -38,7 +38,7 @@ stand-alone project library for package version control with the \link{pama}-pac
 \examples{
 \dontrun{
 # Creating a new "lib"-folder and using the library of the running R version as the source of the standard packages to be copied
-setupLibrary(new.lib="C:/Users/Simon/Documents/NewProject/lib")
+setupLibrary(new.lib="C:/Users/<User>/Documents/NewProject/lib")
 }
 
 }

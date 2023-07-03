@@ -39,6 +39,9 @@ The "pama" package makes these requirements quick and easy to implement:
 
 This document introduces you to pama's basic set of tools, and shows you how to apply them to your project.
 
+
+---
+
 ## Project: titanic
 
 To explore the functionality of `pama`, we will use the project ["titanic-r"](https://github.com/ColinLeverger/titanic-r/) by Colin Leverger. In this project, a predictive model was built that answers the question: "What sorts of people were more likely to survive the Titanic disaster?" using passenger data (i.e. name, age, gender, socio-economic class, etc).
@@ -61,7 +64,16 @@ setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 list.files()
 ```
 
-## 1. Working on the project
+
+---
+
+
+## 1. Make your project reproducible
+
+**Content**
+- 1.1 `create_reqirements_file()` function
+- 1.2 `apply_library_version()` function
+
 
 ```{r, eval=F}
 
@@ -72,15 +84,16 @@ library(pama)
 
 `pama` aims to facilitate the way of working both (1.) in projects with packages, and (2.) reproducing projects. We start here with the work on an existing project.
 
-### A. Creating a "requirements" file
+
+### 1.1 Creating a "requirements" file: `create_requirements()`
 
 In order to make your project reproducible a central location where all the information of the packages and their versions utilized in the project is very helpful. Using `create_requirements()` a "requirements"-file will be created that contains all necessary information (incl. R version, package name & version structured according to your scripts) to A.) replicate your library-folder with the exact same package versions (-> `install_requirements()`) and/or B.) switch the utilized versions of your packages (-> `apply_library_version()`).
 
 ```{r}
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
-#Creating a req-file in "C:/Project" called "requirements.txt", without list structure
-create_reqirements_file(draft = FALSE, script.paths = "./", req.file.name = "requirements.txt")
+#Creating a req-file in "C:/Project" called "requirements_<date>.txt", with list structure, but no package versions
+create_reqirements_file(draft = FALSE, script.paths = "./")
 #User inputs (randomly chosen):
   # dataQualityR: 1.0
   # dplyr: 1.1.2
@@ -88,20 +101,50 @@ create_reqirements_file(draft = FALSE, script.paths = "./", req.file.name = "req
   # reshape2: 1.4.4
   # vcd: 1.4-11
   # randomForest: 4.7-1.1
+
+
+#If there's a lib folder: Creating a req-file in "C:/Project" called "requirements.txt", with list structure, including package versions
+#create_reqirements_file(draft = FALSE, script.paths = "./", req.file.name = "requirements.txt", lib.path = <....>)
 ```
 
-...
 
-## 2. Replicating the project
+### 1.2 Adjust package-loading in R scripts to pama-style: `apply_library_version()`
+In order to ensure that always the correct versions of the packages used are loaded in the future, they must be specified in the code. `apply_library_version()` replaces all functions defined in `<patterns>` (default: `library()` and `require()`) by the pama-function
+`library_version(<package_name>, <package_version>)`. The `<package_name>` attribute is extracted from the scripts. The `<package_version>` is read from the specified requirements-file.
+
+
+```{r}
+setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
+
+#Adjust package-loading within R scripts in .\Scripts to pama-style, using versions from the "requirements.txt"-file
+apply_library_version(req.file.path = r"(C:\Users\sress\Desktop\titanic-r-master)",
+                      req.file.name = paste0("requirements_",Sys.Date(), ".txt"),
+                      script.paths = r"(C:\Users\sress\Desktop\titanic-r-master\Scripts)")
+```
+
+---
+
+
+## 2. Reproducing your project
+
+**Content**
+-   2.1 `setupLibrary()` function
+-   2.2 `install_requirements()` function
+
+
+### 2.1 Setup a project library: `setupLibrary()`
 
 In the new project directory a library folder with the standard packages of the desired R version can be created with `setupLibrary()`.
 
 ```{r}
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
-#Creating a "lib"-folder with all standard packages of the specified R Version (-> specified by R.home())
+#Creating a "lib"-folder with all standard packages of the specified R Version (-> here specified by R.home())
 setupLibrary(new.lib = "lib", main.lib.path = paste0(R.home(), "/library"))
 ```
+
+
+### 2.2 Installing requires packages: `install_requirements()`
 
 After that, all packages with the used versions from the "requirements" files can be installed into the new library folder using `install_requirements()`.
 
@@ -109,24 +152,74 @@ After that, all packages with the used versions from the "requirements" files ca
 ```{r, results='hold'}
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
-#Install all package versions specified in "requirements.txt"-file in the WD
-install_requirements()
+#Install all package versions specified in "requirements_<date>.txt"-file in the WD
+install_requirements(req.file.name = paste0("requirements_",Sys.Date(), ".txt"))
 ```
 
 
-If your R-scripts still contain the "old" `library()`- / `requires()`-syntax you can automatically replace it using `apply_library_version()`.
+---
+
+
+## 3. Work on your project
+
+-   3.1 `modify_libPaths()` function
+-   3.2 `install_package_version()` function
+-   3.3 `library_version()` function
+-   3.4 `load_requirements()` function
+-   3.5 `citations2()` function
+
+
+### 3.1 `modify_libPaths()` function
+...
+
 ```{r}
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
-#Adjust package-loading in R scripts to pama-style
-  #library(<package>,) & require(<package>,) -> library_version(<package>, <version>)
-apply_library_version(script.paths = "./Scripts")
+modify_libPaths(reset = file.path(getwd(),"lib"))
 ```
 
 
+### 3.2 `install_package_version()` function
 
+While working on your project there's sometimes the need to install a new package or another version. In order to keep your project reproducible you should already in your code specify which version of a package you are installing. This can be done by using `install_package_version()` which should replace the R Base function `install.packages()`:
+
+```{r}
+setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
+
+#Within your script simply use install_package_version() instead of install.packages()
+
+  #Install ggplot2 version 3.0.0 into your projects lib-folder
+  install_package_version("ggplot2", "3.0.0", lib.install.path = file.path(getwd(),"lib"))
+  
+  #if your packages library path is already specified as .libPaths[1] you don't need to specify "lib.install.path"
+  #-> this is achieved resetting the .libPaths(): modify_libPaths(reset = file.path(getwd(),"lib"))
+  install_package_version("ggplot2", "3.0.0")
+```
+
+
+### 3.2 `library_version()` function
+...
+```{r}
+setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
+
+# Load v3.4.0 of ggplot2 from folder "ggplot2_3.4.0" in search paths
+library_version("ggplot2", "3.4.2")
+```
+
+### 3.3 `load_requirements()` function
 ...
 
+```{r}
+setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
+
+detach_none_base() # detach all none base packages
+load_requirements(req.file.name = paste0("requirements_",Sys.Date(), ".txt"))
+as.vector(apply(sapply(sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")]), 2, \(x) paste(x, collapse = "_"))) # currently loaded packages incl. version
+
+```
+
+
+### 3.4 `citations2()` function
 
 When publishing your project, you can cite all utilized packages using `citations2()`:
 
@@ -134,6 +227,17 @@ When publishing your project, you can cite all utilized packages using `citation
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
 #Creating a lib_citations_<date>.csv from the "requirements.txt" within the working directory
-citations2()
+citations2(req.file.name = paste0("requirements_",Sys.Date(), ".txt"))
 ```
+
+
+## 4. Useful helper functions
+
+-   4.1 `detach_none_base()` function
+-   4.2 `find_package_version_on_cran()` function
+-   4.3 `get_dependencies()` function
+-   4.4 `get_installed_packages()` function
+-   4.5 `get_requirements()` function
+
+
 Introduction is still being expanded...

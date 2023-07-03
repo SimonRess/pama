@@ -2,7 +2,7 @@ unloadRecursive = function(namespace = NULL, lib_error_message = NULL){
 
   #Types of "Unloading/Loading Errors"
   #1:
-    # > message = try(library("rlang", lib.loc = r"(C:\Users\sress\Desktop\titanic-r-master\lib\rlang_1.1.0)", character.only = TRUE), silent = TRUE)
+    # > message = try(library("rlang", lib.loc = r"(C:\Users\<User>\Desktop\titanic-r-master\lib\rlang_1.1.0)", character.only = TRUE), silent = TRUE)
     # > message
     # [1] "Error in value[[3L]](cond) : \n  Paket ‘rlang’ Version 1.0.6 kann nicht entladen werden:\n Error in unloadNamespace(package) : Namensraum ‘rlang’ ist importiert von ‘lifecycle’, ‘vctrs’, ‘pillar’ und kann deshalb nicht entladen werden\n\n"
     # attr(,"class")

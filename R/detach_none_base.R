@@ -7,7 +7,7 @@
 #'
 #' @description Detach all (none base) packages -> start with empty package-list
 #'
-#' @details Detaches all packages listed in utils::sessionInfo()$otherPkgs except of package:PaMa
+#' @details Detaches all packages listed in utils::sessionInfo()$otherPkgs except of package:pama
 #'
 #' @section Side effects: Detaches all (none base) packages
 #' @section Return: vector of attached none base packages -> is empty ("") if it worked

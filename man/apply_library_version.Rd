@@ -2,7 +2,7 @@
 % Please edit documentation in R/apply_library_version.R
 \name{apply_library_version}
 \alias{apply_library_version}
-\title{Adjust package-loading in R scripts to pama-style}
+\title{Adjust package-loading in R scripts to the "pama-style"}
 \usage{
 apply_library_version(
   req.file.path = getwd(),
@@ -13,9 +13,9 @@ apply_library_version(
 )
 }
 \arguments{
-\item{req.file.path}{(chr vector): Path in which to create the requirements file}
+\item{req.file.path}{(chr value): Path in which to create the requirements file}
 
-\item{req.file.name}{(chr vector): Name of the requirements-file}
+\item{req.file.name}{(chr value): Name of the requirements-file}
 
 \item{lists}{(bool): Insert a list structure into the file? TRUE=yes, FALSE=no}
 
@@ -24,10 +24,11 @@ apply_library_version(
 \item{patterns}{(chr vector): \href{https://cran.r-project.org/web/packages/stringr/vignettes/regular-expressions.html}{RegEx} to detect package-loadings in the r-scripts}
 }
 \description{
-Adjust package-loading in R scripts to pama-style
+Adjust package-loading in R scripts to the "pama-style"
 }
 \details{
-Adjusting the package-loading in R scripts to pama-style
+Adjusting the package-loading in R scripts to the "pama-style". It replaces all functions defined in `<patterns>` (default: `library()` and `require()`) by the pama-function
+`library_version(<package_name>, <package_version>)`. The `<package_name>` attribute is extracted from the scripts. The `<package_version>` is read from the specified requirements-file
 }
 \section{Dependencies}{
 
@@ -35,7 +36,7 @@ Adjusting the package-loading in R scripts to pama-style
 }
 
 \section{Side effects}{
- Adjusting the package-loading in R scripts to pama-style
+ Adjusting the package-loading in R scripts to the "pama-style"
 }
 
 \section{Return}{
@@ -44,13 +45,11 @@ Adjusting the package-loading in R scripts to pama-style
 
 \examples{
 \dontrun{
-#Creating a req-file in the working directory called "draft-requirements.txt", with list structure
-apply_library_version()
 
-#Adjust package-loading within R scripts in .\Scripts to pama-style, using "requirements.txt" within .\
-apply_library_version(req.file.path = r"(C:\Users\sress\Desktop\titanic-r-master)",
+#Adjust package-loading within R scripts in .\Scripts to pama-style, using versions from the "requirements.txt"-file
+apply_library_version(req.file.path = r"(C:\Users\<User>\Desktop\titanic-r-master)",
                       req.file.name = "requirements.txt",
-                      script.paths = r"(C:\Users\sress\Desktop\titanic-r-master\Scripts)")
+                      script.paths = r"(C:\Users\<User>\Desktop\titanic-r-master\Scripts)")
 }
 
 }

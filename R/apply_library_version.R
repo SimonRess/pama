@@ -1,17 +1,18 @@
-#' Adjust package-loading in R scripts to pama-style
+#' Adjust package-loading in R scripts to the "pama-style"
 #'
 #' @section Dependencies:
 #' - get_requirements()
 #'
-#' @param req.file.path (chr vector): Path in which to create the requirements file
-#' @param req.file.name (chr vector): Name of the requirements-file
+#' @param req.file.path (chr value): Path in which to create the requirements file
+#' @param req.file.name (chr value): Name of the requirements-file
 #' @param lists (bool): Insert a list structure into the file? TRUE=yes, FALSE=no
 #' @param script.paths (chr vector): Provide a path / paths to the R scripts that should be adjusted
 #' @param patterns (chr vector): \href{https://cran.r-project.org/web/packages/stringr/vignettes/regular-expressions.html}{RegEx} to detect package-loadings in the r-scripts
 #'
-#' @details Adjusting the package-loading in R scripts to pama-style
+#' @details Adjusting the package-loading in R scripts to the "pama-style". It replaces all functions defined in `<patterns>` (default: `library()` and `require()`) by the pama-function
+#' `library_version(<package_name>, <package_version>)`. The `<package_name>` attribute is extracted from the scripts. The `<package_version>` is read from the specified requirements-file
 #'
-#' @section Side effects: Adjusting the package-loading in R scripts to pama-style
+#' @section Side effects: Adjusting the package-loading in R scripts to the "pama-style"
 #' @section Return: None
 #'
 #' @export
@@ -20,13 +21,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' #Creating a req-file in the working directory called "draft-requirements.txt", with list structure
-#' apply_library_version()
 #'
-#' #Adjust package-loading within R scripts in .\Scripts to pama-style, using "requirements.txt" within .\
-#' apply_library_version(req.file.path = r"(C:\Users\sress\Desktop\titanic-r-master)",
+#' #Adjust package-loading within R scripts in .\Scripts to pama-style, using versions from the "requirements.txt"-file
+#' apply_library_version(req.file.path = r"(C:\Users\<User>\Desktop\titanic-r-master)",
 #'                       req.file.name = "requirements.txt",
-#'                       script.paths = r"(C:\Users\sress\Desktop\titanic-r-master\Scripts)")
+#'                       script.paths = r"(C:\Users\<User>\Desktop\titanic-r-master\Scripts)")
 #' }
 #'
 #' @author Simon Ress
@@ -37,19 +36,19 @@ apply_library_version = function(req.file.path=getwd(),
                                  script.paths=NULL,
                                  patterns = c("library\\(([^,)]+)\\)", "require\\(([^,)]+)\\)")) {
 
-  if(is.null(script.paths)){
-    warning("No 'script.paths' entered. Set 'script.paths' in order to make apply_library_version() work!")
-    return()
-  }
+  #Check format of args
+    if(!is.character(req.file.path)) {stop(paste0("'req.file.path = ", req.file.path, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(req.file.path)==1) {stop(paste0("'req.file.path = ", req.file.path, "' is not a single character value. Please provide a single character value!"))}
 
-  if(!isTRUE(lists)){
-    warning("Until now only list=TRUE is supported!")
-    return()
-  }
+    if(!is.character(req.file.name)) {stop(paste0("'req.file.name = ", req.file.name, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(req.file.name)==1) {stop(paste0("'req.file.name = ", req.file.name, "' is not a single character value. Please provide a single character value!"))}
 
-  #req.file.path=r"(C:\Users\sress\Desktop\titanic-r-master)"
-  #req.file.name="requirements.txt"
-  #script.paths=r"(C:\Users\sress\Desktop\titanic-r-master\Scripts)"
+    if(!is.logical(lists)) {stop(paste0("'lists = ", lists, "' is not of type <bool>. Please provide a boolean!"))}
+
+    if(!is.character(script.paths)) {stop(paste0("'script.paths = ", script.paths, "' is not of type <character>. Please provide a character vector!"))}
+
+    if(!is.character(patterns)) {stop(paste0("'patterns = ", patterns, "' is not of type <character>. Please provide a character vector!"))}
+
 
   #Check if Code inherits pattern to replace and do it
   library_to_library_version = function(old_code){
@@ -59,9 +58,12 @@ apply_library_version = function(req.file.path=getwd(),
         .matches = regmatches(x, gregexpr(paste(patterns, collapse = "|"), x))[[1]]
 
       #extract the applied version from the requirements-file
-        .req = get_requirements(file.name = req.file.name, path = req.file.path)[[paste0("#",rscript)]] #take package versions from the accurate list/RScript
+        .req = get_requirements(req.file.name = req.file.name, req.file.path = req.file.path)[[paste0("#",rscript)]] #take package versions from the accurate list/RScript
 
-      #
+        #Check whether script-to-adjust is part of req-file or not
+          if(is.null(.req)) stop("There is no information about the script '", rscript, "' within the req-file ('",file.path(req.file.path,req.file.name),"'). Please add a ",paste0("#",rscript) ," section to the req-file, e.g. by running create_reqirements_file() with appropriate settings.")
+
+
       new_code = old_code
       for(.m in .matches){
         #print(.m)
@@ -83,15 +85,9 @@ apply_library_version = function(req.file.path=getwd(),
 
   }
 
-  #testing
-    #library_to_library_version("library(ggplot2); aa")
-
-    #unlist(lapply(file, \(x) gsub(patterns[1], library_to_library_version(x), x)))
-    #unlist(lapply(file, \(x) library_to_library_version(x)))
 
   for(script.path in script.paths) {
     rscripts = dir(script.paths)
-    #requirements = get_requirements(file.name = req.file.name, path = req.file.path)
 
     #Loop over R-scripts
     for(rscript in rscripts){

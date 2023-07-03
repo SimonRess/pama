@@ -16,19 +16,19 @@ install_package_version(
 )
 }
 \arguments{
-\item{package}{(chr vector): Name of the package to install (e.g. "ggplot2")}
+\item{package}{(chr value): Name of the package to install (e.g. "ggplot2")}
 
-\item{version}{(chr vector): Version of the package to install (e.g. "3.4.0")}
+\item{version}{(chr value): Version of the package to install (e.g. "3.4.0")}
 
-\item{lib.install.path}{(chr vector): Folder in which to install the packages}
+\item{lib.install.path}{(chr value): Folder in which to install the packages}
 
 \item{use.only.lib.install.path}{(bool): Only check in <lib.install.path> for installed packages and dependencies}
 
-\item{cran.mirror}{(chr vector): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")}
+\item{cran.mirror}{(chr value): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")}
 
-\item{archiv.path}{(chr vector): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")}
+\item{archiv.path}{(chr value): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")}
 
-\item{main.path}{(chr vector): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")}
+\item{main.path}{(chr value): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")}
 
 \item{auto.update.version.in.files}{(bool):
 If TRUE the version of a package in the installed files will be changed to the required version. This only happens if

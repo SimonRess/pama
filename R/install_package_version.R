@@ -18,14 +18,14 @@
 #'   3.2 ... else: (recursive!) use install_package_version() for every unsatisfied requirement.
 #'     If version of the required package is 'NA', install newest version
 #' 4. After installation load packages once to ensure functionality
-#' @param package (chr vector): Name of the package to install (e.g. "ggplot2")
-#' @param version  (chr vector): Version of the package to install (e.g. "3.4.0")
-#' @param lib.install.path (chr vector): Folder in which to install the packages
+#' @param package (chr value): Name of the package to install (e.g. "ggplot2")
+#' @param version  (chr value): Version of the package to install (e.g. "3.4.0")
+#' @param lib.install.path (chr value): Folder in which to install the packages
 #' @param use.only.lib.install.path (bool): Only check in <lib.install.path> for installed packages and dependencies
 #'
-#' @param cran.mirror (chr vector): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")
-#' @param archiv.path (chr vector): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")
-#' @param main.path (chr vector): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")
+#' @param cran.mirror (chr value): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")
+#' @param archiv.path (chr value): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")
+#' @param main.path (chr value): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")
 #'
 #' @param auto.update.version.in.files (bool):
 #' If TRUE the version of a package in the installed files will be changed to the required version. This only happens if
@@ -67,8 +67,29 @@ install_package_version = function(package,
                                    archiv.path = "src/contrib/Archive/",
                                    main.path = "src/contrib/",
                                    auto.update.version.in.files = TRUE) {
-  if(!is.character(package)) {warning("Provide the package name as string (e.g. 'ggplot2')"); stop()}
-  if(!is.character(version)) {warning("Provide the version name as string (e.g. '3.1.0')"); stop()}
+
+    #Check format of args
+    if(!is.character(package)) {stop(paste0("'package = ", package, "' is not of type <character>. Please provide a character value! (e.g. 'ggplot2')"))}
+    if(!length(package)==1) {stop(paste0("'package = ", package, "' is not a single character value. Please provide a single character value! (e.g. 'ggplot2')"))}
+
+    if(!is.character(version)) {stop(paste0("'version = ", version, "' is not of type <character>. Please provide a character value! (e.g. '3.1.0')"))}
+    if(!length(version)==1) {stop(paste0("'version = ", version, "' is not a single character value. Please provide a single character value! (e.g. '3.1.0')"))}
+
+    if(!is.character(lib.install.path)) {stop(paste0("'lib.install.path = ", lib.install.path, "' is not of type <character>. Please provide a character value!"))}
+
+    if(!is.logical(use.only.lib.install.path)) {stop(paste0("'use.only.lib.install.path = ", use.only.lib.install.path, "' is not of type <bool>. Please provide a boolean!"))}
+
+    if(!is.character(cran.mirror)) {stop(paste0("'cran.mirror = ", cran.mirror, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(cran.mirror)==1) {stop(paste0("'cran.mirror = ", cran.mirror, "' is not a single character value. Please provide a single character value!"))}
+
+    if(!is.character(archiv.path)) {stop(paste0("'archiv.path = ", archiv.path, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(archiv.path)==1) {stop(paste0("'archiv.path = ", archiv.path, "' is not a single character value. Please provide a single character value!"))}
+
+    if(!is.character(main.path)) {stop(paste0("'main.path = ", main.path, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(main.path)==1) {stop(paste0("'main.path = ", main.path, "' is not a single character value. Please provide a single character value!"))}
+
+    if(!is.logical(auto.update.version.in.files)) {stop(paste0("'auto.update.version.in.files = ", auto.update.version.in.files, "' is not of type <bool>. Please provide a boolean!"))}
+
 
   # Change .libPaths() to <lib.install.path>
   if(use.only.lib.install.path){
@@ -425,15 +446,47 @@ install_package_version = function(package,
   success = FALSE
   i = 1
   while(all(success == FALSE, i < 3)){ # Three attempts to install an package
-    cat("----", "\n")
-    if(i>1) cat(i, ". Attempt to install the package ", package, " (version:", version.required, ")\n", sep="")
+    cat("\n", "----", "\n")
+    cat(i, ". Attempt to install the package ", package, " (version:", version.required, ")\n", sep="")
     #detach before installing
     suppressWarnings(try(detach(paste0("package:",package), character.only = TRUE, force = T), silent = T))
     #try to install the package
     success = install_and_check()
     i =i+1
   }
-  if(success== FALSE) {
+  if(success==FALSE) {
+
+    #try installation one more time, with another version
+      #Select new version
+        .new = find_package_version_on_cran("nlme", "999999") # user selects other version
+        new.package.url = .new[1]
+        rversion.required = .new[2]
+
+      #Create folder to install the package in
+        #cat("lib.install.path:", lib.install.path, "\n")
+        package.install.path = paste0(lib.install.path,"/", package, "_", rversion.required)
+        cat("Installing package '", package, "_", rversion.required, "' into folder: ", package.install.path, "...", "\n", sep="")
+        if(!dir.exists(package.install.path)) dir.create(package.install.path)
+
+      #Try installation
+        utils::install.packages(new.package.url, repos=NULL, type="source", lib=package.install.path, INSTALL_opts="--no-test-load")
+        #success = install_package_version(get$name[p], get$version.required[p],
+        #                          lib.install.path=lib.install.path,
+        #                          auto.update.version.in.files= auto.update.version.in.files)
+
+      #Check if it worked
+        error = try(library(package, lib.loc = package.install.path, character.only = TRUE), silent = TRUE) # character.only = TRUE <- needed when paste0() or object used
+        if(!inherits(error, "try-error")){
+          success=TRUE
+        } else {
+          success=FALSE
+          unlink(package.install.path, recursive = TRUE) # delete empty folder
+        }
+  }
+
+
+  if(success==FALSE) {
+    cat("\n")
     cat("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
     cat("Your r-version and the specified packages version are not compatible! \n")
     cat("Installed r-version: ", rversion.installed, "\n")
@@ -441,13 +494,18 @@ install_package_version = function(package,
     cat("-> Check whether you can use a package-version which depends on an r-version closer to yours \n")
     cat("-> or you can install an r-version which is closer to the required r-version of this package version. \n")
     cat("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
-    stop()
+    cat("\n")
+    return(FALSE)
   }
 
-  #capture.output(suppressWarnings(detach(paste0("package:",package), character.only = TRUE,unload=TRUE,force = TRUE)), file='NUL') # character.only = TRUE <- needed when paste0() or object used
-  suppressWarnings(try(detach(paste0("package:",package), character.only = TRUE, force = T), silent = T))
+  if(success){
+    #Detach the installed package again <- this mimics the behavior of install.packages()
+      suppressWarnings(try(detach(paste0("package:",package), character.only = TRUE, force = T), silent = T))
 
+    #Update the "Search Paths for Packages" (-> '.libPaths()')
+      update_packages_search_path(path = package.install.path)  # c(lib.install.path, package.install.path)
 
-  #Update the "Search Paths for Packages" (-> '.libPaths()')
-  update_packages_search_path(path = package.install.path)  # c(lib.install.path, package.install.path)
+    return(TRUE)
+  }
+
 }

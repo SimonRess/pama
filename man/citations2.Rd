@@ -5,7 +5,7 @@
 \title{Creation of a 'citation table' for packages}
 \usage{
 citations2(
-  use.requirements.file = TRUE,
+  use.req.file = TRUE,
   req.file.name = "requirements.txt",
   req.file.path = getwd(),
   packages = c("ggplot2", "dplyr"),
@@ -14,7 +14,7 @@ citations2(
 )
 }
 \arguments{
-\item{use.requirements.file}{(bool): Whether (TRUE) to use a requirements-file as source of packages to be cited or (FALSE) to provide package name in 'packages'-attribute}
+\item{use.req.file}{(bool): Whether (TRUE) to use a requirements-file as source of packages to be cited or (FALSE) to provide package name in 'packages'-attribute}
 
 \item{req.file.name}{(chr value): Name of the requirements-file}
 

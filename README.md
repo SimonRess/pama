@@ -16,3 +16,6 @@ Making your project ***reproducible*** and ***production-ready*** was never easi
   install_github("https://github.com/SimonRess/PaMaTo/", build_manual = TRUE, build_vignettes = TRUE) # also get the vignette
   library("pama")
 ```
+
+#Usage
+...

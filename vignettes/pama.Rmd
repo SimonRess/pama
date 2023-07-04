@@ -16,8 +16,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-
-library(pama)
 ```
 
 When working on **long-life projects**, you must **ensure reproducibility** on new machines. For this, the following steps are fundamental:
@@ -38,6 +36,41 @@ The "pama" package makes these requirements quick and easy to implement:
 -   After that, all packages with the used versions from the "requirements" files can be installed into the new library folder using `install_requirements()`.
 
 This document introduces you to pama's basic set of tools, and shows you how to apply them to your project.
+
+
+## Install and load pama
+
+```{r, eval = FALSE}
+# Install from GitHub (I)
+  if(!require("remotes")) install.packages("remotes")
+  library("remotes")
+
+  install_github("https://github.com/SimonRess/PaMaTo/", build_manual = TRUE, build_vignettes = TRUE) # also get the vignette
+  
+  library("pama")
+  
+
+  
+  # OR
+
+  
+# Install from GitHub (II)
+  if(!require("devtools")) install.packages("devtools")
+  library(devtools)
+  
+  install_github("https://github.com/SimonRess/PaMaTo/", build_manual = TRUE, build_vignettes = TRUE) # also get the vignette
+  
+  library("pama")
+```
+
+
+Take a loot at this Vignette locally
+```{r, eval = FALSE}
+help(package = "pama")
+
+#then choose: 
+```
+
 
 
 ---

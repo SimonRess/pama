@@ -46,7 +46,7 @@ This document introduces you to pama's basic set of tools, and shows you how to 
 
 To explore the functionality of `pama`, we will use the project ["titanic-r"](https://github.com/ColinLeverger/titanic-r/) by Colin Leverger. In this project, a predictive model was built that answers the question: "What sorts of people were more likely to survive the Titanic disaster?" using passenger data (i.e. name, age, gender, socio-economic class, etc).
 
-```{r}
+```{r, eval=FALSE}
 # set working directory to where the .zip file will be located
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop"))
 
@@ -89,7 +89,7 @@ library(pama)
 
 In order to make your project reproducible a central location where all the information of the packages and their versions utilized in the project is very helpful. Using `create_requirements()` a "requirements"-file will be created that contains all necessary information (incl. R version, package name & version structured according to your scripts) to A.) replicate your library-folder with the exact same package versions (-> `install_requirements()`) and/or B.) switch the utilized versions of your packages (-> `apply_library_version()`).
 
-```{r}
+```{r, eval=FALSE}
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
 #Creating a req-file in "C:/Project" called "requirements_<date>.txt", with list structure, but no package versions
@@ -113,7 +113,7 @@ In order to ensure that always the correct versions of the packages used are loa
 `library_version(<package_name>, <package_version>)`. The `<package_name>` attribute is extracted from the scripts. The `<package_version>` is read from the specified requirements-file.
 
 
-```{r}
+```{r, eval=FALSE}
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
 #Adjust package-loading within R scripts in .\Scripts to pama-style, using versions from the "requirements.txt"-file
@@ -136,7 +136,7 @@ apply_library_version(req.file.path = r"(C:\Users\sress\Desktop\titanic-r-master
 
 In the new project directory a library folder with the standard packages of the desired R version can be created with `setupLibrary()`.
 
-```{r}
+```{r, eval=FALSE}
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
 #Creating a "lib"-folder with all standard packages of the specified R Version (-> here specified by R.home())
@@ -149,7 +149,7 @@ setupLibrary(new.lib = "lib", main.lib.path = paste0(R.home(), "/library"))
 After that, all packages with the used versions from the "requirements" files can be installed into the new library folder using `install_requirements()`.
 
 
-```{r, results='hold'}
+```{r, eval=FALSE}
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
 #Install all package versions specified in "requirements_<date>.txt"-file in the WD
@@ -172,7 +172,7 @@ install_requirements(req.file.name = paste0("requirements_",Sys.Date(), ".txt"))
 ### 3.1 `modify_libPaths()` function
 ...
 
-```{r}
+```{r, eval=FALSE}
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
 modify_libPaths(reset = file.path(getwd(),"lib"))
@@ -183,7 +183,7 @@ modify_libPaths(reset = file.path(getwd(),"lib"))
 
 While working on your project there's sometimes the need to install a new package or another version. In order to keep your project reproducible you should already in your code specify which version of a package you are installing. This can be done by using `install_package_version()` which should replace the R Base function `install.packages()`:
 
-```{r}
+```{r, eval=FALSE}
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
 #Within your script simply use install_package_version() instead of install.packages()
@@ -199,7 +199,7 @@ setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
 ### 3.2 `library_version()` function
 ...
-```{r}
+```{r, eval=FALSE}
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
 # Load v3.4.0 of ggplot2 from folder "ggplot2_3.4.0" in search paths
@@ -209,7 +209,7 @@ library_version("ggplot2", "3.4.2")
 ### 3.3 `load_requirements()` function
 ...
 
-```{r}
+```{r, eval=FALSE}
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
 detach_none_base() # detach all none base packages
@@ -223,7 +223,7 @@ as.vector(apply(sapply(sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")])
 
 When publishing your project, you can cite all utilized packages using `citations2()`:
 
-```{r}
+```{r, eval=FALSE}
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
 #Creating a lib_citations_<date>.csv from the "requirements.txt" within the working directory

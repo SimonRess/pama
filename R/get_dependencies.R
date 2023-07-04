@@ -9,6 +9,7 @@
 #' @param archiv.path (chr value): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")
 #' @param main.path (chr value): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")
 #' @param search.for.cran.name (bool): Should CRAN be searched for other name-structures of the required version?
+#' @param check.in.lib (bool): FALSE: Download the package from <cran> and extract dependencies from the "DESCRIPTION" file within the downloaded folder. TRUE: Use the "DESCRIPTION" file within the package discoverable in .libPaths()
 #' e.g. 0.1.10 to 0.1-1 see \code{\link[pama]{find_package_version_on_cran}}
 #' TRUE=yes, FALSE=no
 #'
@@ -52,7 +53,8 @@ get_dependencies <- function(package, version,
                              cran.mirror = "https://cloud.r-project.org/",
                              archiv.path = "src/contrib/Archive/",
                              main.path = "src/contrib/",
-                             search.for.cran.name = TRUE) {
+                             search.for.cran.name = TRUE,
+                             check.in.lib = FALSE) {
 
 
   #Check format of args
@@ -74,36 +76,48 @@ get_dependencies <- function(package, version,
     if(!is.logical(search.for.cran.name)) {stop(paste0("'search.for.cran.name = ", search.for.cran.name, "' is not of type <bool>. Please provide a boolean!"))}
 
 
+  #Extract Dependencies from CRAN
+    if(!check.in.lib){
+      #Create package.url & package.install.path
+      .out = find_package_version_on_cran(package = package, version = version,
+                                          cran.mirror=cran.mirror,
+                                          archiv.path=archiv.path,
+                                          main.path=main.path)
+      package.url = .out[1]
+      version = .out[2]
+
+      #Print info
+        cat("----", "\n")
+        cat("Package '", package, "' (version: ",version, ") was found on: ", package.url, "\n", sep="")
+        cat("----", "\n")
 
 
-  #Create package.url & package.install.path
-    .out = find_package_version_on_cran(package = package, version = version,
-                                        cran.mirror=cran.mirror,
-                                        archiv.path=archiv.path,
-                                        main.path=main.path)
-    package.url = .out[1]
-    version = .out[2]
+      # Download the package archive
+      tmp_file <- tempfile()
+      utils::download.file(package.url, destfile = tmp_file, quiet=T)
 
-  #Print info
-    cat("----", "\n")
-    cat("Package '", package, "' (version: ",version, ") was found on: ", package.url, "\n", sep="")
-    cat("----", "\n")
+      # Extract the package archive
+      tmp_dir <- tempdir()
+      utils::untar(tmp_file, exdir = tmp_dir)
 
-
+      # Read the DESCRIPTION file
+      description_file <- file.path(tmp_dir, package, "DESCRIPTION")
+      description <- read.dcf(description_file)
+    }
 
 
-  # Download the package archive
-  tmp_file <- tempfile()
-  utils::download.file(package.url, destfile = tmp_file, quiet=T)
+  #Extract Dependencies from local .libPaths()
+    if(check.in.lib){
+     tmp_dir = .libPaths()[grepl(paste0(package,"_",version), .libPaths())]
+     if(identical(tmp_dir, character(0))) stop(paste0("Package ", paste0(package,"x",version), " not found in .libPaths()! Verify that the package is installed and adjust modify_libPaths() if necessary."))
+    }
 
-  # Extract the package archive
-  tmp_dir <- tempdir()
-  utils::untar(tmp_file, exdir = tmp_dir)
 
   # Read the DESCRIPTION file
   description_file <- file.path(tmp_dir, package, "DESCRIPTION")
   description <- read.dcf(description_file)
 
+  #Create empty obj.
   dep.name = vector()
   dep.version = vector()
 

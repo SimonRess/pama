@@ -60,29 +60,67 @@ library_version = function(package, version, lib.search.path = NULL){
     if(identical(lib.search.path,character(0))) stop(paste0("Package ", package, " (version: ", version, ") not found. Install it first!"))
 
   #detach other already loaded versions of the package
-  suppressWarnings(try(detach(paste0("package:",package), character.only = TRUE, force = T), silent = T))
+    suppressWarnings(try(detach(paste0("package:",package), character.only = TRUE, force = T), silent = T))
 
   #Load specified version of the package
-
-    #Unload all namespaces the packages of interest is imported in, in order to load it
-      #e.g. ggmap_3.0.2 imports ggplot2, therefore loading a new ggplot2 version could cause an error, because the old one can't be unloaded
 
     cat("Try to load packages from: ", lib.search.path, "\n", sep ="")
 
 
-    #Loop until all version of packages unloaded who prevent to load the required version
-      conflicting_versions = TRUE
-      message = try(library(package, lib.loc = lib.search.path, character.only = TRUE), silent = TRUE)
-      #if loading is not possible unload recursive all conflicting namespaces
-        # -> if its a namespace-conflict -> "ist bereits geladen, aber" | "ist importiert von"
-      if(!is.null(message) & (any(grepl("ist bereits geladen, aber",message)) | any(grepl("ist importiert von",message)))){
-        while(conflicting_versions){
-          conflicting_versions = unloadRecursive(lib_error_message = message)
-          message = try(library(package, lib.loc = lib.search.path, character.only = TRUE), silent = TRUE)
-          try(attachNamespace(loadNamespace(package, lib.loc = lib.search.path)), silent = TRUE) #ensure that the namespace is attached
-          # message = library(rlang, lib.loc = "C:/Users/sress/Desktop/titanic-r-master/lib/rlang_1.0.6")
+
+########################################################
+# WORKS BUT TAKES TO MUCH TIME...
+########################################################
+    # #Initially load all dependencies
+    #   #get packages dependencies
+    #   .dep = get_dependencies(package, version, check.in.lib = TRUE)
+    #   .dep = na.omit(.dep$Packages) # keep only dependencies requiring a specific version
+    #
+    #   #only only installed packages versions -> e.g. is 0.1.0 is required but only 0.2.0 is installed, use the latter instead
+    #   .installed = get_installed_packages()
+    #   .installed$installed = TRUE
+    #   exact = merge(.dep, .installed, by = c("name", "version"), all.x = TRUE)
+    #   highest = exact[is.na(exact$installed),]
+    #   highest = .installed[.installed$name %in% highest$name,]
+    #   highest = highest[with(highest, version == ave(version, name, FUN=max)),]
+    #   exact = na.omit(exact)
+    #
+    #   #exact available + highest available
+    #   .dep = rbind(exact, highest)
+    #
+    #   #load all dependencies = package versions
+    #   if(nrow(.dep)>0){
+    #     for(.p in 1: nrow(.dep)){
+    #
+    #       #.lib = .libPaths()[grepl(paste0(.dep[.p,"name"],"_",.dep[.p,"version"]), .libPaths())]
+    #
+    #       #Load package version if it not already loaded
+    #         .currently_loaded = as.vector(apply(sapply(sessionInfo()$otherPkgs, \(x) x[c("Package", "Version")]), 2, \(x) paste(x, collapse = "_")))
+    #         if(!(paste0(.dep[.p,"name"],"_",.dep[.p,"version"]) %in%.currently_loaded)){
+    #           library_version(.dep[.p,"name"], .dep[.p,"version"]) # load package only if "name" & "version" is not missing
+    #         }
+    #     }
+    #   }
+########################################################
+
+
+    #Unload all namespaces the packages of interest is imported in, in order to load it
+      #e.g. ggmap_3.0.2 imports ggplot2, therefore loading a new ggplot2 version could cause an error, because the old one can't be unloaded
+
+
+      #Loop until all version of packages unloaded who prevent to load the required version
+        conflicting_versions = TRUE
+        message = try(library(package, lib.loc = lib.search.path, character.only = TRUE), silent = TRUE)
+        #if loading is not possible unload recursive all conflicting namespaces
+          # -> if its a namespace-conflict -> "ist bereits geladen, aber" | "ist importiert von"
+        if(!is.null(message) & (any(grepl("ist bereits geladen, aber",message)) | any(grepl("ist importiert von",message)))){
+          while(conflicting_versions){
+            conflicting_versions = unloadRecursive(lib_error_message = message) # unload conflicting versions\namespaces, track if there are still conflicting_versions
+            message = try(library(package, lib.loc = lib.search.path, character.only = TRUE), silent = TRUE)
+            try(attachNamespace(loadNamespace(package, lib.loc = lib.search.path)), silent = TRUE) #ensure that the namespace is attached
+            # message = library(rlang, lib.loc = "C:/Users/sress/Desktop/titanic-r-master/lib/rlang_1.0.6")
+          }
         }
-      }
 
 
     #if not:

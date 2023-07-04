@@ -10,7 +10,8 @@ get_dependencies(
   cran.mirror = "https://cloud.r-project.org/",
   archiv.path = "src/contrib/Archive/",
   main.path = "src/contrib/",
-  search.for.cran.name = TRUE
+  search.for.cran.name = TRUE,
+  check.in.lib = FALSE
 )
 }
 \arguments{
@@ -24,7 +25,9 @@ get_dependencies(
 
 \item{main.path}{(chr value): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")}
 
-\item{search.for.cran.name}{(bool): Should CRAN be searched for other name-structures of the required version?
+\item{search.for.cran.name}{(bool): Should CRAN be searched for other name-structures of the required version?}
+
+\item{check.in.lib}{(bool): FALSE: Download the package from <cran> and extract dependencies from the "DESCRIPTION" file within the downloaded folder. TRUE: Use the "DESCRIPTION" file within the package discoverable in .libPaths()
 e.g. 0.1.10 to 0.1-1 see \code{\link[pama]{find_package_version_on_cran}}
 TRUE=yes, FALSE=no}
 }

@@ -9,7 +9,8 @@ find_package_version_on_cran(
   version,
   cran.mirror = "https://cloud.r-project.org/",
   archiv.path = "src/contrib/Archive/",
-  main.path = "src/contrib/"
+  main.path = "src/contrib/",
+  repo = "cran"
 )
 }
 \arguments{
@@ -22,6 +23,9 @@ find_package_version_on_cran(
 \item{archiv.path}{(chr value): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")}
 
 \item{main.path}{(chr value): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")}
+
+\item{repo}{(chr value): Which type of repo is used? This information is utilized when building the URL,
+because each repo has its own file structure. Currently supported: "cran" & "nexus"}
 }
 \value{
 (chr vector):
@@ -53,6 +57,7 @@ See all available CRAN Packages by Name here: https://cran.r-project.org/web/pac
 package.url = .out[1]
 version = .out[2]
 }
+
 }
 \keyword{CRAN}
 \keyword{finding}

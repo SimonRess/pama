@@ -101,7 +101,7 @@ load_requirements = function(req.file.path=getwd(),
     rq = req.packages
 
     #check if several packages of the same name should be loaded
-    .packages =unlist(lapply(rq, \(x) strsplit(x," ")[[1]][1]))
+    .packages =unlist(lapply(rq, \(x) strsplit(x,"_")[[1]][1]))
     .duplicates = .packages[duplicated(.packages)]
     if(length(.duplicates)>0){
       cat("Same packages with different versions in the loading pipeline: ", "\n")
@@ -130,8 +130,8 @@ load_requirements = function(req.file.path=getwd(),
         #update_packages_search_path(lib)
         #detach all (none base) packages -> required because detaches are necessary in the process, but dependencies may prevent some
         #capture.output(suppressWarnings(lapply(paste('package:',names(sessionInfo()$otherPkgs),sep=""), \(x) try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))), file='NUL')
-        package = strsplit(p, " ")[[1]][1]
-        version = strsplit(p, " ")[[1]][2]
+        package = strsplit(p, "_")[[1]][1]
+        version = strsplit(p, "_")[[1]][2]
         # find folder with package-version inside
         lib = .libPaths()[grep(paste0(package, "_", version), .libPaths())]
           #when is package-folder not found
@@ -153,10 +153,10 @@ load_requirements = function(req.file.path=getwd(),
     if(all(lists %in% names(req[-1]))){
       #select packages from entered lists + "main"-list
       req.packages = as.vector(unique(unlist(req[c("main", lists)])))
-
+      req.packages = req.packages[!is.na(req.packages)] # delete NAs
 
       #check if several packages of the same name should be loaded
-      .packages =unlist(lapply(req.packages, \(x) strsplit(x," ")[[1]][1]))
+      .packages =unlist(lapply(req.packages, \(x) strsplit(x,"_")[[1]][1]))
       .duplicates = .packages[duplicated(.packages)]
       if(length(.duplicates)>0){
         cat("Same packages with different versions in the loading pipeline: ", "\n")
@@ -177,8 +177,8 @@ load_requirements = function(req.file.path=getwd(),
         cat("Load: ", p, "\n")
         #detach all (none base) packages -> required because detaches are necessary in the process, but dependencies may prevent some
         #capture.output(suppressWarnings(lapply(paste('package:',names(sessionInfo()$otherPkgs),sep=""), \(x) try(detach(x, character.only=TRUE,unload=TRUE,force = TRUE),silent = T))), file='NUL')
-        package = strsplit(p, " ")[[1]][1]
-        version = strsplit(p, " ")[[1]][2]
+        package = strsplit(p, "_")[[1]][1]
+        version = strsplit(p, "_")[[1]][2]
         # find folder with package-version inside
         lib = .libPaths()[grep(paste0(package, "_", version), .libPaths())] # find folder with package-version inside
           #when is package-folder not found

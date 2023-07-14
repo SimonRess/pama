@@ -8,8 +8,12 @@
 #' @param cran.mirror (chr value): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")
 #' @param archiv.path (chr value): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")
 #' @param main.path (chr value): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")
-#' @param search.for.cran.name (bool): Should CRAN be searched for other name-structures of the required version?
-#' @param check.in.lib (bool): FALSE: Download the package from <cran> and extract dependencies from the "DESCRIPTION" file within the downloaded folder. TRUE: Use the "DESCRIPTION" file within the package discoverable in .libPaths()
+#' @param repo (chr value): Which type of repo is used? This information is utilized when building the URL,
+#' because each repo has its own file structure. Currently supported: "cran" & "nexus"
+#' @param search.for.cran.name (bool): Should CRAN be searched for other name-structures of the required version? TRUE/FALSE
+#' @param check.in.lib (bool):
+#' FALSE (default): Download the package from <cran> and extract dependencies from the "DESCRIPTION" file within the downloaded folder.
+#' TRUE: Use the "DESCRIPTION" file within the package discoverable in .libPaths()
 #' e.g. 0.1.10 to 0.1-1 see \code{\link[pama]{find_package_version_on_cran}}
 #' TRUE=yes, FALSE=no
 #'
@@ -53,6 +57,7 @@ get_dependencies <- function(package, version,
                              cran.mirror = "https://cloud.r-project.org/",
                              archiv.path = "src/contrib/Archive/",
                              main.path = "src/contrib/",
+                             repo="cran",
                              search.for.cran.name = TRUE,
                              check.in.lib = FALSE) {
 
@@ -73,7 +78,14 @@ get_dependencies <- function(package, version,
     if(!is.character(main.path)) {stop(paste0("'main.path = ", main.path, "' is not of type <character>. Please provide a character value!"))}
     if(!length(main.path)==1) {stop(paste0("'main.path = ", main.path, "' is not a single character value. Please provide a single character value!"))}
 
+    if(!is.character(repo)) {stop(paste0("repo' is not an character value. Provide an character value!"))}
+    if(!length(repo)==1) {stop(paste0("repo' is not of length==1. Provide exactly one package name!"))}
+
     if(!is.logical(search.for.cran.name)) {stop(paste0("'search.for.cran.name = ", search.for.cran.name, "' is not of type <bool>. Please provide a boolean!"))}
+    if(!length(search.for.cran.name)==1) {stop(paste0("search.for.cran.name' is not of length==1. Provide exactly one bool!"))}
+
+    if(!is.logical(check.in.lib)) {stop(paste0("'check.in.lib = ", check.in.lib, "' is not of type <bool>. Please provide a boolean!"))}
+    if(!length(check.in.lib)==1) {stop(paste0("check.in.lib' is not of length==1. Provide exactly one bool!"))}
 
 
   #Extract Dependencies from CRAN
@@ -82,7 +94,8 @@ get_dependencies <- function(package, version,
       .out = find_package_version_on_cran(package = package, version = version,
                                           cran.mirror=cran.mirror,
                                           archiv.path=archiv.path,
-                                          main.path=main.path)
+                                          main.path=main.path,
+                                          repo=repo)
       package.url = .out[1]
       version = .out[2]
 
@@ -97,8 +110,14 @@ get_dependencies <- function(package, version,
       utils::download.file(package.url, destfile = tmp_file, quiet=T)
 
       # Extract the package archive
-      tmp_dir <- tempdir()
-      utils::untar(tmp_file, exdir = tmp_dir)
+        tmp_dir <- tempdir()
+        if(grepl(".tar.gz", package.url)){
+          utils::untar(tmp_file, exdir = tmp_dir)
+        }
+        if(grepl(".zip", package.url)){
+          utils::unzip(tmp_file, exdir = tmp_dir)
+        }
+
 
       # Read the DESCRIPTION file
       description_file <- file.path(tmp_dir, package, "DESCRIPTION")

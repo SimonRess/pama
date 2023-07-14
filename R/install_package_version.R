@@ -26,6 +26,8 @@
 #' @param cran.mirror (chr value): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")
 #' @param archiv.path (chr value): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")
 #' @param main.path (chr value): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")
+#' @param repo (chr value): Which type of repo is used? This information is utilized when building the URL,
+#' because each repo has its own file structure. Currently supported: "cran" & "nexus"
 #'
 #' @param auto.update.version.in.files (bool):
 #' If TRUE the version of a package in the installed files will be changed to the required version. This only happens if
@@ -66,6 +68,7 @@ install_package_version = function(package,
                                    cran.mirror = "https://cloud.r-project.org/",
                                    archiv.path = "src/contrib/Archive/",
                                    main.path = "src/contrib/",
+                                   repo="cran",
                                    auto.update.version.in.files = TRUE) {
 
     #Check format of args
@@ -88,7 +91,11 @@ install_package_version = function(package,
     if(!is.character(main.path)) {stop(paste0("'main.path = ", main.path, "' is not of type <character>. Please provide a character value!"))}
     if(!length(main.path)==1) {stop(paste0("'main.path = ", main.path, "' is not a single character value. Please provide a single character value!"))}
 
+    if(!is.character(repo)) {stop(paste0("repo' is not an character value. Provide an character value!"))}
+    if(!length(repo)==1) {stop(paste0("repo' is not of length==1. Provide exactly one package name!"))}
+
     if(!is.logical(auto.update.version.in.files)) {stop(paste0("'auto.update.version.in.files = ", auto.update.version.in.files, "' is not of type <bool>. Please provide a boolean!"))}
+    if(!length(auto.update.version.in.files)==1) {stop(paste0("auto.update.version.in.files' is not of length==1. Provide exactly one bool!"))}
 
 
   # Change .libPaths() to <lib.install.path>
@@ -101,86 +108,37 @@ install_package_version = function(package,
   }
 
 
-  # #Create package.url & package.install.path
-  # archive.url = paste0(cran.mirror, archiv.path, package, "/", package, "_", version, ".tar.gz")
-  # main.page.url = paste0(cran.mirror, main.path, package, "_", version, ".tar.gz") # don't look into "/Archive/" -> get newest version
-  #
-  #
-  #
-  # ##Check if constructed URL is correct -> Find correct url
-  # cat("--------------------", "\n")
-  #   # 1. check archive
-  #   check = suppressWarnings(try(readLines(archive.url), silent = T)) # open.connection(url(),open="rt",timeout=t)
-  #   if(!inherits(check, "try-error")) {
-  #     package.url = archive.url
-  #   } else {
-  #       # 2. check main page (NOT archive)
-  #       check = suppressWarnings(try(readLines(main.page.url),silent = T)) # open.connection(url(),open="rt",timeout=t
-  #       if(!inherits(check, "try-error")) {
-  #         package.url = main.page.url
-  #       } else {
-  #         # 3. try to change version structure e.g. from 0.1.10 to 0.1-1
-  #           #e.g. dplyr_0.8.0 (https://cloud.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz) depends on plogr 0.1-1
-  #           #but there is only an version plogr 0.1.10 (https://cloud.r-project.org/src/contrib/Archive/plogr/, https://cloud.r-project.org/src/contrib/)
-  #           version.mod = sub("0([^0]*)$", "\\1",sub(".([^.]*)$", "-\\1", version)) #change 0.1.10 to 0.1-1
-  #           new.package.url = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", version.mod, ".tar.gz")
-  #           check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
-  #           #suppressWarnings(try(close.connection(url(new.package.url)),silent=T))
-  #           if(!inherits(check, "try-error")) {
-  #             package.url = new.package.url
-  #             cat("---")
-  #             cat("Version", version, "is named", version.mod, "in CRAN. This version will be installed!")
-  #             cat("---")
-  #             version = version.mod
-  #           } else {
-  #               cat("Error!!! Package ", package, " (version: ",version, ") was not found in: \n", sep="")
-  #               cat("- (archive)", package.url, "\n", sep="")
-  #               cat("- (newest)", new.package.url, "\n", sep="")
-  #               cat("- (modified version)", new.package.url2, "\n", sep="")
-  #               cat("----")
-  #               #Info-Message about existing versions
-  #                 #scrape versions in archive
-  #                 archive.versions = readLines(paste0("https://cloud.r-project.org/src/contrib/Archive/", package))
-  #                 archive.versions = archive.versions[(grep("Parent Directory", archive.versions)+1):(grep("<hr></pre>", archive.versions)-1)]
-  #                 archive.versions = sapply(strsplit(archive.versions, '<a href=\"'), \(x) strsplit(x[2], '.tar.gz\">')[[1]][1])
-  #                 #scrape newest version
-  #                 newest.version = readLines(paste0(cran.mirror, "web/packages/", package))
-  #                 newest.version = newest.version[grep("<td>Version:</td>",newest.version)+1]
-  #                 newest.version = gsub("<td>|</td>", "", newest.version)
-  #                 newest.version = paste0(package, "_", newest.version)
-  #
-  #                 #Messages
-  #                 cat("(INFO) Available versions of '", package, "':","\n", sep="")
-  #                 cat("- In archive:", paste(archive.versions, collapse = ", "), "\n")
-  #                 cat("- Newest version:", newest.version, "\n")
-  #                 cat("------", "\n")
-  #
-  #                 stop(paste0("version-error, ", "SOLUTION: Install the required package by hand: ", package, "_", version))
-  #                 #return("version-error")
-  #           }
-  #       }
-  #   }
-
-  cat("auto.update.version.in.files: ", auto.update.version.in.files, "\n")
-  cat("-------------------------------------------------------------------", "\n")
-  cat("Start the Installation of package '", package, "' (version ", version, ")", "\n", sep="")
+  #Some status reporting
+    cat("auto.update.version.in.files: ", auto.update.version.in.files, "\n")
+    cat("-------------------------------------------------------------------", "\n")
+    cat("Start the Installation of package '", package, "' (version ", version, ")", "\n", sep="")
 
   #Create package.url & package.install.path
     if(!is.na(version) & version!="NA"){
-      .out = find_package_version_on_cran(package = package, version = version) # prints: "Version 0.1.10 is named 0.1-1 in CRAN. This version will be used!"
+      .out = find_package_version_on_cran(package = package, version = version,
+                                          cran.mirror=cran.mirror,
+                                          archiv.path=archiv.path,
+                                          main.path=main.path,
+                                          repo=repo) # prints: "Version 0.1.10 is named 0.1-1 in CRAN. This version will be used!"
       package.url = .out[1]
     } else {
       #Use the newest version
         #scrape newest version
-          newest.version = readLines(paste0(cran.mirror, "web/packages/", package))
-          newest.version = newest.version[grep("<td>Version:</td>",newest.version)+1]
-          newest.version = gsub("<td>|</td>", "", newest.version)
-          #newest.version = paste0(package, "_", newest.version)
-        #replace version==NA by the newest version
-          version = newest.version
-        #continue as above
-          .out = find_package_version_on_cran(package = package, version = version) # prints: "Version 0.1.10 is named 0.1-1 in CRAN. This version will be used!"
-          package.url = .out[1]
+          if(repo=="cran"){
+            newest.version = readLines(paste0(cran.mirror, "web/packages/", package))
+            newest.version = newest.version[grep("<td>Version:</td>",newest.version)+1]
+            newest.version = gsub("<td>|</td>", "", newest.version)
+            #newest.version = paste0(package, "_", newest.version)
+          #replace version==NA by the newest version
+            version = newest.version
+          #continue as above
+            .out = find_package_version_on_cran(package = package, version = version) # prints: "Version 0.1.10 is named 0.1-1 in CRAN. This version will be used!"
+            package.url = .out[1]
+          }
+          if(repo=="nexus"){
+            stop("No <version> provided! Please provide a version (nexus error)!")
+          }
+
     }
 
 
@@ -216,6 +174,7 @@ install_package_version = function(package,
                                 cran.mirror=cran.mirror,
                                 archiv.path=archiv.path,
                                 main.path=main.path,
+                                repo=repo,
                                 search.for.cran.name=FALSE)
   #cat("---", "\n")
   #cat("depends.on", "\n")
@@ -279,17 +238,28 @@ install_package_version = function(package,
       for(p in 1:nrow(get)) {
         #if required package version is NA -> get newest version of this package
         if(is.na(get$name[p]) & is.na(get$version.required[p])) {
-          #scrape newest version
+          if(repo=="cran"){
+            #scrape newest version
             newest.version = readLines(paste0(cran.mirror, "web/packages/", get$name[p])) #package name from: get$name[p]
             newest.version = newest.version[grep("<td>Version:</td>",newest.version)+1]
             newest.version = gsub("<td>|</td>", "", newest.version)
             #newest.version = paste0(package, "_", newest.version)
-          get$version.required[p] = newest.version
+            get$version.required[p] = newest.version
+          }
+          if(repo=="nexus"){
+            stop("No <version> provided! Please provide a version (nexus error)!")
+          }
+
         }
         cat("-------------", "\n")
         cat("Installing Requirement: [", p,"/",nrow(get), "]: ", get$name[p], "_", get$version.required[p], "\n", sep="")
         install_package_version(get$name[p], get$version.required[p],
                                 lib.install.path=lib.install.path,
+                                use.only.lib.install.path=use.only.lib.install.path,
+                                cran.mirror = cran.mirror,
+                                archiv.path = archiv.path,
+                                main.path = main.path,
+                                repo=repo,
                                 auto.update.version.in.files= auto.update.version.in.files)
       }
     }
@@ -344,7 +314,7 @@ install_package_version = function(package,
     } else{
       #try main page
         cat("(T0)")
-        new.package.url = paste0(cran.mirror, "src/contrib/", package, "_", version.installing, ".tar.gz") # don't look into "/Archive/" -> get newest version
+        #new.package.url = paste0(cran.mirror, "src/contrib/", package, "_", version.installing, ".tar.gz") # don't look into "/Archive/" -> get newest version
         check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
         #suppressWarnings(try(close.connection(url(new.package.url)),silent=T))
         if(!inherits(check, "try-error")) {
@@ -358,7 +328,8 @@ install_package_version = function(package,
           #e.g. dplyr_0.8.0 (https://cloud.r-project.org/src/contrib/Archive/dplyr/dplyr_0.8.0.tar.gz) depends on plogr 0.1-1
           #but there is only an version plogr 0.1.10 (https://cloud.r-project.org/src/contrib/Archive/plogr/, https://cloud.r-project.org/src/contrib/)
           version.installing = sub("0([^0]*)$", "\\1",sub(".([^.]*)$", "-\\1", version.installing)) #change 0.1.10 to 0.1-1
-          new.package.url = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", version.installing, ".tar.gz")
+          #Replaces by build_package_url(): #new.package.url = paste0(cran.mirror, "src/contrib/Archive/", package, "/", package, "_", version.installing, ".tar.gz")
+          new.package.url = build_package_url(.main=FALSE, .package=package, .version=version.installing)
           check = suppressWarnings(try(readLines(new.package.url),silent = T)) # open.connection(url(),open="rt",timeout=t
           #suppressWarnings(try(close.connection(url(new.package.url)),silent=T))
           if(!inherits(check, "try-error")) {
@@ -449,7 +420,7 @@ install_package_version = function(package,
     cat("\n", "----", "\n")
     cat(i, ". Attempt to install the package ", package, " (version:", version.required, ")\n", sep="")
     #detach before installing
-    suppressWarnings(try(detach(paste0("package:",package), character.only = TRUE, force = T), silent = T))
+    suppressWarnings(try(detach(paste0("package:", package), character.only = TRUE, force = T), silent = T))
     #try to install the package
     success = install_and_check()
     i =i+1
@@ -458,7 +429,7 @@ install_package_version = function(package,
 
     #try installation one more time, with another version
       #Select new version
-        .new = find_package_version_on_cran("nlme", "999999") # user selects other version
+        .new = find_package_version_on_cran(package, "999999") # user selects other version
         new.package.url = .new[1]
         rversion.required = .new[2]
 

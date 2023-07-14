@@ -10,6 +10,12 @@
 #'
 #' @rdname install_requirements
 #'
+#' @param cran.mirror (chr value): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")
+#' @param archiv.path (chr value): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")
+#' @param main.path (chr value): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")
+#' @param repo (chr value): Which type of repo is used? This information is utilized when building the URL,
+#' because each repo has its own file structure. Currently supported: "cran" & "nexus"
+#'
 #' @param req.file.path (chr value): Name of the requirements-file
 #' @param req.file.name (chr value): Folder of the requirements-file
 #' @param lists (chr vector): Names of lists (without '#' !) specified in the requirements-file to use
@@ -47,7 +53,11 @@
 #' @author Simon Ress
 
 
-install_requirements = function(req.file.path=getwd(),
+install_requirements = function(cran.mirror = "https://cloud.r-project.org/",
+                                archiv.path = "src/contrib/Archive/",
+                                main.path = "src/contrib/",
+                                repo="cran",
+                                req.file.path=getwd(),
                                 req.file.name="requirements.txt",
                                 lists="all",
                                 library.folder.path=getwd(),
@@ -56,7 +66,20 @@ install_requirements = function(req.file.path=getwd(),
                                 auto.update.version.in.files = TRUE) {
 
 
-  #Check format of args
+  #args-Checks
+    if(!is.character(cran.mirror)) {stop(paste0("'cran.mirror = ", cran.mirror, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(cran.mirror)==1) {stop(paste0("'cran.mirror = ", cran.mirror, "' is not a single character value. Please provide a single character value!"))}
+
+    if(!is.character(archiv.path)) {stop(paste0("'archiv.path = ", archiv.path, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(archiv.path)==1) {stop(paste0("'archiv.path = ", archiv.path, "' is not a single character value. Please provide a single character value!"))}
+
+    if(!is.character(main.path)) {stop(paste0("'main.path = ", main.path, "' is not of type <character>. Please provide a character value!"))}
+    if(!length(main.path)==1) {stop(paste0("'main.path = ", main.path, "' is not a single character value. Please provide a single character value!"))}
+
+    if(!is.character(repo)) {stop(paste0("repo' is not an character value. Provide an character value!"))}
+    if(!length(repo)==1) {stop(paste0("repo' is not of length==1. Provide exactly one package name!"))}
+
+
     if(!is.character(req.file.path)) {stop(paste0("'req.file.path = ", req.file.path, "' is not of type <character>. Please provide a character value!"))}
     if(!length(req.file.path)==1) {stop(paste0("'req.file.path = ", req.file.path, "' is not a single character value. Please provide a single character value!"))}
 
@@ -160,7 +183,14 @@ install_requirements = function(req.file.path=getwd(),
         detach_none_base()
         package = strsplit(p, "_")[[1]][1]
         version = strsplit(p, "_")[[1]][2]
-        install_package_version(package, version, lib.install.path=lib, use.only.lib.install.path=use.only.lib.install.path, auto.update.version.in.files=auto.update.version.in.files)
+        install_package_version(package, version,
+                                lib.install.path=lib,
+                                use.only.lib.install.path=use.only.lib.install.path,
+                                cran.mirror=cran.mirror,
+                                archiv.path=archiv.path,
+                                main.path=main.path,
+                                repo=repo,
+                                auto.update.version.in.files=auto.update.version.in.files)
       }
 
   #Install main + selected lists
@@ -186,7 +216,14 @@ install_requirements = function(req.file.path=getwd(),
         detach_none_base()
         package = strsplit(p, "_")[[1]][1]
         version = strsplit(p, "_")[[1]][2]
-        install_package_version(package, version, lib.install.path=lib, use.only.lib.install.path=use.only.lib.install.path, auto.update.version.in.files=auto.update.version.in.files)
+        install_package_version(package, version,
+                                lib.install.path=lib,
+                                use.only.lib.install.path=use.only.lib.install.path,
+                                cran.mirror=cran.mirror,
+                                archiv.path=archiv.path,
+                                main.path=main.path,
+                                repo=repo,
+                                auto.update.version.in.files=auto.update.version.in.files)
       }
       #if not:
     }else{

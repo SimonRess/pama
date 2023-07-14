@@ -5,6 +5,10 @@
 \title{Install packages by versions specified in the requirements-file}
 \usage{
 install_requirements(
+  cran.mirror = "https://cloud.r-project.org/",
+  archiv.path = "src/contrib/Archive/",
+  main.path = "src/contrib/",
+  repo = "cran",
   req.file.path = getwd(),
   req.file.name = "requirements.txt",
   lists = "all",
@@ -15,6 +19,15 @@ install_requirements(
 )
 }
 \arguments{
+\item{cran.mirror}{(chr value): Main url of the cran mirror to use (e.g. "https://cloud.r-project.org/")}
+
+\item{archiv.path}{(chr value): URL-path to the archive of the cran mirror to use (e.g. "src/contrib/Archive/")}
+
+\item{main.path}{(chr value): URL-path to the pages main page of the cran mirror to use (e.g. "src/contrib/"")}
+
+\item{repo}{(chr value): Which type of repo is used? This information is utilized when building the URL,
+because each repo has its own file structure. Currently supported: "cran" & "nexus"}
+
 \item{req.file.path}{(chr value): Name of the requirements-file}
 
 \item{req.file.name}{(chr value): Folder of the requirements-file}

@@ -65,7 +65,7 @@ update_packages_search_path = function(path = NULL,
   #Default updating of search paths by adding "package-version"-folders
     if(is.null(path)) {
       if(dir.exists(file.path(getwd(), "lib"))) {
-        lib.paths = unique(c(normalizePath(.libPaths()), normalizePath(file.path(getwd(), "lib"))))
+        lib.paths = .libPaths() #Dont use always "lib"-folder, sometime you dont want it! # unique(c(normalizePath(.libPaths()), normalizePath(file.path(getwd(), "lib"))))
         } else lib.paths = .libPaths() # always ALSO search in "lib" in project-folder
       for(p in lib.paths) {
         package = dir(p)[which(grepl("_", dir(p)))] # greps folders which contains a "_" -> e.g "...\ggplot2_3.1.0"

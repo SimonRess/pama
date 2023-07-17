@@ -53,10 +53,10 @@
 #'
 #' # Build an URL of the "nexus" repo type
 #' .repo = "nexus"
-#' .cran.mirror = "https://<***>.de/service/rest/repository/browse/r-public/"
-#' .archiv.path = "bin/windows/contrib/"
+#' .cran.mirror = "https://<***>.de/repository/r-public/bin/windows/contrib/"
+#' .archiv.path = "https://<***>.de/service/rest/repository/browse/r-public/bin/windows/contrib/"
 #' build_package_url(.repo = repo)
-#'    # Output should be: "https://<***>.de/service/rest/repository/browse/r-public/bin/windows/contrib/4.2/dbplyr/2.3.1/dbplyr_2.3.1.zip"
+#'    # Output should be: "https://<***>.de/repository/browse/r-public/bin/windows/contrib/4.2/dbplyr_2.3.1.zip"
 #'
 #' # Test installation of a package with the created URL
 #' .cran.mirror = "https://cran.r-project.org/"
@@ -137,9 +137,9 @@ build_package_url = function(.main = TRUE, .repo = parent.frame()$repo, .overvie
     }
     if(.repo=="nexus"){
       if(!.overview){
-        return(file.path(.cran.mirror, paste0(.main.path, paste(R.version$major, R.version$minor, sep="."), "/"), .package, .version, paste0(.package,"_",.version,".zip"))) # e.g. https://<***>.de/service/rest/repository/browse/r-public/bin/windows/contrib/4.2/dbplyr/2.3.1/dbplyr_2.3.1.zip
+        return(file.path(paste0(.main.path, paste(R.version$major, substr(R.version$minor,1,1), sep="."), "/"), paste0(.package,"_",.version,".zip"))) # e.g. https://<***>.de/repository/r-public/bin/windows/contrib/4.2/dbplyr_2.3.1.zip
       } else {
-        return(file.path(.cran.mirror, .archiv.path, paste(R.version$major, R.version$minor, sep="."), .package)) # e.g. https://<***>.de/service/rest/repository/browse/r-public/bin/windows/contrib/4.2/dbplyr/
+        return(file.path(.archiv.path, paste(R.version$major, substr(R.version$minor,1,1), sep="."), .package)) # e.g. https://<***>.de/service/rest/repository/browse/r-public/bin/windows/contrib/4.2/dbplyr/
       }
     }
 }

@@ -1,4 +1,4 @@
-# \<pama\>: Package Management
+# \<pama\>: Package Management <a href="https://github.com/SimonRess/pama"><img src="https://github.com/SimonRess/pama/blob/main/pama_Logo.png" align="right" height="138" /></a>
 *Python-style* package management tool for R. Use ***requirement.txt*** files to specify versions of packages to install (into your project folders lib) and load specific package versions in your scripts based on specified #lists in the requirement.txt. 
 
 Making your project ***reproducible*** and ***production-ready*** was never easier :)

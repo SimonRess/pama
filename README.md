@@ -3,6 +3,30 @@
 
 Making your project ***reproducible*** and ***production-ready*** was never easier :)
 
+# Overview
+
+### MIT License
+Copyright (c) **2023 SimonRess**
+
+**Citation:**
+```
+Ress, Simon (2023). pama: Python-style package management tool for R. R package
+  version 0.1.1, <https://github.com/SimonRess/pama>.
+```
+**BibTeX entry** for LaTeX users:
+```
+  @Manual{,
+    title = {pama: Python-style package management tool for R},
+    author = {Simon Ress},
+    year = {2023},
+    note = {R package version 0.1.1},
+    url = {https://github.com/SimonRess/pama},
+  }
+```
+
+The above **copyright notice** shall be included in all
+copies, substantial portions of the Software, and other artefacts made with *pama***.
+
 ### News
 - Check the newest features and changes: [NEWS.md](NEWS.md)
 - Newest version: [v0.1.1](https://github.com/SimonRess/pama/tree/v0.1.1)
@@ -103,3 +127,10 @@ load_requirements(req.file.name = paste0("requirements_",Sys.Date(), ".txt"))
 #Creating a lib_citations_<date>.csv from the "requirements.txt" within the working directory
 citations2(req.file.name = paste0("requirements_",Sys.Date(), ".txt"))
 ```
+
+---
+
+## Getting help
+If you encounter a clear bug, please file an issue with a minimal
+reproducible example on
+[GitHub](https://github.com/SimonRess/pama/issues).

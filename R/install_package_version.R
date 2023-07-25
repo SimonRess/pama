@@ -121,7 +121,7 @@ install_package_version = function(package,
                                           main.path=main.path,
                                           repo=repo) # prints: "Version 0.1.10 is named 0.1-1 in CRAN. This version will be used!"
       package.url = .out[1]
-    } else {
+    } else { #if no version was provided
       #Use the newest version
         #scrape newest version
           if(repo=="cran"){
@@ -253,14 +253,21 @@ install_package_version = function(package,
         }
         cat("-------------", "\n")
         cat("Installing Requirement: [", p,"/",nrow(get), "]: ", get$name[p], "_", get$version.required[p], "\n", sep="")
-        install_package_version(get$name[p], get$version.required[p],
-                                lib.install.path=lib.install.path,
-                                use.only.lib.install.path=use.only.lib.install.path,
-                                cran.mirror = cran.mirror,
-                                archiv.path = archiv.path,
-                                main.path = main.path,
-                                repo=repo,
-                                auto.update.version.in.files= auto.update.version.in.files)
+
+        if(repo=="cran"){
+          install_package_version(get$name[p], get$version.required[p],
+                                  lib.install.path=lib.install.path,
+                                  use.only.lib.install.path=use.only.lib.install.path,
+                                  cran.mirror = cran.mirror,
+                                  archiv.path = archiv.path,
+                                  main.path = main.path,
+                                  repo=repo,
+                                  auto.update.version.in.files= auto.update.version.in.files)
+        }
+        if(repo=="nexus"){ # when using nexus simple install the available version <- because its so restricted
+          install.packages(get$name[p])
+        }
+
       }
     }
 

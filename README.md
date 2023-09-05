@@ -11,7 +11,7 @@ Copyright (c) **2023 SimonRess**
 **Citation:**
 ```
 Ress, Simon (2023). pama: Python-style package management tool for R. R package
-  version 0.1.1, <https://github.com/SimonRess/pama>.
+  version 0.1.2, <https://github.com/SimonRess/pama>.
 ```
 **BibTeX entry** for LaTeX users:
 ```
@@ -19,7 +19,7 @@ Ress, Simon (2023). pama: Python-style package management tool for R. R package
     title = {pama: Python-style package management tool for R},
     author = {Simon Ress},
     year = {2023},
-    note = {R package version 0.1.1},
+    note = {R package version 0.1.2},
     url = {https://github.com/SimonRess/pama},
   }
 ```
@@ -29,7 +29,7 @@ copies, substantial portions of the Software, and other artefacts made with *pam
 
 ### News
 - Check the newest features and changes: [NEWS.md](NEWS.md)
-- Newest version: [v0.1.1](https://github.com/SimonRess/pama/tree/v0.1.1)
+- Newest version: [v0.1.2](https://github.com/SimonRess/pama/tree/v0.1.2)
 
 ### Description
 When working on **long-life projects**, you must **ensure reproducibility** on new machines. For this, the following steps are fundamental:

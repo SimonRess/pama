@@ -119,7 +119,7 @@ dplyr 1.0.0
                                                        )
                                       )))))
           }
-          req[[rscript]] = unique(req.packages)
+          req[[rscript]] = unique(req.packages) |> trimws()
         }
       }
 
@@ -146,11 +146,11 @@ dplyr 1.0.0
                                          file.path(lib.path, x)))
 
       versions = sapply(packages.paths, \(x) readRDS(file.path(x, "Meta/package.rds"))[["DESCRIPTION"]][["Version"]])
-      names = sapply(names(versions), \(x) strsplit(x, "_")[[1]][1])
+      names = sapply(names(versions), \(x) strsplit(x, "_")[[1]][1]) |> trimws()
       installed.packages = data.frame(name = names, version = versions)
 
     #Enrich package names in 'req', by their versions provided in 'installed.packages'
-      req = lapply(req, \(x) lapply(x, \(x) paste0(trimws(x),"_",installed.packages[installed.packages$name==x, "version"])))
+      req = lapply(req, \(x) lapply(x, \(x) paste0(x,"_",installed.packages[installed.packages$name==x, "version"])))
     } else{
       # don't provide any versions if no lib.path is provided -> user will be ask for every package version
       req = lapply(req, \(x) lapply(x, \(x) paste0(trimws(x),"_")))

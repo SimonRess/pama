@@ -1,6 +1,15 @@
 # pama 0.1.2 (2023-09-05)
 
-...
+**Fixing Problems:**
+- apply_library_version.R
+  - whitespaces within () of library() and require() are no problem anymore
+  - reading and wirting of scripts from several folders is now working
+  - prevent changing code not consistent with <pattern>
+- create_reqirements_file.R
+  - problem: package names including whitespaces leading to not matching versions
+  - fix: trimws(<package name>) 
+- fixing examplary urls in build_package_url.Rd 
+
 
 # pama 0.1.1 (2023-07-17)
 

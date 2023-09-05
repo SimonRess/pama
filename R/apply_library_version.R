@@ -50,9 +50,9 @@ apply_library_version = function(req.file.path=getwd(),
     if(!is.character(patterns)) {stop(paste0("'patterns = ", patterns, "' is not of type <character>. Please provide a character vector!"))}
 
 
-  #Check if Code inherits pattern to replace and do it
+  #Check if Code inherits pattern to replace. If so, replace by "library_version(...)", if not, keep it
   library_to_library_version = function(old_code){
-    if(grepl(paste(patterns, collapse = "|"), old_code)){
+    if(grepl(paste(patterns, collapse = "|"), old_code) & old_code !=""){ # change only code consistent with the pattern and not empty
       x = old_code
       #extract the matches from within the code, e.g "library(ggplot2)"
         .matches = regmatches(x, gregexpr(paste(patterns, collapse = "|"), x))[[1]]
@@ -69,6 +69,7 @@ apply_library_version = function(req.file.path=getwd(),
         #print(.m)
         #.package = gsub("'|\"", "", sapply(.m, \(.x) regmatches(.x, gregexec(paste(patterns, collapse = "|"), .x))[[1]][2]))
         .package = gsub("'|\"", "", sapply(.m, \(.x) regmatches(.x, gregexec(paste(patterns, collapse = "|"), .x))[[1]][-1][nzchar(regmatches(.x, gregexec(paste(patterns, collapse = "|"), .x))[[1]][-1])]))
+        .package = trimws(.package) # NEW! Before only library(RODBC) worked, now library(RODBC ) and library( RODBC ) also work
 
         #print(.package)
         .version = strsplit(.req[grepl(.package, .req)], "_")[[1]][2]
@@ -87,13 +88,13 @@ apply_library_version = function(req.file.path=getwd(),
 
 
   for(script.path in script.paths) {
-    rscripts = dir(script.paths)
+    rscripts = dir(script.path) # use scripts from current direction
 
     #Loop over R-scripts
     for(rscript in rscripts){
       file = suppressMessages(readLines(paste0(script.path,"/", rscript)))
       txt = unlist(lapply(file, \(x) library_to_library_version(x)))
-      writeLines(txt, file.path(script.paths,rscript))
+      writeLines(txt, con=paste0(script.path,rscript))
     }
   }
 

@@ -11,7 +11,7 @@ library_version(package, version, lib.search.path = NULL)
 
 \item{version}{(chr value): Version of the Package}
 
-\item{lib.search.path}{(chr vector): Folder which to searcj for the packages}
+\item{lib.search.path}{(chr vector): In folder(s) which to search for the packages. NULL: use standard paths from `.libPaths()`}
 }
 \description{
 Loading/Attaching specific versions of packages

@@ -1,4 +1,8 @@
-# pama 0.1.1 (2023-??-??)
+# pama 0.1.2 (2023-09-05)
+
+...
+
+# pama 0.1.1 (2023-07-17)
 
 **More consistent passing of values to nested functions**
 

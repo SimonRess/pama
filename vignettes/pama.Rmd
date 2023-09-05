@@ -125,7 +125,7 @@ In order to make your project reproducible a central location where all the info
 ```{r, eval=FALSE}
 setwd(dir = file.path(Sys.getenv("USERPROFILE"),"Desktop","titanic-r-master"))
 
-#Creating a req-file in "C:/Project" called "requirements_<date>.txt", with list structure, but no package versions
+#Creating a req-file (packages+versions) in "C:/Project" called "requirements_<date>.txt" (included scripts as list structure)
 create_reqirements_file(draft = FALSE, script.paths = "./")
 #User inputs (randomly chosen):
   # dataQualityR: 1.0

@@ -1,6 +1,6 @@
 Package: pama
 Title: Install/Load Specific Package Versions and Use Requirement.txt-files
-Version: 0.1.0
+Version: 0.1.1
 Author: Simon Ress [aut] (<https://orcid.org/0000-0001-7325-7462>)
 Authors@R: 
     person("Simon", "Ress", , "simon.ress89@gmail.com", role = c("aut", "cre"),
